@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+
+  <title>NASM源码中的数据结构</title>
+  <meta name="author" content="Xu Jingtao" />
+  <meta name="generator" content="Muse" />
+  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+  <link rel="shortcut icon" href="/images/web/favicon.ico" />
+  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+  
+<style type="text/css" media="all">
+/*<![CDATA[*/
+      @import url("../css/core.css");
+      
+/*]]>*/
+</style>
+  <link rel="made" href="mailto:jingtaozf@gmail.com" />
+    <script type="text/javascript">//<![CDATA[
+this.onload = function () {
+(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+}
+
+//]]></script>
+</head>
+<body>
+  <div id="banner">
+    <p><span id="title">NASM源码中的数据结构</span></p>
+  </div>
+    <!-- Page published by Emacs Muse begins here -->
+<div class="contents">
+<dl>
+<dt>
+<a href="#sec1">概述</a>
+</dt>
+<dt>
+<a href="#sec2">详解</a>
+</dt>
+</dl>
+</div>
+
+
+<h2><a name="sec1" id="sec1"></a>
+概述</h2>
+
+<p class="first">NASM是一个模块化的，可重用的汇编器（有关这方面的内容请参照源码中的doc\internal.doc文件）。它涉及到的数据结构有数组，链表和HASH表等。</p>
+
+
+<h2><a name="sec2" id="sec2"></a>
+详解</h2>
+
+<ol>
+<li>用数组存储表达式求值程序计算出的值。</li>
+</ol>
+
+<p>由于这些生成的值只会被用来查询，不会被修改，所以很适合用数组来表示。</p>
+
+<pre class="src">
+ <span class="comment-delimiter">/*</span><span class="comment">
+  * Expression-evaluator datatype. Expressions, within the
+  * evaluator, are stored as an array of these beasts, terminated by
+  * a record with type==0. Mostly, it's a vector type: each type
+  * denotes some kind of a component, and the value denotes the
+  * multiple of that component present in the expression. The
+  * exception is the WRT type, whose `value' field denotes the
+  * segment to which the expression is relative. These segments will
+  * be segment-base types, i.e. either odd segment values or SEG_ABS
+  * types. So it is still valid to assume that anything with a
+  * `value' field of zero is insignificant.
+  </span><span class="comment-delimiter">*/</span>
+ <span class="keyword">typedef</span> <span class="keyword">struct</span> {
+     <span class="type">long</span> <span class="variable-name">type</span>;                             <span class="comment-delimiter">/* </span><span class="comment">a register, or EXPR_xxx </span><span class="comment-delimiter">*/</span>
+     <span class="type">long</span> <span class="variable-name">value</span>;                            <span class="comment-delimiter">/* </span><span class="comment">must be &gt;= 32 bits </span><span class="comment-delimiter">*/</span>
+ } <span class="type">expr</span>;
+</pre>
+
+<p>2. 通过HASH值将数组和链表结合在一起来存储预处理中遇到的宏。</p>
+
+<p>这样HASH数组中的每一项都指向一个链表，链表中的每个结点都存储着一个宏的相关信息，而且各个结点宏名字具有相同的HASH值。这种数组和链表通过HASH算法结合在一起的结构可以更加快速地找到指定名字的宏。</p>
+
+<p>3. NASM在运行时会动态分配两块内存。</p>
+
+<p>一块用来进行随机内存存取，以树状结构表示，每个叶结点中存储实际的数据；</p>
+
+<p>另一块用来进行顺序内存存取，以链状结构表示。</p>
+
+<p>这样程序在需要许多小的内存块时就不必每次去分配，只在已分配的内存块被用完时再分配。即提高了效率，也易于管理。</p>
+
+
+<blockquote>
+<p class="quoted"><strong>SAA</strong> :dynamic sequential-access array.</p>
+</blockquote>
+
+<blockquote>
+<p class="quoted"><strong>RAA</strong> :dynamic random access array.</p>
+</blockquote>
+
+<pre class="src">
+ struct SAA {
+     /*
+      * members `end' and `elem_len' are only valid in first link in
+      * list; `rptr' and `rpos' are used for reading
+      */
+     struct SAA *next, *end, *rptr;
+     long elem_len, length, posn, start, rpos;
+     char *data;
+ };
+
+ struct RAA {
+     /*
+      * Number of layers below this one to get to the real data. 0
+      * means this structure is a leaf, holding RAA_BLKSIZE real
+      * data items; 1 and above mean it's a branch, holding
+      * RAA_LAYERSIZE pointers to the next level branch or leaf
+      * structures.
+      */
+     int layers;
+     /*
+      * Number of real data items spanned by one position in the
+      * `data' array at this level. This number is 1, trivially, for
+      * a leaf (level 0): for a level 1 branch it should be
+      * RAA_BLKSIZE, and for a level 2 branch it's
+      * RAA_LAYERSIZE*RAA_BLKSIZE.
+      */
+     long stepsize;
+     union RAA_UNION {
+     struct RAA_LEAF {
+         long data[RAA_BLKSIZE];
+     } l;
+     struct RAA_BRANCH {
+         struct RAA *data[RAA_LAYERSIZE];
+     } b;
+     } u;
+ };
+</pre>
+
+<p>4. 其它</p>
+
+<p>每条合法指令的模板如下表示：</p>
+
+<pre class="src">
+ <span class="keyword">struct</span> <span class="type">itemplate</span> {
+     <span class="type">int</span> <span class="variable-name">opcode</span>;                    <span class="comment-delimiter">/* </span><span class="comment">the token, passed from "parser.c" </span><span class="comment-delimiter">*/</span>
+     <span class="type">int</span> <span class="variable-name">operands</span>;                  <span class="comment-delimiter">/* </span><span class="comment">number of operands </span><span class="comment-delimiter">*/</span>
+     <span class="type">long</span> <span class="variable-name">opd</span>[3];                   <span class="comment-delimiter">/* </span><span class="comment">bit flags for operand types </span><span class="comment-delimiter">*/</span>
+     <span class="keyword">const</span> <span class="type">char</span> *<span class="variable-name">code</span>;              <span class="comment-delimiter">/* </span><span class="comment">the code it assembles to </span><span class="comment-delimiter">*/</span>
+     <span class="type">unsigned</span> <span class="type">long</span> <span class="variable-name">flags</span>;           <span class="comment-delimiter">/* </span><span class="comment">some flags </span><span class="comment-delimiter">*/</span>
+ };
+</pre>
+
+<p>其中在第四项code中，用特定的值来表示生成的机器码中可能出现的情况，比如若指令模板中存在\320，则表示该指令需要一个固定大小为16位的操作数。这样，如果目标代码为32位时，机器码就需要一个操作数前缀。</p>
+
+<blockquote>
+<p class="quoted">/*$Id: nasm_data.html,v 1.2 2003/10/27 09:17:26 jingtao Exp $*/</p>
+</blockquote>
+
+
+<!-- -*- encoding: utf-8 -*- -->
+<p>&nbsp;</p>
+    <div id="footer">
+          <div id="footlink">
+            [<a href="../index.html">返回首页</a> ]</div>
+            <div id="footdate">
+            2014 年 02 月 28 日更新
+            </div>
+    </div>
+</body>
+</html>

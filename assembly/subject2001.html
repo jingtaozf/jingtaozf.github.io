@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+
+  <title>部分改编的汇编代码</title>
+  <meta name="author" content="Xu Jingtao" />
+  <meta name="generator" content="Muse" />
+  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+  <link rel="shortcut icon" href="/images/web/favicon.ico" />
+  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+  
+<style type="text/css" media="all">
+/*<![CDATA[*/
+      @import url("../css/core.css");
+      
+/*]]>*/
+</style>
+  <link rel="made" href="mailto:jingtaozf@gmail.com" />
+    <script type="text/javascript">//<![CDATA[
+this.onload = function () {
+(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+}
+
+//]]></script>
+</head>
+<body>
+  <div id="banner">
+    <p><span id="title">部分改编的汇编代码</span></p>
+  </div>
+    <!-- Page published by Emacs Muse begins here -->
+<div class="contents">
+<dl>
+<dt>
+<a href="#sec1">专题内容</a>
+</dt>
+<dt>
+<a href="#sec2">编程环境</a>
+</dt>
+<dt>
+<a href="#sec3">专题代码</a>
+</dt>
+</dl>
+</div>
+
+
+
+<h2><a name="sec1" id="sec1"></a>
+专题内容</h2>
+
+<p class="first">原书作者： Jeffrey Richter.</p>
+
+<p>原书名称： &quot;Programming Applications for Microsoft Windows,Fourth Edition.&quot;</p>
+
+<p>中文译本： Windows 核心编程.(机械工业出版社）</p>
+
+<p>专题目的： 用Masm32改写本书所有源代码.</p>
+
+<p>专题说明： 为简单起见，大部分改写的源程序将暂时只保证在Win98上正确运行.也欢迎您贡献出自己的源代码.</p>
+
+<p>专题日期： 2001.11.25&mdash;2002.??</p>
+
+
+
+
+<h2><a name="sec2" id="sec2"></a>
+编程环境</h2>
+
+<blockquote>
+<p class="quoted"><a href="http://www.movsd.com/masm.htm">Masm32v7</a> <a href="subject2001/headers.zip">头文件下载</a> (包含　<a href="subject2001/CmnHdr.inc">CmnHdr.inc</a> <a href="subject2001/Objects.INC">Objects.INC</a> <a href="subject2001/Seh-2.inc">Seh-2.inc</a> )</p>
+</blockquote>
+
+
+<h2><a name="sec3" id="sec3"></a>
+专题代码</h2>
+
+<table class="muse-table" border="2" cellpadding="5">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Describe</th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr>
+      <td><a href="subject2001/17-MMFShare.zip">MMFShare</a></td>
+      <td>2001.11.26</td>
+      <td>a demo of Memory mapping file</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/26-CopyData.zip">CopyData</a></td>
+      <td>2001.11.27</td>
+      <td>a demo of WM_COPYDATA</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/AppInst.zip">AppInst</a></td>
+      <td>2001.11.28</td>
+      <td>a demo of shared section in PE file.</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/Handshake.zip">Handshake</a></td>
+      <td>2001.11.28</td>
+      <td>a demo of use auto-reset event.</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/Summation.zip">Summation</a></td>
+      <td>2001.12.19</td>
+      <td>a demo of use SEH when stack overflow</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/23-SEHTerm.zip">SEHTerm</a></td>
+      <td>2001.12.19</td>
+      <td>a demo of use final Exception Handle</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/01-ErrorShow.zip">ErrorShow</a></td>
+      <td>2001.12.27</td>
+      <td>get text description for an error code</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/07-SchedLab.zip">SchedLab</a></td>
+      <td>2001.12.27</td>
+      <td>process and thread priority classes</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/10-swmrg.zip">SWMRG</a></td>
+      <td>2001.12.27</td>
+      <td>The Single Writer/Multiple Reader Guard</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/12-Counter.zip">Counter</a></td>
+      <td>2001.12.27</td>
+      <td>background processing using fibers</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/14-VMStat.zip">VMStat</a></td>
+      <td>2001.12.27</td>
+      <td>how to get Virtual Memory Status</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/15-MemReset.zip">MemReset</a></td>
+      <td>2001.12.27</td>
+      <td>change the protection attributes of pages</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/17-FileRev.zip">FileRev</a></td>
+      <td>2002.02.04</td>
+      <td>how to use memory-mapped files</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/09-Queue.zip">Queue</a></td>
+      <td>2002.02.04</td>
+      <td>how to uses a mutex and a semaphore</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/11-TimedMsgBox.zip">TimedMsgBox</a></td>
+      <td>2002.02.05</td>
+      <td>use the thread pool's timer functions</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/27-LISWatch.zip">LISWatch</a></td>
+      <td>2002.02.05</td>
+      <td>Local Input State Laboratory</td>
+    </tr>
+    <tr>
+      <td><a href="subject2001/14-SysInfo.zip">SysInfo</a></td>
+      <td>2002.02.06</td>
+      <td>call GetSystemInfo,display info returned</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- -*- encoding: utf-8 -*- -->
+<p>&nbsp;</p>
+    <div id="footer">
+          <div id="footlink">
+            [<a href="../index.html">返回首页</a> ]</div>
+            <div id="footdate">
+            2014 年 02 月 28 日更新
+            </div>
+    </div>
+</body>
+</html>

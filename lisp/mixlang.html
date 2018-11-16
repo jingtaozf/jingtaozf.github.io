@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+
+  <title>Common lisp 与其它语言的集成</title>
+  <meta name="author" content="Xu Jingtao" />
+  <meta name="generator" content="Muse" />
+  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+  <link rel="shortcut icon" href="/images/web/favicon.ico" />
+  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+  
+<style type="text/css" media="all">
+/*<![CDATA[*/
+      @import url("../css/core.css");
+      
+/*]]>*/
+</style>
+  <link rel="made" href="mailto:jingtaozf@gmail.com" />
+    <script type="text/javascript">//<![CDATA[
+this.onload = function () {
+(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+}
+
+//]]></script>
+</head>
+<body>
+  <div id="banner">
+    <p><span id="title">Common lisp 与其它语言的集成</span></p>
+  </div>
+    <!-- Page published by Emacs Muse begins here -->
+<div class="contents">
+<dl>
+<dt>
+<a href="#sec1">ECL</a>
+</dt>
+<dt>
+<a href="#sec2">Corman</a>
+</dt>
+<dt>
+<a href="#sec3">cffi</a>
+</dt>
+<dt>
+<a href="#sec4">ltk</a>
+</dt>
+<dt>
+<a href="#sec5">Common Lisp: Intro, Resources and FAQ</a>
+</dt>
+</dl>
+</div>
+
+
+<h2><a name="sec1" id="sec1"></a>
+<a href="http://ecls.sourceforge.net/">ECL</a></h2>
+
+<blockquote>
+<p class="quoted">ECL使用C/C++来编译lisp程序，可以同c/c++很好的集成在一起，互相调用。它同<a href="http://www.gnu.org/software/guile/">guile</a> 类似，不同的是guile不支持Common lisp。</p>
+</blockquote>
+
+
+<h2><a name="sec2" id="sec2"></a>
+<a href="http://www.cormanlisp.com/">Corman</a></h2>
+
+<blockquote>
+<p class="quoted">Corman是为windows量身打造的，开放源代码，其IDE不免费。可以很好的同c/c++集成，互相调用(in-process COM server),其提供的widnows api接口使用了CLOS，使用自然简洁。</p>
+</blockquote>
+
+<pre class="src">
+(<span class="keyword">defmethod</span> <span class="function-name">handle-message</span> ((window &lt;hello-window&gt;) (message &lt;paint-message&gt;) wparam lparam)
+        (<span class="keyword">declare</span> (ignore wparam lparam))
+    (begin-paint window)
+        (<span class="keyword">let</span> ((rect (hello-text-rect window)))
+                (GetClientRect (window-hwnd window) rect)
+                (DrawText (window-hdc window)
+                        (ct:create-c-string <span class="string">"Hello, World"</span>)
+                        -1
+                        rect
+                        (logior DT_SINGLELINE DT_CENTER DT_VCENTER)))
+    (end-paint window)
+        0)
+</pre>
+
+
+<h2><a name="sec3" id="sec3"></a>
+<a href="http://common-lisp.net/project/cffi/">cffi</a></h2>
+
+<blockquote>
+<p class="quoted">cffi(Common Foreign Function Interface)为各种common lisp方言提供了统一的与c/c++语言通讯的接口。可以调用windows api。同时由于<a href="http://www.swig.org/">swig</a>支持cffi，所以可以使用swig来自动生成lisp下的接口代码。
+<a href="http://code.google.com/p/lispbuilder/">lispbuilder</a>提供了一个lispbuilder-windows(windows.h wrapper)模块，提供了windows.h的接口代码。并有一个演示gui的例子。</p>
+</blockquote>
+
+
+<h2><a name="sec4" id="sec4"></a>
+<a href="http://www.peter-herth.de/ltk/">ltk</a></h2>
+
+<blockquote>
+<p class="quoted">如果使用common lisp进行一些gui编程，可以考虑ltk，它使用tcl/tk做为gui前端，并将
+tk的代码转换成common lisp风格。扩展起来也比较容易。</p>
+</blockquote>
+
+
+<h2><a name="sec5" id="sec5"></a>
+<a href="http://wiht.link/common-lisp">Common Lisp: Intro, Resources and FAQ</a></h2>
+
+<blockquote>
+<p class="quoted">这个网站上集成了各种lisp学习资源．</p>
+</blockquote>
+
+
+<!-- -*- encoding: utf-8 -*- -->
+<p>&nbsp;</p>
+    <div id="footer">
+          <div id="footlink">
+            [<a href="../index.html">返回首页</a> ]</div>
+            <div id="footdate">
+            2015 年 11 月 18 日更新
+            </div>
+    </div>
+</body>
+</html>
