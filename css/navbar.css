@@ -1,0 +1,23 @@
+.tutorNav ul {
+    list-style-type: none;
+    padding-top: 7px;
+}
+
+.tutorNav li {
+    display: inline;
+    margin: 0px;
+}
+
+.tutorNav a {
+	text-decoration: none;
+	color: #000000;
+	border-left: none;
+	border: 1px dashed #999999;
+	padding: 7px 5px 7px 5px;
+    margin: 0;
+	background-color: #E7E7E7;
+}
+.tutorNav a:hover {
+	background-color: #B2F511;
+	font-weight: bold;
+}

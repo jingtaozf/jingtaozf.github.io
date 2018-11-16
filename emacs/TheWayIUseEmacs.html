@@ -1,0 +1,853 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+
+  <title>The way I use Emacs</title>
+  <meta name="author" content="Xu Jingtao" />
+  <meta name="generator" content="Muse" />
+  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+  <link rel="shortcut icon" href="/images/web/favicon.ico" />
+  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+  
+<style type="text/css" media="all">
+/*<![CDATA[*/
+      @import url("../css/core.css");
+      
+/*]]>*/
+</style>
+  <link rel="made" href="mailto:jingtaozf@gmail.com" />
+    <script type="text/javascript">//<![CDATA[
+this.onload = function () {
+(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+}
+
+//]]></script>
+</head>
+<body>
+  <div id="banner">
+    <p><span id="title">The way I use Emacs</span></p>
+  </div>
+<blockquote>
+<p class="quoted">I would not give a fig for the simplicity on this side of complexity,
+but I would give my life for the simplicity on the other side of complexity.</p>
+</blockquote>
+
+<center>
+<p>&mdash; Oliver Wendell Holmes</p>
+</center>
+
+<div class="contents">
+<dl>
+<dt>
+<a href="#sec1">从VIM转向Emacs</a>
+</dt>
+<dt>
+<a href="#sec2">ELISP介绍</a>
+</dt>
+<dt>
+<a href="#sec3">GTD时间管理</a>
+</dt>
+<dt>
+<a href="#sec4">收发邮件</a>
+</dt>
+<dt>
+<a href="#sec5">目录浏览</a>
+</dt>
+<dt>
+<a href="#sec6">像使用VI一样使用Emacs</a>
+</dt>
+<dt>
+<a href="#sec7">智能化</a>
+</dt>
+<dt>
+<a href="#sec8">优化工作流程</a>
+</dt>
+<dt>
+<a href="#sec9">Emacs的缺点</a>
+</dt>
+</dl>
+</div>
+
+
+<h2><a name="sec1" id="sec1"></a>
+从VIM转向Emacs</h2>
+
+<blockquote>
+<p class="quoted">03到08年间我一直使用VI做为编辑器，所以对VI的快捷键操作比较熟悉。后来
+由于要学习Common Lisp语言，而Common Lisp强大的开发环境Slime基于Emacs
+编写，因此而开始使用Emacs编辑器。现在我用它来编辑文件，阅读邮件和<a href="http://zh.wikipedia.org/wiki/GTD">GTD</a>管理。</p>
+</blockquote>
+
+
+<h2><a name="sec2" id="sec2"></a>
+ELISP介绍</h2>
+
+<blockquote>
+<p class="quoted">Emacs的强大之处在于，它的硬件相关代码使用类LISP格式的C语言来完成，
+而大量上层的代码则是由一种解释语言ELisp完成的。ELisp是Lisp的一种方
+言，而Lisp是一种易于扩展的动态语言。Emacs的每个按键，默认都会对应
+elisp中的一个函数。这就允许你可以使用elisp来改变Emacs的所有默认行为。</p>
+</blockquote>
+
+<blockquote>
+<p class="quoted">elisp语言的语法非常简单，如下：</p>
+</blockquote>
+
+<ul>
+<li>基本形式
+
+<p>对一个数学函数f(x,y,z) = f1(x) + f2(y,z) + ...在elisp中为</li>
+</ul>
+<blockquote>
+<p class="quoted"></p>
+</blockquote> 
+
+<pre class="src">
+      (+ (f1 x) (f2 y z) ...)
+    </pre>
+
+<ul>
+<li>特殊形式</li>
+</ul>
+<blockquote>
+<p class="quoted"></p>
+</blockquote> 
+
+<pre class="src">
+      'a = (quote a)
+    </pre>
+
+
+<h2><a name="sec3" id="sec3"></a>
+GTD时间管理</h2>
+
+<h3>GTD简介</h3>
+
+<p class="first">GTD是英文Getting Things Done的缩写，是一种行为管理的方法，也是David Allen写的一本书的书名。</p>
+
+<p>GTD的主要原则在于一个人需要通过记录的方式把头脑中的各种任务移出来。通过这样的方式，头脑可以
+不用塞满各种需要完成的事情，而集中精力在正在完成的事情。</p>
+
+<p>我使用Emacs <a href="http://orgmode.org/">org mode</a>来进行GTD管理。</p>
+
+
+
+<h3>三分钟法则</h3>
+
+<p class="first">三分钟法则是说，任何可以在三分钟（也可以稍大或稍小，意指比较短的时间
+段）内可以完成的事情，就迅速把它完成。生活中许多的小事都属于这一类。</p>
+
+
+<h3>添加默认任务</h3>
+
+<blockquote>
+<p class="quoted">在org文件的任务项下添加下列行，当执行函数org-agenda后，该任务就会成为
+默认任务。</p>
+</blockquote>
+
+<pre class="src">
+%%(progn (org-clock-mark-default-task) nil)
+</pre>
+
+
+<h3>没有clock in任务时在状态栏提醒</h3>
+
+<blockquote>
+<p class="quoted">emacs org mode支持对一个任务进行clock in/out的操作，并在状态栏显示
+clock in的任务。而我希望在尽可能的时间都能clock in一个具体的任务，以
+便始终高效地处理问题。因此对org mode进行了扩展，当没有clock in的
+任务时，状态栏会以醒目的颜色显示一个&quot;NO CLOCK&quot;的提示信息。
+方法如下：</p>
+</blockquote>
+
+<ul>
+<li>创建一个idle.org文件，内容如下：</li>
+</ul>
+<blockquote>
+<p class="quoted"></p>
+</blockquote> 
+
+<pre class="src">
+    * *NO TASK*
+    This heading is used by keeping clocks is always opening.
+    %%(progn (xjt/org-clock-mark-idle-task) nil)
+
+    # Local Variables&#58; ***
+    # buffer-save-without-query : t ***
+    # End: ***
+    </pre>
+
+<ul>
+<li>在Emacs启动时执行如下代码</li>
+</ul>
+<blockquote>
+<p class="quoted"></p>
+</blockquote> 
+
+<pre class="src">
+    (defvar *org-clock-idle-task* nil)
+    (defvar *org-clock-idle-quit* nil)
+    (defun xjt/org-clock-mark-idle-task ()
+      <span class="string">"Mark current task as idle task."</span>
+      (interactive)
+      (save-excursion
+        (org-back-to-heading t)
+        (setq *org-clock-idle-task* (make-marker))
+        (move-marker *org-clock-idle-task* (point))))
+
+    (defun xjt/clock-to-idle-maybe ()
+      (unless org-clock-clocking-in
+        (when (and (not *org-clock-idle-quit*)
+                   *org-clock-idle-task*)
+          (save-excursion
+            (with-current-buffer (marker-buffer *org-clock-idle-task*)
+              (goto-char (marker-position *org-clock-idle-task*))
+              (org-clock-in))))))
+    (add-hook 'org-clock-out-hook 'xjt/clock-to-idle-maybe 'append)
+
+    (org-copy-face 'modeline 'org-mode-line-clock-idle
+      <span class="string">"Face used for clock display for idle tasks in mode line."</span>
+      :background <span class="string">"IndianRed3"</span>)
+    (defadvice org-clock-update-mode-line (around xjt/org-clock-update-mode-line)
+      (if (string= <span class="string">"*NO TASK*"</span> org-clock-heading)
+        (progn
+          (setq org-mode-line-string (org-propertize <span class="string">"*NO TASK*"</span> 'face 'org-mode-line-clock-idle))
+          (force-mode-line-update))
+        ad-do-it))
+    (ad-activate 'org-clock-update-mode-line)
+
+    (defadvice org-clock-save (before xjt/org-clock-idle-save)
+      (setq *org-clock-idle-quit* t)
+      (when (string= <span class="string">"*NO TASK*"</span> org-clock-heading)
+        (org-clock-out)
+        (with-current-buffer <span class="string">"idle.org"</span>
+        (save-buffer))))
+    (ad-activate 'org-clock-save)
+    </pre>
+
+<ul>
+<li>最后，执行如下代码就会使org mode在没有clock in任务时在状态栏显示提醒信息。
+（&quot;D&quot;是我自定义的Daily agenda view）</li>
+</ul>
+<blockquote>
+<p class="quoted"></p>
+</blockquote> 
+
+<pre class="src">
+      (let ((org-agenda-files (append org-agenda-files (list (concat org-directory <span class="string">"idle.org"</span>)))))
+        (org-agenda nil <span class="string">"D"</span>)
+        (xjt/clock-to-idle-maybe))
+    </pre>
+
+
+<h3>让其他人了解自己的工作进展</h3>
+
+<p class="first">我会将自己制作的GTD列表导出到html中，这样别人就可以通过WEB网站了解我的工作安排与工作进展。
+如果某项工作不需要导出到html中，只需要将该项工作列表的tag设置为noexport即可。</p>
+
+
+
+
+
+
+
+<h2><a name="sec4" id="sec4"></a>
+收发邮件</h2>
+
+<h3>一次性收取多个邮箱的邮件</h3>
+
+<p class="first">我使用Emacs <a href="http://mew.org">mew</a>来收发邮件，由于有多个邮箱帐户，因此扩展了mew来一次性接
+收多个邮箱的邮件，方法如下：</p>
+
+<pre class="src">
+;;; utils to retrieve all accounts mails.
+(defvar my-mew-cases '(<span class="string">"default"</span> <span class="string">"hotmail"</span> <span class="string">"ixiaozhushou.com"</span> <span class="string">"jingtao.net"</span>))
+(defvar my-mew-orig-case <span class="string">"default"</span>)
+(defvar my-mew-current-caselist my-mew-cases)
+(defun my-mew-summary-set-case (case)
+  <span class="string">"Set the case."</span>
+  (setq mew-case case)
+  (let ((case mew-case)) ;; side effect
+    (save-excursion
+      (dolist (buf mew-buffers)
+        (when (get-buffer buf)
+          (set-buffer buf)
+          (cond
+            ((mew-summary-p)
+             (mew-summary-mode-name mew-mode-name-summary))
+            ((mew-virtual-p)
+             (mew-summary-mode-name mew-mode-name-virtual))))))
+    (when mew-visit-inbox-after-setting-case
+      (let ((inbox (mew-case-folder
+                    case
+                    (mew-proto-inbox-folder (mew-proto case) case))))
+        (mew-summary-visit-folder inbox)))))
+(defun my-mew-summary-retrieve-all ()
+  (interactive)
+  (setq my-mew-orig-case mew-case)
+  (my-mew-summary-set-case (car my-mew-cases))
+  (setq my-mew-current-caselist (cdr my-mew-cases))
+  (mew-summary-retrieve))
+(defadvice mew-net-disp-info-display (after my-cache-save-postfix-action)
+  (sleep-for 2)
+  (cond (my-mew-current-caselist
+         (my-mew-summary-set-case (car my-mew-current-caselist))
+         (setq my-mew-current-caselist (cdr my-mew-current-caselist))
+         (mew-summary-retrieve))
+        (my-mew-orig-case
+         (sleep-for 2)
+         (message <span class="string">"retrieve all accounts done."</span>)
+         (my-mew-summary-set-case my-mew-orig-case)
+         (setq my-mew-orig-case nil))))
+(ad-activate 'mew-net-disp-info-display)
+(define-key mew-summary-mode-map <span class="string">"I"</span>    'my-mew-summary-retrieve-all)
+</pre>
+
+
+<h3>使mew能够发送中文名的附件</h3>
+
+<p class="first">如果使用Outlook(gmail则没有个问题)来接收mew发出的邮件，会发现不能识别中文附件名。下面的补
+丁可以解决这个问题。</p>
+
+<pre class="src">
+(defvar *mew-header-encoding-method* :rfc2047)
+(defun mew-header-insert (key value &amp;optional no-fold)
+  (if (and value (stringp key))
+      (let ((beg (point)) params med parname parval)
+        (when (listp value)
+          (setq params (cdr value))
+          (setq value (car value)))
+        (insert key)
+        (insert <span class="string">" "</span>)
+        (setq med (point))
+        (if (string-match <span class="string">"^[\t -~]*$"</span> value)
+            (insert value)
+          (mew-header-encode-text value nil (length key)))
+        (dolist (par params)
+          (mew-set '(parname parval) par)
+          (insert <span class="string">";"</span>)
+          (cond
+           ((string-match <span class="string">"^[-a-zA-Z0-9]+$"</span> parval)
+            ) ;; do nothing
+           ((and (string= (mew-charset-guess-string parval) mew-us-ascii)
+                 (not (string-match <span class="string">"\""</span> parval)))
+            (setq parval (concat <span class="string">"\""</span> parval <span class="string">"\""</span>)))
+           (t
+            (case *mew-header-encoding-method*
+              (:rfc2047
+               (when (loop for c across parval
+                        thereis (&gt; c 255))
+                 (setq parval (concat <span class="string">"\""</span> (rfc2047-encode-string parval)
+                                      <span class="string">"\""</span>))))
+              (t (setq parval (mew-param-encode parval))
+                 (setq parname (concat parname <span class="string">"*"</span>))))))
+          (insert <span class="string">" "</span> parname <span class="string">"="</span> parval))
+        (insert <span class="string">"\n"</span>)
+        (unless no-fold
+          (mew-header-fold-region beg (point) med)))))
+</pre>
+
+
+
+<h2><a name="sec5" id="sec5"></a>
+目录浏览</h2>
+
+<h3>根据文件后缀名使用不同程序打开文件</h3>
+
+<p class="first">Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来根据文件
+后缀自动打开各种类型的文件，下面的配置能自动打开doc文件，pdf文件，图片
+文件等。（需要安装Wine及相关的软件）</p>
+
+<pre class="src">
+(require 'dired)
+  (require 'dired-tar)
+  (GNULinux ; gnome-open
+   (defvar *open-with-wine* '(<span class="string">"wine"</span> <span class="string">"start"</span> <span class="string">"/Unix"</span>))
+   (setq *dired-extention-open-list*
+         `((<span class="string">"pdf$"</span> <span class="string">"/opt/bin/acroread"</span>)
+           (<span class="string">"htm$"</span> <span class="string">"google-chrome"</span>)
+           (<span class="string">"html$"</span> <span class="string">"google-chrome"</span>)
+           (<span class="string">"doc$"</span> ,@*open-with-wine*)
+           (<span class="string">"docx$"</span> ,@*open-with-wine*)
+           (<span class="string">"exe$"</span> ,@*open-with-wine*)
+           (<span class="string">"ps$"</span> <span class="string">"gsview"</span>)))
+   (require 'dired-extension)
+   (eval-after-load <span class="string">"dired"</span>
+     '(progn
+        (define-key dired-mode-map [C-return] 'my-dired-open-file)
+        (define-key dired-mode-map [menu-bar immediate dired-run-associated-program]
+          '(<span class="string">"Open Associated Application"</span> . dired-gnome-open-file)))))
+
+;;;###autoload
+(defun my-dired-open-file ()
+  <span class="string">"Dired find file function. Open file use another tool"</span>
+  (interactive)
+  (dolist (file (dired-get-marked-files))
+    (my-dired-open-file-internal file)))
+
+(defvar *use-doc-view* nil)
+(defvar *dired-extention-open-list* nil)
+;;;###autoload
+(defun my-dired-open-file-internal (file)
+  <span class="string">"Open diversified format FILE."</span>
+  (interactive <span class="string">"fFile: "</span>)
+  (require 'emms)
+  (let ((file-extension (file-name-extension file)))
+    (if file-extension
+        (cond ((string-match <span class="string">"\\(s?html?\\)$"</span> file-extension)
+               (require 'w3m)
+               (w3m-copy-buffer)
+               (message <span class="string">"%s"</span> file)
+               (w3m-find-file file))
+              ((string-match <span class="string">"\\(chm\\)$"</span> file-extension)
+               (require 'chm-view)
+               (chm-view-file file))
+              ((string-match <span class="string">"\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$"</span> file-extension)
+               (shell-command
+                (concat <span class="string">"wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"</span>
+                        <span class="string">" `winepath -w "</span> file <span class="string">"` &amp;"</span>)))
+              ((and *use-doc-view*
+                    (string-match <span class="string">"\\(pdf\\|ps\\|dvi\\)$"</span> file-extension))
+               (require 'doc-view)
+               (dired-view-file)
+               (doc-view-mode))
+              ((let ((temp (emms-player-get
+                            (emms-player-for
+                             (emms-playlist-current-selected-track)) 'regex)))
+                 (and temp (string-match temp file)))
+               (emms-add-file file)
+               (with-current-emms-playlist
+                 (goto-char (point-max))
+                 (forward-line -1)
+                 (emms-playlist-mode-play-smart)))
+              (t
+               (let ((match (find-if #'(lambda (x)
+                                         (string-match (car x) file-extension))
+                                     *dired-extention-open-list*)))
+                 (if match
+                     (my-open-external-progam-in-emacs
+                      <span class="string">"*dired open*"</span>
+                      (if (&lt; 1 (length (cdr match)))
+                          (append (cdr match) (list file))
+                        (list (cadr match)
+                              file)))
+                   (find-file file)))))))))
+</pre>
+
+
+
+<h2><a name="sec6" id="sec6"></a>
+像使用VI一样使用Emacs</h2>
+
+<blockquote>
+<p class="quoted">Emacs编辑器的默认按键需要大量使用组合键，特别是Ctrl键，时间长了左小
+手指会很受伤，而我特别习惯于VI的快捷键，在网上查询后发现了Emacs
+的一个VI插件<a href="http://www.emacswiki.org/emacs/ViperMode">viper</a>，现在我的Emacs编辑器就是大量基于viper来使用的，在
+大部分的情况下，我会使用VI的快捷键来操作Emacs，只在很少数的情况下会
+使用Emacs自带的快捷键。</p>
+</blockquote>
+
+<h3>全局快捷键以z开头</h3>
+
+<blockquote>
+<p class="quoted">一些在所有buffer都需要执行的快捷键我称之为全局快捷键，比如切换
+buffer，文件保存等操作。全局快捷键的设置存储在变量
+*viper-basic-mode-z-based-maps*中</p>
+</blockquote>
+
+<pre class="src">
+;;in viper mode &amp; some other modes,use z as my custom command prefix.
+(defvar *viper-basic-mode-z-based-maps* nil)
+(setq *viper-basic-mode-z-based-maps*
+        `(
+          (<span class="string">"0"</span> delete-window)
+          (<span class="string">"1"</span> delete-other-windows)
+          (<span class="string">"2"</span> split-window-vertically)
+          (<span class="string">"b"</span> ido-switch-buffer)
+          (<span class="string">"c"</span> comment-region)
+          (<span class="string">"u"</span> uncomment-region)
+
+          (<span class="string">"f"</span> ido-find-file)
+          (<span class="string">"i"</span> my-insert)
+          (<span class="string">"j"</span> idomenu)
+          (<span class="string">"k"</span> kill-current-buffer)
+
+          (<span class="string">"A"</span> org-agenda)
+          (<span class="string">"D"</span> kid-cl-speaker)
+          (<span class="string">"S"</span> my-save-buffers)
+          (<span class="string">"N"</span> tabbar-forward-group)
+          (<span class="string">"P"</span> tabbar-backward-group)
+          (<span class="string">"Q"</span> save-buffers-kill-terminal)
+          ))
+(defmacro apply-viper-z-map (&amp;rest body)
+  `(loop for (char action) in *viper-basic-mode-z-based-maps*
+      do ,@body))
+(defmacro apply-viper-z-keymap (map-name)
+  `(loop for (char action) in *viper-basic-mode-z-based-maps*
+      do (ignore-errors (define-key ,map-name (concat <span class="string">"z"</span> char) action))))
+
+(with-my-hook 'org-mode-hook
+  (org-defkey org-agenda-mode-map <span class="string">"z"</span> nil)
+  ;; map original key <span class="string">"z"</span> to <span class="string">"zz"</span> in org agenda mode.
+  (org-defkey org-agenda-mode-map <span class="string">"zz"</span> 'org-agenda-add-note)
+  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat <span class="string">"z"</span> char) action)))
+
+(define-key viper-vi-basic-map <span class="string">"z"</span> nil) ; delete `viper-nil' binding
+(apply-viper-z-keymap viper-vi-basic-map)
+</pre>
+<h4>ze全局操作外部命令相关</h4>
+
+<pre class="src">
+          ;; use ze as external &amp; enlish invoke
+          (<span class="string">"ec"</span> my-external-program)
+          (<span class="string">"eb"</span> my-bash-shell)
+          (<span class="string">"ed"</span> kid-star-dict)
+          (<span class="string">"eD"</span> kid-sdcv-to-buffer)
+          (<span class="string">"em"</span> compile)
+          (<span class="string">"ep"</span> my-plink)
+          (<span class="string">"es"</span> dos-shell)
+
+
+</pre>
+
+
+<h4>zd全局操作目录相关</h4>
+
+<pre class="src">
+          ;;use zd as dired invoke.
+          (<span class="string">"db"</span> my-dired-buffers)
+          (<span class="string">"dj"</span> dired-jump)
+          (<span class="string">"df"</span> my-traverse-deep-rfind)
+          (<span class="string">"dg"</span> my-dired-go)
+          (<span class="string">"do"</span> dired-jump)
+</pre>
+
+
+<h4>zw全局操作w3m相关</h4>
+
+<pre class="src">
+          ;;use w as w3m prefix
+          (<span class="string">"wb"</span> my-w3m-buffers)
+          (<span class="string">"ws"</span> w3m-browse-url-new-session)
+          (<span class="string">"wq"</span> my-google-search)
+          (<span class="string">"wg"</span> w3m-browse-url)
+</pre>
+
+
+<h4>zg全局操作org mode</h4>
+
+<pre class="src">
+          ;; use zg as org-mode prefix
+          (<span class="string">"g "</span> org-table-edit-field)
+          (<span class="string">"ga"</span> my-org-agenda-buffer)
+          (<span class="string">"gA"</span> org-agenda)
+          (<span class="string">"gb"</span> org-switchb)
+          (<span class="string">"gcd"</span> org-clock-mark-default-task)
+          (<span class="string">"gci"</span> my-org-clock-in)
+          (<span class="string">"gco"</span> org-clock-out)
+          (<span class="string">"gcj"</span> my-org-clock-goto)
+          (<span class="string">"gcJ"</span> my-org-recent-clock)
+          (<span class="string">"gC"</span> org-columns)
+          (<span class="string">"ge"</span> org-set-effort)
+          (<span class="string">"gE"</span> org-clock-modify-effort-estimate)
+          (<span class="string">"gd"</span> org-decrypt-entry)
+          (<span class="string">"gl"</span> org-store-link)
+          (<span class="string">"gg"</span> org-ctrl-c-ctrl-c)
+          (<span class="string">"gi"</span> org-insert-link)
+          (<span class="string">"go"</span> org-open-at-point)
+          (<span class="string">"gr"</span> org-remember)
+          (<span class="string">"gs"</span> org-schedule)
+          (<span class="string">"gS"</span> org-archive-to-archive-sibling);org-advertized-archive-subtree
+          (<span class="string">"gt"</span> org-todo)
+          (<span class="string">"gT"</span> tea-time)
+          (<span class="string">"gu"</span> org-update-statistics-cookies)
+          (<span class="string">"gp"</span> links)
+
+</pre>
+
+
+<h4>zm全局操作个人定制(my)</h4>
+
+<pre class="src">
+          ;;use m as my prefix
+          (<span class="string">"mb"</span> bookmark-set)
+          (<span class="string">"md"</span> my-sql-pool)
+          (<span class="string">"mD"</span> diff-buffer-with-file)
+          (<span class="string">"mc"</span> calendar)
+          (<span class="string">"me"</span> emms)
+          (<span class="string">"mf"</span> my-bookmark-jump-via-ido)
+          (<span class="string">"mh"</span> highlight-regexp)
+          (<span class="string">"mH"</span> hi-lock-unface-buffer)
+          (<span class="string">"mj"</span> my-bookmark-jump-via-ido)
+          (<span class="string">"ml"</span> w3m-external-view-this-url)
+          (<span class="string">"mL"</span> my-browser-url)
+          (<span class="string">"mk"</span> browse-kill-ring)
+          (<span class="string">"mm"</span> my-favorite-menubar)
+          (<span class="string">"mn"</span> my-rss)
+          (<span class="string">"mo"</span> find-file-at-point)
+          (<span class="string">"mp"</span> my-plink)
+          (<span class="string">"mt"</span> xjt-create/switch-scratch)
+          (<span class="string">"ms"</span> find-file-recursively)
+          (<span class="string">"mv"</span> my-virsh)
+          (<span class="string">"my"</span> my-eye-save)
+          (<span class="string">"n"</span> tabbar-forward-tab)
+          (<span class="string">"p"</span> tabbar-backward-tab)
+          (<span class="string">"q"</span> my-w3m-google-search)
+          (<span class="string">"o"</span> other-window)
+          (<span class="string">"r"</span> ido-recentf-open)
+          (<span class="string">"s"</span> save-buffer)
+
+</pre>
+
+
+<h4>zh全局操作帮助相关</h4>
+
+<pre class="src">
+          (<span class="string">"ha"</span> apropos)
+          (<span class="string">"hf"</span> describe-function)
+          (<span class="string">"hv"</span> describe-variable)
+</pre>
+
+
+<h4>zv全局操作VC(version control)相关</h4>
+
+<pre class="src">
+          ;; use zv as version control prefix
+          (<span class="string">"vd"</span> my-ediff-revision)
+          (<span class="string">"vD"</span> ediff-revision)
+          (<span class="string">"vm"</span> magit-status)
+          (<span class="string">"vv"</span> vc-next-action)
+</pre>
+
+
+
+<h3>不同mode的快捷键以s开头</h3>
+
+<p class="first">以c/c++ mode为例：</p>
+
+<pre class="src">
+(setq my-cc-modified-vi-map
+      (let ((map (make-sparse-keymap)))
+        (viper-special-defkey map <span class="string">"b"</span> 'semantic-ia-fast-jump-back)
+        (viper-special-defkey map <span class="string">"df"</span> 'my-cc-function-header)
+        (viper-special-defkey map <span class="string">"dc"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span class="string">"dv"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span class="string">"f"</span> 'my-toggle-selective-display)
+        ;; (viper-special-defkey map <span class="string">"fa"</span> 'semantic-tag-folding-fold-all)
+        ;; (viper-special-defkey map <span class="string">"fi"</span> 'semantic-tag-folding-fold-block)
+        ;; (viper-special-defkey map <span class="string">"fo"</span> 'semantic-tag-folding-show-block)
+        ;; (viper-special-defkey map <span class="string">"ft"</span> 'global-semantic-tag-folding-mode)
+        ;; (viper-special-defkey map <span class="string">"fu"</span> 'semantic-tag-folding-show-all)
+        (viper-special-defkey map <span class="string">"g"</span> 'proj-gtags)
+        (viper-special-defkey map <span class="string">"h"</span> 'sourcepair-load);c-open-relational-file
+        (viper-special-defkey map <span class="string">"i"</span> 'semantic-analyze-proto-impl-toggle)
+        (viper-special-defkey map <span class="string">"j"</span> 'my-gtags-find-tag)
+        (viper-special-defkey map <span class="string">"eg"</span> 'next-error)
+        (viper-special-defkey map <span class="string">"mc"</span> 'viss-bookmark-clear-all-buffer)
+        (viper-special-defkey map <span class="string">"mi"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="string">"mt"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="string">"mo"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="string">"mp"</span> 'viss-bookmark-prev-buffer)
+        (viper-special-defkey map <span class="string">"mn"</span> 'viss-bookmark-next-buffer)
+        (viper-special-defkey map <span class="string">"sa"</span> 'cscope-set-initial-directory)
+        (viper-special-defkey map <span class="string">"sc"</span> 'cscope-find-functions-calling-this-function)
+        (viper-special-defkey map <span class="string">"sC"</span> 'cscope-find-called-functions)
+        (viper-special-defkey map <span class="string">"sf"</span> 'cscope-find-this-file)
+        (viper-special-defkey map <span class="string">"sg"</span> 'cscope-find-global-definition-no-prompting)
+        (viper-special-defkey map <span class="string">"sG"</span> 'cscope-find-global-definition)
+        (viper-special-defkey map <span class="string">"si"</span> 'cscope-find-files-including-file)
+        (viper-special-defkey map <span class="string">"sI"</span> 'cscope-index-files)
+        (viper-special-defkey map <span class="string">"ss"</span> 'cscope-find-this-symbol)
+        (viper-special-defkey map <span class="string">"su"</span> 'cscope-pop-mark)
+        (viper-special-defkey map <span class="string">";"</span> 'c-toggle-auto-newline)
+        map))
+(viper-modify-major-mode 'c-mode 'vi-state my-cc-modified-vi-map)
+(viper-modify-major-mode 'c++-mode 'vi-state my-cc-modified-vi-map)
+</pre>
+
+
+
+<h2><a name="sec7" id="sec7"></a>
+智能化</h2>
+
+<h3>buffer切换</h3>
+
+<p class="first">Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用不同的快捷
+键，来显示不同类型的buffer，并从中进行选择，比如：</p>
+
+<ul>
+<li>&quot;zgb&quot; ==&gt; 打开org mode的buffer</li>
+<li>&quot;zdb&quot; ==&gt; 打开dired mode的buffer(即目录相关的buffer)</li>
+<li>&quot;zwb&quot; ==&gt; 打开w3m mode的buffer</li>
+</ul>
+
+
+<h3>基于my-select-windows的便捷列表选择</h3>
+
+<p class="first">使用Emacs命令时经常要从一组列表(命令)中选择一项进行操作。我创建了一个函数
+my-select-windows，会自动根据列表中的字符串生成不同的快捷键，用户只需
+按下一个键，而不需要按额外的回车键就可以选中它。函数实现为：</p>
+
+<pre class="src">
+;;;###autoload
+(defun my-select-window (list &amp;optional prompt nodelay-select)
+  <span class="string">"Select a cmd with its prefix key."</span>
+  (interactive)
+  (when (null list)
+    (error <span class="string">"%s: list is empty"</span> (if prompt prompt <span class="string">"Error in my-select-window"</span>)))
+  (if (= 1 (length list))
+      (car list)
+    (let ((list (my-string-shortcuts list)))
+      (if (and
+           (not nodelay-select)
+           (setq rpl (read-char-exclusive <span class="string">""</span> nil 1))
+           (assoc rpl list))
+          (cdr (assoc rpl list))
+        (save-window-excursion
+          (org-switch-to-buffer-other-window
+           (get-buffer-create <span class="string">"*String to Select*"</span>))
+          (erase-buffer)
+          (insert (org-add-props (concat (or prompt <span class="string">"String to select"</span>) <span class="string">"\n"</span>)
+                      nil 'face 'bold))
+          (loop for (k . s) in list
+                do (insert (format <span class="string">"[%c] %s\n"</span> k s)))
+          (org-fit-window-to-buffer)
+          ;;FIXME: how to make window height suitable for display.
+          (enlarge-window (window-height))
+          (message (or prompt <span class="string">"Select one from list:"</span>))
+          (setq rpl (read-char-exclusive))
+          (bury-buffer <span class="string">"*String to Select*"</span>)
+          (cond
+           ((eq rpl 27) nil); 27 &lt;==&gt; Escape
+           ((assoc rpl list) (cdr (assoc rpl list)))
+           (t (error <span class="string">"Invalid task choice %c"</span> rpl))))))))
+;;;###autoload
+(defun test-my-select-window ()
+  (interactive)
+  (let* ((cmds '(<span class="string">"aaaa"</span> <span class="string">"bbcd"</span> <span class="string">"ccdb"</span> <span class="string">"dbde"</span>))
+         (result (my-select-window cmds)))
+    (message result)))
+;;;###autoload
+(defun my-string-shortcuts (list)
+  (require 'tmm)
+  (let ((tmm-short-cuts))
+    (tmm-add-shortcuts (mapcar #'list list))
+    (loop for s in list
+          for k in tmm-short-cuts
+          collect (cons k s))))
+</pre>
+举例如下：
+
+<ul>
+<li>快捷键&quot;zi&quot;实现快速插入
+
+<p>当你按下&quot;zi&quot;时，会等待一秒钟让你输入一个字母来决定要插入什么内容，如果1秒钟内你没有输入
+任何内容或输入错了，就会弹出一个buffer提示快捷键并让你继续输入：</p></li>
+</ul>
+
+<pre class="src">
+type to insert:
+[c] calc
+[f] file
+[u] userid
+[d] date
+[t] time
+[s] shell command
+</pre>
+按下c就会插入一个计算式的结果，按下u就会插入用户名。
+
+
+<p>这样，当你想插入日期时，只需在VI模式下按下&quot;zid&quot;就可以了。</p>
+
+<p>同样，当我想对当前Emacs中的org项目进行publish操作时，输入&quot;sp&quot;就会弹出一个buffer，
+让你选择想pubish的项目，如果你记得项目对应的快捷字母是'c'，直接输入c就不会出现
+快捷键列表，而会直接对选中的项目进行publish操作。</p>
+
+<p>这个函数可以用在许多地方，让你不需要额外的快捷键就可以处理包含多种情况的问题。</p>
+
+<p><a href="http://www.emacswiki.org/emacs/Anything">Anything</a> 插件在处理列表时功能更强大，而这里的my-select-window则更便捷。</p>
+
+
+
+<h2><a name="sec8" id="sec8"></a>
+优化工作流程</h2>
+
+<h3>在任务栏显示提示信息</h3>
+
+<blockquote>
+<p class="quoted">当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
+Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py">trayicon-appt.py</a>来完成的。</p>
+</blockquote>
+
+<pre class="src">
+(defun my-systray-notification (text &amp;optional hour-low-limit hour-high-limit)
+  (when (not (eq :x61 my-place))
+    (let ((cur-week (parse-integer (format-time-string <span class="string">"%w"</span>))))
+      (case cur-week
+        ((or 1 2 3 4 5)
+         (block my-systray-notification
+           (when (and hour-high-limit hour-low-limit (&lt; hour-low-limit hour-high-limit))
+             (let ((cur-hour (parse-integer (format-time-string <span class="string">"%H"</span>))))
+               (if (or (&lt; cur-hour hour-low-limit)
+                       (&gt; cur-hour hour-high-limit))
+                 (return-from my-systray-notification))))
+           (my-open-external-progam-in-emacs
+            <span class="string">"trayicon"</span> (list (my-etc <span class="string">"trayicon-appt.py"</span>) text))))))))
+
+</pre>
+
+
+<h3>隐藏一些后台处理用的buffer</h3>
+
+<pre class="src">
+(setq *tabbar-ignore-buffers* '(<span class="string">"idle.org"</span> <span class="string">".bbdb"</span> <span class="string">"diary"</span>))
+(setq tabbar-buffer-list-function
+             (lambda ()
+               (remove-if
+                (lambda (buffer)
+                  (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
+                       (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
+                          thereis (string-equal (buffer-name buffer) name))))
+                (buffer-list))))
+</pre>
+
+
+<h3>在emacs中操作virsh</h3>
+
+<p class="first">在工作中我经常使用virsh来管理多台机器上的虚机。因此编写了一个
+<a href="site-lisp/virsh.el">virsh.el</a>
+来简化虚机的创建，销毁，VNC显示的操作。这使用了my-select-windows函数来
+帮助我快速选中需要操作的物理机，虚机及想进行的操作。</p>
+
+
+<h3><a href="site-lisp/kindlegen.el">kindlegen.el</a></h3>
+
+<p class="first">手中有一台kindle电子书，而kindle对txt格式的文件支持并不好，对mobi格式
+的文件则支持的非常好。因此，我根据网上的资料编写了一个emacs脚本来从txt文
+件生成mobi，并可在生成前进行mobi的目录预览。</p>
+
+
+
+<h2><a name="sec9" id="sec9"></a>
+Emacs的缺点</h2>
+
+<h3>Emacs是单线程的</h3>
+
+<p class="first">虽然现在的大多数common lisp实现都支持多线程，但Emacs目前仍然只支持单线
+程。这意味着当某个操作需要大量时间才能完成时，Emacs会失去反应，不能响
+应任何键盘和鼠标操作。这经常会出现在你使用gnus收发邮件组，使用tramp访
+问网络连通不好的远程机器时。</p>
+<p>&nbsp;</p>
+    <div id="footer">
+          <div id="footlink">
+            [<a href="../index.html">返回首页</a> ]</div>
+            <div id="footdate">
+            2016 年 06 月 14 日更新
+            </div>
+    </div>
+
+</body>
+</html>
