@@ -1,0 +1,636 @@
+#+title: 我是如何使用Emacs的
+
+#+BEGIN_QUOTE
+ I would not give a fig for the simplicity on this side of complexity,
+ but I would give my life for the simplicity on the other side of complexity.
+
+         -- Oliver Wendell Holmes
+
+#+END_QUOTE
+
+* 从VIM转向Emacs
+  03到08年间我一直使用VI做为编辑器，所以对VI的快捷键操作比较熟悉。后来
+  由于要学习Common Lisp语言，而Common Lisp强大的开发环境Slime基于Emacs
+  编写，因此而开始使用Emacs编辑器。现在我用它来编辑文件，阅读邮件和[[http://zh.wikipedia.org/wiki/GTD][GTD]]管理。
+
+* ELISP介绍
+  Emacs的强大之处在于，它的硬件相关代码使用类LISP格式的C语言来完成，
+  而大量上层的代码则是由一种解释语言ELisp完成的。ELisp是Lisp的一种方
+  言，而Lisp是一种易于扩展的动态语言。Emacs的每个按键，默认都会对应
+  elisp中的一个函数。这就允许你可以使用elisp来改变Emacs的所有默认行为。
+
+  elisp语言的语法非常简单，如下：
+ - 基本形式
+
+   对一个数学函数f(x,y,z) = f1(x) + f2(y,z) + ...在elisp中为
+    #+BEGIN_QUOTE
+      (+ (f0 x) (f2 y z) ...)
+    #+END_QUOTE
+ - 特殊形式
+    #+BEGIN_SRC elisp
+      'a = (quote a)
+    #+END_SRC
+
+* GTD时间管理
+** GTD简介
+GTD是英文Getting Things Done的缩写，是一种行为管理的方法，也是David Allen写的一本书的书名。
+
+GTD的主要原则在于一个人需要通过记录的方式把头脑中的各种任务移出来。通过这样的方式，头脑可以
+不用塞满各种需要完成的事情，而集中精力在正在完成的事情。
+
+我使用Emacs [[http://orgmode.org/][org mode]]来进行GTD管理。
+
+
+** 三分钟法则
+三分钟法则是说，任何可以在三分钟（也可以稍大或稍小，意指比较短的时间
+段）内可以完成的事情，就迅速把它完成。生活中许多的小事都属于这一类。
+
+** 添加默认任务
+   在org文件的任务项下添加下列行，当执行函数org-agenda后，该任务就会成为
+   默认任务。
+#+BEGIN_SRC elisp
+%%(progn (org-clock-mark-default-task) nil)
+#+END_SRC
+
+** 没有clock in任务时在状态栏提醒
+  emacs org mode支持对一个任务进行clock in/out的操作，并在状态栏显示
+  clock in的任务。而我希望在尽可能的时间都能clock in一个具体的任务，以
+  便始终高效地处理问题。因此对org mode进行了扩展，当没有clock in的
+  任务时，状态栏会以醒目的颜色显示一个"NO CLOCK"的提示信息。
+  方法如下：
+
+ - 创建一个idle.org文件，内容如下：
+    <src>
+    * *NO TASK*
+    This heading is used by keeping clocks is always opening.
+    %%(progn (xjt/org-clock-mark-idle-task) nil)
+    
+    # Local Variables: ***
+    # buffer-save-without-query : t ***
+    # End: ***
+    #+END_SRC
+
+ - 在Emacs启动时执行如下代码
+    #+BEGIN_SRC elisp
+    (defvar *org-clock-idle-task* nil)
+    (defvar *org-clock-idle-quit* nil)
+    (defun xjt/org-clock-mark-idle-task ()
+      "Mark current task as idle task."
+      (interactive)
+      (save-excursion
+        (org-back-to-heading t)
+        (setq *org-clock-idle-task* (make-marker))
+        (move-marker *org-clock-idle-task* (point))))
+    
+    (defun xjt/clock-to-idle-maybe ()
+      (unless org-clock-clocking-in
+        (when (and (not *org-clock-idle-quit*)
+                   *org-clock-idle-task*)
+          (save-excursion
+            (with-current-buffer (marker-buffer *org-clock-idle-task*)
+              (goto-char (marker-position *org-clock-idle-task*))
+              (org-clock-in))))))
+    (add-hook 'org-clock-out-hook 'xjt/clock-to-idle-maybe 'append)
+    
+    (org-copy-face 'modeline 'org-mode-line-clock-idle
+      "Face used for clock display for idle tasks in mode line."
+      :background "IndianRed3")
+    (defadvice org-clock-update-mode-line (around xjt/org-clock-update-mode-line)
+      (if (string= "*NO TASK*" org-clock-heading)
+        (progn
+          (setq org-mode-line-string (org-propertize "*NO TASK*" 'face 'org-mode-line-clock-idle))
+          (force-mode-line-update))
+        ad-do-it))
+    (ad-activate 'org-clock-update-mode-line)
+    
+    (defadvice org-clock-save (before xjt/org-clock-idle-save)
+      (setq *org-clock-idle-quit* t)
+      (when (string= "*NO TASK*" org-clock-heading)
+        (org-clock-out)
+        (with-current-buffer "idle.org"
+        (save-buffer))))
+    (ad-activate 'org-clock-save)
+    #+END_SRC
+
+ - 最后，执行如下代码就会使org mode在没有clock in任务时在状态栏显示提醒信息。
+  （"D"是我自定义的Daily agenda view）
+    #+BEGIN_SRC elisp
+      (let ((org-agenda-files (append org-agenda-files (list (concat org-directory "idle.org")))))
+        (org-agenda nil "D")
+        (xjt/clock-to-idle-maybe))
+    #+END_SRC
+** 让其他人了解自己的工作进展
+我会将自己制作的GTD列表导出到html中，这样别人就可以通过WEB网站了解我的工作安排与工作进展。
+如果某项工作不需要导出到html中，只需要将该项工作列表的tag设置为noexport即可。
+
+; ** APPT
+; - my-daily-appt
+; ** html publish 让其他人更好地了解我的工作
+; ** 核查清单
+* 收发邮件
+
+** 一次性收取多个邮箱的邮件
+我使用Emacs [[http://mew.org][mew]]来收发邮件，由于有多个邮箱帐户，因此扩展了mew来一次性接
+收多个邮箱的邮件，方法如下：
+#+BEGIN_SRC elisp
+;;; utils to retrieve all accounts mails.
+(defvar my-mew-cases '("default" "hotmail" "ixiaozhushou.com" "jingtao.net"))
+(defvar my-mew-orig-case "default")
+(defvar my-mew-current-caselist my-mew-cases)
+(defun my-mew-summary-set-case (case)
+  "Set the case."
+  (setq mew-case case)
+  (let ((case mew-case)) ;; side effect
+    (save-excursion
+      (dolist (buf mew-buffers)
+        (when (get-buffer buf)
+          (set-buffer buf)
+          (cond
+            ((mew-summary-p)
+             (mew-summary-mode-name mew-mode-name-summary))
+            ((mew-virtual-p)
+             (mew-summary-mode-name mew-mode-name-virtual))))))
+    (when mew-visit-inbox-after-setting-case
+      (let ((inbox (mew-case-folder
+                    case
+                    (mew-proto-inbox-folder (mew-proto case) case))))
+        (mew-summary-visit-folder inbox)))))
+(defun my-mew-summary-retrieve-all ()
+  (interactive)
+  (setq my-mew-orig-case mew-case)
+  (my-mew-summary-set-case (car my-mew-cases))
+  (setq my-mew-current-caselist (cdr my-mew-cases))
+  (mew-summary-retrieve))
+(defadvice mew-net-disp-info-display (after my-cache-save-postfix-action)
+  (sleep-for 2)
+  (cond (my-mew-current-caselist
+         (my-mew-summary-set-case (car my-mew-current-caselist))
+         (setq my-mew-current-caselist (cdr my-mew-current-caselist))
+         (mew-summary-retrieve))
+        (my-mew-orig-case
+         (sleep-for 2)
+         (message "retrieve all accounts done.") 
+         (my-mew-summary-set-case my-mew-orig-case)
+         (setq my-mew-orig-case nil))))
+(ad-activate 'mew-net-disp-info-display)
+(define-key mew-summary-mode-map "I"    'my-mew-summary-retrieve-all)
+#+END_SRC
+
+** 使mew能够发送中文名的附件
+如果使用Outlook(gmail则没有个问题)来接收mew发出的邮件，会发现不能识别中文附件名。下面的补
+丁可以解决这个问题。
+
+#+BEGIN_SRC elisp
+(defvar *mew-header-encoding-method* :rfc2047)
+(defun mew-header-insert (key value &optional no-fold)
+  (if (and value (stringp key))
+      (let ((beg (point)) params med parname parval)
+	(when (listp value)
+	  (setq params (cdr value))
+	  (setq value (car value)))
+	(insert key)
+	(insert " ")
+	(setq med (point))
+	(if (string-match "^[\t -~]*$" value)
+	    (insert value)
+	  (mew-header-encode-text value nil (length key)))
+	(dolist (par params)
+	  (mew-set '(parname parval) par)
+	  (insert ";")
+	  (cond
+	   ((string-match "^[-a-zA-Z0-9]+$" parval)
+	    ) ;; do nothing
+	   ((and (string= (mew-charset-guess-string parval) mew-us-ascii)
+		 (not (string-match "\"" parval)))
+	    (setq parval (concat "\"" parval "\"")))
+	   (t
+            (case *mew-header-encoding-method*
+              (:rfc2047
+               (when (loop for c across parval
+                        thereis (> c 255))
+                 (setq parval (concat "\"" (rfc2047-encode-string parval)
+                                      "\""))))
+              (t (setq parval (mew-param-encode parval))
+                 (setq parname (concat parname "*"))))))
+	  (insert " " parname "=" parval))
+	(insert "\n")
+	(unless no-fold
+	  (mew-header-fold-region beg (point) med)))))
+#+END_SRC
+
+* 目录浏览
+** 根据文件后缀名使用不同程序打开文件
+Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来根据文件
+后缀自动打开各种类型的文件，下面的配置能自动打开doc文件，pdf文件，图片
+文件等。（需要安装Wine及相关的软件）
+#+BEGIN_SRC elisp
+(require 'dired)
+  (require 'dired-tar)
+  (GNULinux ; gnome-open
+   (defvar *open-with-wine* '("wine" "start" "/Unix"))
+   (setq *dired-extention-open-list*
+         `(("pdf$" "/opt/bin/acroread")
+           ("htm$" "google-chrome")
+           ("html$" "google-chrome")
+           ("doc$" ,@*open-with-wine*)
+           ("docx$" ,@*open-with-wine*)
+           ("exe$" ,@*open-with-wine*)
+           ("ps$" "gsview")))
+   (require 'dired-extension)
+   (eval-after-load "dired"
+     '(progn
+        (define-key dired-mode-map [C-return] 'my-dired-open-file)
+        (define-key dired-mode-map [menu-bar immediate dired-run-associated-program]
+          '("Open Associated Application" . dired-gnome-open-file)))))
+
+;;;###autoload
+(defun my-dired-open-file ()
+  "Dired find file function. Open file use another tool"
+  (interactive)
+  (dolist (file (dired-get-marked-files))
+    (my-dired-open-file-internal file)))
+
+(defvar *use-doc-view* nil)
+(defvar *dired-extention-open-list* nil)
+;;;###autoload
+(defun my-dired-open-file-internal (file)
+  "Open diversified format FILE."
+  (interactive "fFile: ")
+  (require 'emms)
+  (let ((file-extension (file-name-extension file)))
+    (if file-extension
+        (cond ((string-match "\\(s?html?\\)$" file-extension)
+               (require 'w3m)
+               (w3m-copy-buffer)
+               (message "%s" file)
+               (w3m-find-file file))
+              ((string-match "\\(chm\\)$" file-extension)
+               (require 'chm-view)
+               (chm-view-file file))
+              ((string-match "\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$" file-extension)
+               (shell-command
+                (concat "wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"
+                        " `winepath -w " file "` &")))
+              ((and *use-doc-view*
+                    (string-match "\\(pdf\\|ps\\|dvi\\)$" file-extension))
+               (require 'doc-view)
+               (dired-view-file)
+               (doc-view-mode))
+              ((let ((temp (emms-player-get
+                            (emms-player-for
+                             (emms-playlist-current-selected-track)) 'regex)))
+                 (and temp (string-match temp file)))
+               (emms-add-file file)
+               (with-current-emms-playlist
+                 (goto-char (point-max))
+                 (forward-line -1)
+                 (emms-playlist-mode-play-smart)))
+              (t
+               (let ((match (find-if #'(lambda (x)
+                                         (string-match (car x) file-extension))
+                                     *dired-extention-open-list*)))
+                 (if match
+                     (my-open-external-progam-in-emacs
+                      "*dired open*"
+                      (if (< 1 (length (cdr match)))
+                          (append (cdr match) (list file))
+                        (list (cadr match)
+                              file)))
+                   (find-file file)))))))))
+#+END_SRC
+
+* 像使用VI一样使用Emacs
+  Emacs编辑器的默认按键需要大量使用组合键，特别是Ctrl键，时间长了左小
+  手指会很受伤，而我特别习惯于VI的快捷键，在网上查询后发现了Emacs
+  的一个VI插件[[http://www.emacswiki.org/emacs/ViperMode][viper]]，现在我的Emacs编辑器就是大量基于viper来使用的，在
+  大部分的情况下，我会使用VI的快捷键来操作Emacs，只在很少数的情况下会
+  使用Emacs自带的快捷键。
+
+** 全局快捷键以z开头
+  一些在所有buffer都需要执行的快捷键我称之为全局快捷键，比如切换
+buffer，文件保存等操作。全局快捷键的设置存储在变量
+*viper-basic-mode-z-based-maps*中
+#+BEGIN_SRC elisp
+;;in viper mode & some other modes,use z as my custom command prefix.
+(defvar *viper-basic-mode-z-based-maps* nil)
+(setq *viper-basic-mode-z-based-maps*
+        `(
+          ("0" delete-window)
+          ("1" delete-other-windows)
+          ("2" split-window-vertically)
+          ("b" ido-switch-buffer)
+          ("c" comment-region)
+          ("u" uncomment-region)
+
+          ("f" ido-find-file)
+          ("i" my-insert)
+          ("j" idomenu)
+          ("k" kill-current-buffer)
+
+          ("A" org-agenda)
+          ("D" kid-cl-speaker)
+          ("S" my-save-buffers)
+          ("N" tabbar-forward-group)
+          ("P" tabbar-backward-group)
+          ("Q" save-buffers-kill-terminal)
+          ))
+(defmacro apply-viper-z-map (&rest body)
+  `(loop for (char action) in *viper-basic-mode-z-based-maps*
+      do ,@body))
+(defmacro apply-viper-z-keymap (map-name)
+  `(loop for (char action) in *viper-basic-mode-z-based-maps*
+      do (ignore-errors (define-key ,map-name (concat "z" char) action))))
+
+(with-my-hook 'org-mode-hook
+  (org-defkey org-agenda-mode-map "z" nil)
+  ;; map original key "z" to "zz" in org agenda mode.
+  (org-defkey org-agenda-mode-map "zz" 'org-agenda-add-note)
+  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat "z" char) action)))
+
+(define-key viper-vi-basic-map "z" nil) ; delete `viper-nil' binding
+(apply-viper-z-keymap viper-vi-basic-map)
+#+END_SRC
+*** ze全局操作外部命令相关
+#+BEGIN_SRC elisp
+          ;; use ze as external & enlish invoke
+          ("ec" my-external-program)
+          ("eb" my-bash-shell)
+          ("ed" kid-star-dict)
+          ("eD" kid-sdcv-to-buffer)
+          ("em" compile)
+          ("ep" my-plink)
+          ("es" dos-shell)
+
+
+#+END_SRC
+*** zd全局操作目录相关
+#+BEGIN_SRC elisp
+          ;;use zd as dired invoke.
+          ("db" my-dired-buffers)
+          ("dj" dired-jump)
+          ("df" my-traverse-deep-rfind)
+          ("dg" my-dired-go)
+          ("do" dired-jump)
+#+END_SRC
+*** zw全局操作w3m相关
+#+BEGIN_SRC elisp
+          ;;use w as w3m prefix 
+          ("wb" my-w3m-buffers)
+          ("ws" w3m-browse-url-new-session)
+          ("wq" my-google-search)
+          ("wg" w3m-browse-url)
+#+END_SRC
+*** zg全局操作org mode
+#+BEGIN_SRC elisp
+          ;; use zg as org-mode prefix
+          ("g " org-table-edit-field)
+          ("ga" my-org-agenda-buffer)
+          ("gA" org-agenda)
+          ("gb" org-switchb)
+          ("gcd" org-clock-mark-default-task)
+          ("gci" my-org-clock-in)
+          ("gco" org-clock-out)
+          ("gcj" my-org-clock-goto)
+          ("gcJ" my-org-recent-clock)
+          ("gC" org-columns)
+          ("ge" org-set-effort)
+          ("gE" org-clock-modify-effort-estimate)
+          ("gd" org-decrypt-entry)
+          ("gl" org-store-link)
+          ("gg" org-ctrl-c-ctrl-c)
+          ("gi" org-insert-link)
+          ("go" org-open-at-point)
+          ("gr" org-remember)
+          ("gs" org-schedule)
+          ("gS" org-archive-to-archive-sibling);org-advertized-archive-subtree
+          ("gt" org-todo)
+          ("gT" tea-time)
+          ("gu" org-update-statistics-cookies)
+          ("gp" links)
+
+#+END_SRC
+*** zm全局操作个人定制(my)
+#+BEGIN_SRC elisp
+          ;;use m as my prefix
+          ("mb" bookmark-set)
+          ("md" my-sql-pool)
+          ("mD" diff-buffer-with-file)
+          ("mc" calendar)
+          ("me" emms)
+          ("mf" my-bookmark-jump-via-ido)
+          ("mh" highlight-regexp)
+          ("mH" hi-lock-unface-buffer)
+          ("mj" my-bookmark-jump-via-ido)
+          ("ml" w3m-external-view-this-url)
+          ("mL" my-browser-url)
+          ("mk" browse-kill-ring)
+          ("mm" my-favorite-menubar)
+          ("mn" my-rss)
+          ("mo" find-file-at-point)
+          ("mp" my-plink)
+          ("mt" xjt-create/switch-scratch)
+          ("ms" find-file-recursively)
+          ("mv" my-virsh)
+          ("my" my-eye-save)
+          ("n" tabbar-forward-tab)
+          ("p" tabbar-backward-tab)
+          ("q" my-w3m-google-search)
+          ("o" other-window)
+          ("r" ido-recentf-open)
+          ("s" save-buffer)
+
+#+END_SRC
+*** zh全局操作帮助相关
+#+BEGIN_SRC elisp
+          ("ha" apropos)
+          ("hf" describe-function)
+          ("hv" describe-variable)
+#+END_SRC
+*** zv全局操作VC(version control)相关
+#+BEGIN_SRC elisp
+          ;; use zv as version control prefix
+          ("vd" my-ediff-revision)
+          ("vD" ediff-revision)
+          ("vm" magit-status)
+          ("vv" vc-next-action)
+#+END_SRC
+** 不同mode的快捷键以s开头
+以c/c++ mode为例：
+#+BEGIN_SRC elisp
+(setq my-cc-modified-vi-map
+      (let ((map (make-sparse-keymap)))
+        (viper-special-defkey map "b" 'semantic-ia-fast-jump-back)
+        (viper-special-defkey map "df" 'my-cc-function-header)
+        (viper-special-defkey map "dc" 'my-cc-variable-header)
+        (viper-special-defkey map "dv" 'my-cc-variable-header)
+        (viper-special-defkey map "f" 'my-toggle-selective-display)
+        ;; (viper-special-defkey map "fa" 'semantic-tag-folding-fold-all)
+        ;; (viper-special-defkey map "fi" 'semantic-tag-folding-fold-block)
+        ;; (viper-special-defkey map "fo" 'semantic-tag-folding-show-block)
+        ;; (viper-special-defkey map "ft" 'global-semantic-tag-folding-mode)
+        ;; (viper-special-defkey map "fu" 'semantic-tag-folding-show-all)
+        (viper-special-defkey map "g" 'proj-gtags)
+        (viper-special-defkey map "h" 'sourcepair-load);c-open-relational-file
+        (viper-special-defkey map "i" 'semantic-analyze-proto-impl-toggle)
+        (viper-special-defkey map "j" 'my-gtags-find-tag)
+        (viper-special-defkey map "eg" 'next-error)
+        (viper-special-defkey map "mc" 'viss-bookmark-clear-all-buffer)
+        (viper-special-defkey map "mi" 'viss-bookmark-toggle)
+        (viper-special-defkey map "mt" 'viss-bookmark-toggle)
+        (viper-special-defkey map "mo" 'viss-bookmark-toggle)
+        (viper-special-defkey map "mp" 'viss-bookmark-prev-buffer)
+        (viper-special-defkey map "mn" 'viss-bookmark-next-buffer)
+        (viper-special-defkey map "sa" 'cscope-set-initial-directory)
+        (viper-special-defkey map "sc" 'cscope-find-functions-calling-this-function)
+        (viper-special-defkey map "sC" 'cscope-find-called-functions)
+        (viper-special-defkey map "sf" 'cscope-find-this-file)
+        (viper-special-defkey map "sg" 'cscope-find-global-definition-no-prompting)
+        (viper-special-defkey map "sG" 'cscope-find-global-definition)
+        (viper-special-defkey map "si" 'cscope-find-files-including-file)
+        (viper-special-defkey map "sI" 'cscope-index-files)
+        (viper-special-defkey map "ss" 'cscope-find-this-symbol)
+        (viper-special-defkey map "su" 'cscope-pop-mark)
+        (viper-special-defkey map ";" 'c-toggle-auto-newline)
+        map))
+(viper-modify-major-mode 'c-mode 'vi-state my-cc-modified-vi-map)
+(viper-modify-major-mode 'c++-mode 'vi-state my-cc-modified-vi-map)
+#+END_SRC
+* 智能化
+** buffer切换
+Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用不同的快捷
+键，来显示不同类型的buffer，并从中进行选择，比如：
+
+ - "zgb" ==> 打开org mode的buffer
+ - "zdb" ==> 打开dired mode的buffer(即目录相关的buffer)
+ - "zwb" ==> 打开w3m mode的buffer
+** 基于my-select-windows的便捷列表选择
+使用Emacs命令时经常要从一组列表(命令)中选择一项进行操作。我创建了一个函数
+my-select-windows，会自动根据列表中的字符串生成不同的快捷键，用户只需
+按下一个键，而不需要按额外的回车键就可以选中它。函数实现为：
+#+BEGIN_SRC elisp
+;;;###autoload
+(defun my-select-window (list &optional prompt nodelay-select)
+  "Select a cmd with its prefix key."
+  (interactive)
+  (when (null list)
+    (error "%s: list is empty" (if prompt prompt "Error in my-select-window")))
+  (if (= 1 (length list))
+      (car list)
+    (let ((list (my-string-shortcuts list)))
+      (if (and
+           (not nodelay-select)
+           (setq rpl (read-char-exclusive "" nil 1))
+           (assoc rpl list))
+          (cdr (assoc rpl list))
+        (save-window-excursion
+          (org-switch-to-buffer-other-window
+           (get-buffer-create "*String to Select*"))
+          (erase-buffer)
+          (insert (org-add-props (concat (or prompt "String to select") "\n")
+                      nil 'face 'bold))
+          (loop for (k . s) in list
+                do (insert (format "[%c] %s\n" k s)))
+          (org-fit-window-to-buffer)
+          ;;FIXME: how to make window height suitable for display.
+          (enlarge-window (window-height))
+          (message (or prompt "Select one from list:"))
+          (setq rpl (read-char-exclusive))
+          (bury-buffer "*String to Select*")
+          (cond
+           ((eq rpl 27) nil); 27 <==> Escape
+           ((assoc rpl list) (cdr (assoc rpl list)))
+           (t (error "Invalid task choice %c" rpl))))))))
+;;;###autoload
+(defun test-my-select-window ()
+  (interactive)
+  (let* ((cmds '("aaaa" "bbcd" "ccdb" "dbde"))
+         (result (my-select-window cmds)))
+    (message result)))
+;;;###autoload
+(defun my-string-shortcuts (list)
+  (require 'tmm)
+  (let ((tmm-short-cuts))
+    (tmm-add-shortcuts (mapcar #'list list))
+    (loop for s in list
+          for k in tmm-short-cuts
+          collect (cons k s))))
+#+END_SRC
+举例如下：
+
+ - 快捷键"zi"实现快速插入
+
+   当你按下"zi"时，会等待一秒钟让你输入一个字母来决定要插入什么内容，如果1秒钟内你没有输入
+任何内容或输入错了，就会弹出一个buffer提示快捷键并让你继续输入：
+<src>
+type to insert:
+[c] calc
+[f] file
+[u] userid
+[d] date
+[t] time
+[s] shell command
+#+END_SRC
+按下c就会插入一个计算式的结果，按下u就会插入用户名。
+
+
+这样，当你想插入日期时，只需在VI模式下按下"zid"就可以了。
+
+同样，当我想对当前Emacs中的org项目进行publish操作时，输入"sp"就会弹出一个buffer，
+让你选择想pubish的项目，如果你记得项目对应的快捷字母是'c'，直接输入c就不会出现
+快捷键列表，而会直接对选中的项目进行publish操作。
+
+这个函数可以用在许多地方，让你不需要额外的快捷键就可以处理包含多种情况的问题。
+
+[[http://www.emacswiki.org/emacs/Anything][Anything]] 插件在处理列表时功能更强大，而这里的my-select-window则更便捷。
+
+* 优化工作流程
+
+** 在任务栏显示提示信息
+
+  当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
+Emacs图标的显示是通过python脚本[[https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py][trayicon-appt.py]]来完成的。
+<src  lang="elisp">
+(defun my-systray-notification (text &optional hour-low-limit hour-high-limit)
+  (when (not (eq :x61 my-place))
+    (let ((cur-week (parse-integer (format-time-string "%w"))))
+      (case cur-week
+        ((or 1 2 3 4 5)
+         (block my-systray-notification
+           (when (and hour-high-limit hour-low-limit (< hour-low-limit hour-high-limit))
+             (let ((cur-hour (parse-integer (format-time-string "%H"))))
+               (if (or (< cur-hour hour-low-limit)
+                       (> cur-hour hour-high-limit))
+                 (return-from my-systray-notification))))
+           (my-open-external-progam-in-emacs
+            "trayicon" (list (my-etc "trayicon-appt.py") text))))))))
+
+#+END_SRC
+
+** 隐藏一些后台处理用的buffer 
+#+BEGIN_SRC elisp
+(setq *tabbar-ignore-buffers* '("idle.org" ".bbdb" "diary"))
+(setq tabbar-buffer-list-function
+             (lambda ()
+               (remove-if
+                (lambda (buffer)
+                  (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
+                       (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
+                          thereis (string-equal (buffer-name buffer) name))))
+                (buffer-list))))
+#+END_SRC
+
+# ** 在emacs中操作virsh
+# 在工作中我经常使用virsh来管理多台机器上的虚机。因此编写了一个
+# [[./site-lisp/virsh.el][virsh.el]]
+# 来简化虚机的创建，销毁，VNC显示的操作。这使用了my-select-windows函数来
+# 帮助我快速选中需要操作的物理机，虚机及想进行的操作。
+# ** [[./site-lisp/kindlegen.el][kindlegen.el]]
+# 手中有一台kindle电子书，而kindle对txt格式的文件支持并不好，对mobi格式
+# 的文件则支持的非常好。因此，我根据网上的资料编写了一个emacs脚本来从txt文
+# 件生成mobi，并可在生成前进行mobi的目录预览。
+* Emacs的缺点
+** Emacs是单线程的
+虽然现在的大多数common lisp实现都支持多线程，但Emacs目前仍然只支持单线
+程。这意味着当某个操作需要大量时间才能完成时，Emacs会失去反应，不能响
+应任何键盘和鼠标操作。这经常会出现在你使用gnus收发邮件组，使用tramp访
+问网络连通不好的远程机器时。

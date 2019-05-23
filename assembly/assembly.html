@@ -6,7 +6,7 @@
 <!-- 2019-05-23 Thu 12:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Articles</title>
+<title>Some win32 assembly codes between 2002-2003</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Jingtao Xu" />
 <style type="text/css">
@@ -261,16 +261,104 @@ for the JavaScript code in this tag.
  //]]></script>
 </div>
 <div id="content">
-<h1 class="title">Articles</h1>
-<ul class="org-ul">
-<li>2014-02-12 : <a href="emacs/TheWayIUseEmacs.html">我是如何使用Emacs的</a> (<code>nil</code>)</li>
-<li>2013-10-26 : <a href="lisp/mixlang-in-lisp.html">Common lisp 与其它语言的集成</a> (<code>nil</code>)</li>
-<li>2003-12-09 : <a href="assembly/Nasm.html">NASM源码阅读笔记</a> (<code>nil</code>)</li>
-<li>2003-11-26 : <a href="assembly/vim.html">使用GVIM阅读MASM代码</a> (<code>nil</code>)</li>
-<li>2003-10-27 : <a href="assembly/Nasm-ds.html">NASM源码中的数据结构</a> (<code>nil</code>)</li>
-<li>2002-02-06 : <a href="assembly/subject2001.html">部分改编的汇编代码</a> (<code>nil</code>)</li>
-<li>2002-01-12 : <a href="assembly/assembly.html">Some win32 assembly codes between 2002-2003</a> (<code>nil</code>)</li>
+<h1 class="title">Some win32 assembly codes between 2002-2003</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org521a5b5">1. 一些程序</a></li>
+<li><a href="#orgfbccfdd">2. Iczelion教程打包下载</a></li>
+<li><a href="#org6006a01">3. 收集的一些汇编网址</a></li>
 </ul>
+</div>
+</div>
+<p>
+这是02-03年间学习汇编程序的一些资料，希望能对一些人有用。
+汇编是一门低级语言，win32下的汇编则直面windows的操作机制。
+</p>
+
+<div id="outline-container-org521a5b5" class="outline-2">
+<h2 id="org521a5b5"><span class="section-number-2">1</span> 一些程序</h2>
+<div class="outline-text-2" id="text-1">
+<ul class="org-ul">
+<li><a href="./works/CheckIntegrity.zip">CheckIntegrity</a> 提供了一个 名为CheckFileIntegrity的库函数， 可以在Assembly/C/C++环境中调用这个库函数来检查自身或其它文件是否被病毒及其它程序修改过，以便做出相应的处理措施，比如防止自身程序在带毒或被修改的情况下运行等。</li>
+<li><a href="./works/netenum.zip">NetEnum v1.0</a> 枚举局域网资源的小工具，</li>
+<li><a href="./works/asmcut.zip">汇编切割器</a> 增加了浮动按扭，修正了一个BUG。</li>
+<li><a href="./works/CFButton.zip">FButton ClassV1.02</a> 实现浮动按纽（汇编语言下OOP编程例子）。</li>
+<li><a href="./works/once-app.zip">Once-App Programme</a> 只运行一个实例的三种方法.</li>
+<li><a href="./works/harddisk.zip">Hard disk protect utility</a> 网友kevin的作品，对硬盘进行密码保护 (网友作品，非工作室所有)。</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgfbccfdd" class="outline-2">
+<h2 id="orgfbccfdd"><span class="section-number-2">2</span> Iczelion教程打包下载</h2>
+<div class="outline-text-2" id="text-2">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><a href="./resources/lion-tu-c.zip">lion-tu-c.zip</a></td>
+<td class="org-left"><a href="./resources/lion-tu-c-sources.zip">lion-tu-c-sources.zip</a> <a href="./resources/odbc-tutorial.zip">odbc-tutorial.zip</a></td>
+<td class="org-left"><a href="./resources/pe-tutorial.zip">pe-tutorial.zip</a></td>
+<td class="org-left"><a href="./resources/vxd-tutorial.zip">vxd-tutorial.zip</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org6006a01" class="outline-2">
+<h2 id="org6006a01"><span class="section-number-2">3</span> 收集的一些汇编网址</h2>
+<div class="outline-text-2" id="text-3">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><a href="http://www.movsd.com/">Masm32 Offical Homepage</a></td>
+<td class="org-left"><a href="http://win32assembly.online.fr/">Iczelion’s homepage</a></td>
+<td class="org-left"><a href="http://www.wotsit.org/">http://www.wotsit.org/</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="http://ourworld.compuserve.com/homepages/ernies_world/a.htm">Masm32 COM programming</a></td>
+<td class="org-left"><a href="http://webster.cs.ucr.edu/">The art of Assembly</a></td>
+<td class="org-left"><a href="http://board.win32asmcommunity.net/">Win32ASM Community messageboard</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="http://www.madwizard.org/">Masm32 OOP programming</a></td>
+<td class="org-left"><a href="http://www.grc.com/steve.htm">Small is Beautiful</a></td>
+<td class="org-left"><a href="http://developer.intel.com/design/PentiumII/manuals/">Intel Developer Manuals</a></td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="http://win32assembly.online.fr/">http://win32assembly.online.fr/</a></td>
+<td class="org-left"><a href="http://users.daex.ufsc.br/~iczelion/">http://users.daex.ufsc.br/~iczelion/</a></td>
+<td class="org-left"><a href="http://spiff.tripnet.se/~Iczelion">http://spiff.tripnet.se/~Iczelion</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </body>
 </html>

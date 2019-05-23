@@ -1,0 +1,19 @@
+* 关于我
+  现居住在杭州。
+
+  我喜欢[[http://baike.baidu.com/view/114944.htm][陈升]]的音乐。我们都像农夫一样在不停地耕耘，一个耕耘音乐，一个耕耘程序。
+
+* 商业化的产品
+** 我们现在有两个上线的商业化产品，都是面向淘宝卖家的。
+- [[http://www.xiaozhushou.com.cn][小助手宝贝描述编辑器]]
+  - [[https://fuwu.taobao.com/ser/detail.htm?service_code=ts-705][淘宝服务页面的链接]]
+  - [[http://www.lispworks.com/success-stories/ixiaozhushou.html][lispworks介绍页面的链接]]
+- [[http://www.xiaozhushou.com.cn/top/default][小助手批量编辑器]]
+  - [[http://fuwu.taobao.com/serv/detail.htm?service_id=5695][淘宝服务页面的链接]]
+
+* 与我联系
+
+email: [[mailto:jingtaozf@gmail.com][jingtaozf@gmail.com]]
+
+This document was last modified on: {{{modification-time(%Y-%m-%d %a %H:%M)}}}.
+

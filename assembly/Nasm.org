@@ -1,0 +1,401 @@
+#+title:  NASM源码阅读笔记
+#+OPTIONS: ^:nil _:nil
+
+
+* 各模块简介：
+    NASM按功能将汇编器的各个部分独立为模块，各个模块之间并不进行直接的联系。
+    这种编程结构使得阅读源代码变得轻松起来，可以将各个模块独立出来分别阅读。
+    在源码中的doc/internal.doc中有一个模块间的结构图：
+#+BEGIN_EXAMPLE
+                  +--- preproc.c ----+
+                  |                  |
+                  +---- parser.c ----+
+                  |        |         |
+                  |     float.c      |
+                  |                  |
+                  +--- assemble.c ---+
+                  |        |         |
+        nasm.c ---+     insnsa.c     +--- nasmlib.c
+                  |                  |
+                  +--- listing.c ----+
+                  |                  |
+                  +---- labels.c ----+
+                  |                  |
+                  +--- outform.c ----+
+                  |                  |
+                  +----- *out.c -----+
+#+END_EXAMPLE
+
+
+图中没有出现的其它模块有eval.c和float.c。eval.c是表达式求值模块,用于
+preproc.c,parser.c和*out.c；float.c是浮点数常量存储转换模块，用于parser.c。
+各模块将需要导出的函数和数据结构的定义放入对应的头文件中，以便被其它模块调用。
+
+**需要注意的是许多函数指针或包含函数指针的结构以参数的形式在各模块间传递，
+这种间接性使得模块之间的结构更加清晰。**
+   
+** 强大的预处理器preproc.c:
+
+预处理部分是NASM中最复杂，也是代码最多的模块，有四千多行代码。
+它使用自己的源码扫描程序ppscan，支持名字相同但参数不同的宏，支持
+各个宏通过上下文相关堆栈来交换信息，支持宏内进行预处理循环等。
+(可参阅NASM使用文档来了解预处理的功能和使用方法)
+
+preproc.c对外仅导出一个结构：
+#+BEGIN_SRC C
+  typedef struct {
+      /*
+       * Called at the start of a pass; given a file name, the number
+       * of the pass, an error reporting function, an evaluator
+       * function, and a listing generator to talk to.
+       */
+      void (*reset) (char *, int, efunc, evalfunc, ListGen *);
+
+      /*
+       * Called to fetch a line of preprocessed source. The line
+       * returned has been malloc'ed, and so should be freed after
+       * use.
+       */
+      char *(*getline) (void);
+
+      /*
+       * Called at the end of a pass.
+       */
+      void (*cleanup) (int);
+  } Preproc;
+#+END_SRC
+
+其中reset用于初始化，cleanup用于预处理后的清理工作。
+而函数名getline则是相对于主程序来说的。它对编译器内嵌的宏和汇编源程序
+从上至下进行处理，记录遇到的宏信息，用实际的代码和数据替换调用的宏，并
+返回一行可以被下一个模块(这里是parser.c)使用的“规范的”汇编代码。
+
+**预处理部分相对于主程序后面调用的模块来说是透明的。**
+
+** 功能单一的解析模块parser.c:
+
+按作者的说法，解析模块的作用就是解析由`标号',`指令',`操作数'和`注释'组成的
+“规范的”汇编代码行，填充并返回这行代码的insn结构：
+#+BEGIN_SRC C
+  typedef struct {                    /* an instruction itself */
+      char *label;                    /* the label defined, or NULL */
+      int prefixes[MAXPREFIX];       /* instruction prefixes, if any */
+      int nprefix;                    /* number of entries in above */
+      int opcode;                     /* the opcode - not just the string */
+      int condition;                  /* the condition code, if Jcc/SETcc */
+      int operands;                   /* how many operands? 0-3 
+                                      * (more if db et al) */
+      operand oprs[3];        /* the operands, defined as above */
+      extop *eops;                    /* extended operands */
+      int eops_float;                /* true if DD and floating */
+      long times;                     /* repeat count (TIMES prefix) */
+      int forw_ref;                   /* is there a forward reference? */
+  } insn;
+#+END_SRC
+
+该模块导出三个函数：
+#+BEGIN_SRC C
+  void parser_global_info (struct ofmt *output, loc_t *locp);
+  insn *parse_line (int pass, char *buffer, insn *result,
+                 efunc error, evalfunc evaluate, ldfunc ldef);
+  void cleanup_insn (insn *instruction);
+#+END_SRC
+
+其中parser_global_info用于解析前的初始化工作(这里是初始化输出的文件格式和
+当前行所在的位置，在定义标号时需要用到)。cleanup_insn用于解析后的清理工作。
+
+而parse_line的功能就是按照上面提到的`标号',`指令',`操作数'和`注释'的
+顺序对buffer里的代码进行解析，并对相应部分的合法性做一些检查，比如检查指令的前缀是
+不是超过了所能允许的最大值，操作数是否为内存地址，代码中是否含有一个向前的引用等。
+它还提供了对伪指令DB,DD,RESB,RESD,INCBIN等的支持。
+
+** 代码生成器assemble.c:
+
+当parser.c填充好insn结构后，assemble.c就按照Intel机器码规则生成实际的
+机器码，并传给out*.c来生成具体格式的目标文件。
+
+它导出两个函数：
+#+BEGIN_SRC C
+  long insn_size (long segment, long offset, int bits, unsigned long cpu,
+               insn *instruction, efunc error);
+  long assemble (long segment, long offset, int bits, unsigned long cpu,
+              insn *instruction, struct ofmt *output, efunc error,
+              ListGen *listgen);
+#+END_SRC
+
+其中insn_size一般用在第一遍分析源码时，用于确定某一行代码在实际目标文件中所需的
+空间，而assemble则一般用在第二遍分析源码时，它转化insn结构中的指令为实际的机器码，
+并输出到out*.c中以生成具体格式的目标文件。
+
+** 简单的表达式求值模块eval.c:
+
+eval.c用于计算并返回代码中表达式的值，其中运算符||,^^,&&等用于条件汇编%if类指令
+的表达式中，返回真或假，|,^,&,<<,+,*,/等用于对常量值进行运算，SEG，WRT等则用于得到
+程序中段(或节)实际的基址和偏移。
+
+eval.c的功能比较简单，不能像MASM那样处理类似(eax != 0)这样的表达式。(后记[1])。
+eval.c利用标准的scan程序扫描表达式缓冲区，找出存在的运算符进行运算，并将
+处理后的值存入expr结构中：
+#+BEGIN_SRC C
+  /*
+   * Expression-evaluator datatype. Expressions, within the
+   * evaluator, are stored as an array of these beasts, terminated by
+   * a record with type==0. Mostly, it's a vector type: each type
+   * denotes some kind of a component, and the value denotes the
+   * multiple of that component present in the expression. The
+   * exception is the WRT type, whose `value' field denotes the
+   * segment to which the expression is relative. These segments will
+   * be segment-base types, i.e. either odd segment values or SEG_ABS
+   * types. So it is still valid to assume that anything with a
+   * `value' field of zero is insignificant.
+   */
+  typedef struct {
+      long type;                             /* a register, or EXPR_xxx */
+      long value;                            /* must be >= 32 bits */
+  } expr;
+#+END_SRC
+
+值得注意的是eval.c只在第一遍分析源码时处理运算符||,^^，&&等，因为它们只在
+预处理表达式中才可能出现。
+
+** 标号处理器label.c:
+
+NASM的标号分局部标号和全局标号两种(外部标号可看作是在另一个源程序中的全局标号)。
+
+局部标号名最终将由两部分组成："上一个全局标号名＋局部标号名"。
+
+全局标号名最终将由三部分组成："lprefix+全局标号名+lpostfix"。
+
+其中lprefix和lpostfix都是可选的，它们分别用于在所有的全局标号名的前面和后面添加字符串。
+比如在编译时指定选项 --prefix_ 将会在所在的全局标号名前加下划线，
+这就会和在C中生成标号的情况差不多。
+最终label.c会将标号的相关信息传给对应的out*.c来生成目标文件中的符号。
+
+这个模块导出以下数据和函数：
+#+BEGIN_SRC C
+  extern char lprefix[PREFIX_MAX];
+  extern char lpostfix[PREFIX_MAX];
+
+  int lookup_label (char *label, long *segment, long *offset);
+  int is_extern (char *label);
+  void define_label (char *label, long segment, long offset, char *special,
+                     int is_norm, int isextrn, struct ofmt *ofmt, efunc error);
+  void redefine_label (char *label, long segment, long offset, char *special,
+                     int is_norm, int isextrn, struct ofmt *ofmt, efunc error);
+  void define_common (char *label, long segment, long size, char *special,
+                      struct ofmt *ofmt, efunc error);
+  void declare_as_global (char *label, char *special, efunc error);
+  int init_labels (void);
+  void cleanup_labels (void);
+#+END_SRC
+
+函数init_labels和cleanup_labels分别用于内部数据的初始化和清理工作。
+
+函数lookup_label用于查找存在的标号并返回对应的段和偏移的值。
+
+函数define_label用于定义标号并将信息传递给相应的out*.c来生成目标文件中的符号。
+
+函数redefine_label用于检查标号是否存在定位错误并对其进行修正(按作者的说法，虽然大多
+数的汇编器都存在这个功能，但在这里好像并不能起到什么作用)。
+
+** 列表文件生成模块listing.c:
+
+list.c用于生成列表文件。列表文件的格式如下：
+
+列表文件的行号 代码在目标文件中的偏移 <列表嵌套层数>　源代码行或宏展开后的代码
+
+其中的列表嵌套层数用于INCBIN,TIMES,INCLUDE和MACRO等伪指令，用于表示这些指令展开后在
+代码中嵌套的层数。在实际生成的列表文件中不对TIMES指令和指定了.nolist的宏进行展开操作。
+
+list.c对外导出如下结构：
+#+BEGIN_SRC C
+  ListGen nasmlist = {
+      list_init,
+      list_cleanup,
+      list_output,
+      list_line,
+      list_uplevel,
+      list_downlevel
+  };
+#+END_SRC
+
+其中list_init和list_cleanup分别用于模块内部数据的初始化和清理操作。
+
+list_output用于生成列表文件格式中的的前两部分，list_line用于生成列表文件格式中的
+后两部分。
+
+list_upleve和list_downlevel被其它模块调用，以更新list.c中的列表嵌套层数。
+
+值得注意的是源码中的数据结构MacroInhibit目前在模块中并没有什么实际的作用，而且list.c
+也没有对传入的参数进行充分的处理。按作者的说法，这些函数实现并没有经过很好的考虑，
+它们只是因为"差不多能够工作"，所以才被保留至今。
+
+** 浮点数转换模块float.c:
+
+float.c模块导出一个函数float_const：
+#+BEGIN_SRC C
+ int float_const (char *number, long sign, unsigned char *result, int bytes,
+  efunc error);
+#+END_SRC
+
+这个函数负责将指令DD, DQ和DT后的浮点数常量转换为Intel机器内部的数据表达形式。
+float.c能识别的浮点数格式如下：
+#+BEGIN_QUOTE
+             dd    1.2                     ; an easy one
+             dq    1.e10                   ; 10,000,000,000
+             dq    1.e+10                  ; synonymous with 1.e10
+             dq    1.e-10                  ; 0.000 000 000 1
+             dt    3.141592653589793238462 ; pi
+#+END_QUOTE
+
+需要注意的是NASM不提供浮点数的表达式求值运算，这是因为NASM认为不能保证所有
+存在ANSI C编译器的的系统都提供浮点数运算的库函数，而自己实现又有点得不偿失。
+
+** 指令模板集模块insnsa.c:
+
+NASM的CVS库中有三个与该模块有关的文件：
+
+ - insns.h(指令模板结构定义和其它常量定义),
+ - insns.dat(NASM能识别的Intel指令集信息表)，
+ - insns.pl(用于从insns.dat中生成insnsa.c, insnsd.c, insnsi.h, insnsn.c等文件的Perl脚本)。
+
+在insns.pl生成的四个文件中，insnsa.c和insnd.c是C格式的指令集信息表，分别用于
+assemble.c和ndisasm.c。insnsi.h是指令集名字的枚举表，insnsn.c是指令集名字的字符串表，
+这两个文件用在扫描(nasmlib.c)和反汇编(ndisasm.c)中。
+
+** 为其它模块提供支持的nasmlib.c:
+
+nasmlib.c提供如下函数：
+ - 具有报错和记录功能的内存分配和释放函数;
+ - 字符串和数字间的转换和赋值函数;
+ - 对动态分配的随机存储数组(RAA)和顺序存储数组(SAA)进行管理的函数;
+ - 一个标准的源码扫描函数;
+ - 表达式处理的库函数;
+ - 为目标文件自动添加扩展名的函数;
+ - 对源码和目标文件提供支持的其它函数。
+
+** 目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：
+
+output目录下的*out.c是NASM所能输出的目标格式文件的源代码实现。
+每一个输出模块一般只导出一个ofmt形式的数据结构(ofmt数据结构的定义可参见nasm.h文件)。
+
+out*.c还提供了对特定格式的附加指令支持。
+比如如果在生成OBJ格式时想导入其它DLL的函数，可以使用import指令，
+如下将导入wsock32.dll中的函数WSAStartup：
+#+BEGIN_QUOTE
+import WSAStartup wsock32.dll
+#+END_QUOTE
+
+outform.c提供了对上述模块进行查找，列举和注册的功能。
+
+* 流程简介：
+
+主程序nasm.c的流程如下：
+
+ 1. 初始化需要的数据结构，注册编译器支持的目标文件格式。
+ 2. 使用内部函数parse_cmdline解析命令行参数，设置对应的参数值或输出相应的帮助信息后退出。
+ 3. 如果生成的目标格式中含有附加的标准宏，调用预处理中的函数对其进行注册。
+ 4. 调用函数parser_global_info和eval_global_info分别初始化parser.c和eval.c。
+ 5. 根据变量operating_mode的值判断操作模式，默认为op_normal。
+  - 如果operating_mode为op_depend(编译时指定了参数-M)，
+   则对外输出makefile格式的文件依赖关系;
+  - 如果operating_mode为op_preprocess(编译时指定了参数-e)，
+   则只对源代码进行预处理操作，并添加相应的行号信息，然后输出到目标文件或标准输出(stdout);
+  - 如果operating_mode为op_normal，则先调用函数init_labels和ofmt->init
+   分别初始化label.c和out*.c，
+   然后调用函数assemble_file对源文件进行编译处理。
+ 6. 释放掉程序动态分配的内存(RAA和SAA),调用函数eval_cleanup和nasmlib_cleanup
+    进行相应模块的清理工作。然后根据变量terminate_after_phase的值设置程序返回值并结束运行。
+
+其中的函数 **assemble_file** 负责了最主要的工作，它接收源程序文件名，
+并调用各个模块对源程序进行预处理，解析，编译，生成指定目标格式文件等操作。
+
+**assemble_file** 函数流程如下：
+
+ 1. 初始化目标文件格式中的段(节)和偏移值，初始化预处理模块，设置当前扫描次数。
+ 2. 调用预处理模块中的函数preproc->getline()返回一行可以被解析使用的“标准”汇编代码，
+    并增加当前行数。
+ 3. 调用函数getkw(line,&value)来判断当前行格式是否为[directive value]并返回
+    directive和value相应的值。
+    这里的directive是指NASM自己的一些伪指令，例如SECTION，EXTERN，GLOBAL等。
+    若上述格式getkw无法识别，则调用ofmt->directive (line+1, value, 1)来判断
+    是否为目标文件格式的附加指令。
+ 4. 若当前行不是上述格式，则调用标准的解析函数parse_line解析当前行。
+ 5. 记录或处理当前行指令中的向前引用。
+ 6. 处理EQU指令，并只在第二次解析时才处理标号前缀为".."的特殊EQU指令。
+ 7. 调用编译模块进行处理。第一次扫描源码时调用insn_size，并对伪指令RESB，DB等调用
+    函数ofmt->current_dfmt->debug_typevalue(typeinfo)来设置调试信息;
+    第二次扫描时则直接调用assemble来生成目标代码。
+ 8. 调用函数preproc->cleanup()和nasmlist.cleanup()进行扫描后的清理工作。
+ 9. 若扫描次数小于2,则跳转到(1)进行下一遍扫描。
+
+
+* 阅读小结
+
+通过对NASM源码的阅读，我认为它有以下优点：
+ 1. 采用了模块化的开发模式，各个模块间相对独立，便于扩展功能和修改，也利于被其它程序使用。
+ 2. 预处理功能比较强大，对宏的命名和参数量要求比较灵活。
+ 3. 使用了通过HASH运算将数组和链表结合在一起的数据结构，提高了查找效率。
+ 4. 使用文档和代码间的注释相当齐全，便于他人阅读。
+
+同时，NASM也存在以下问题：
+ 1. 各模块间无法进行相互间的通信。这就导致模块间存在一些重复性代码。
+    另外在模块内部也有少许重复代码。
+ 2. listing.c模块和eval.c模块功能简单，特别是listing.c目前尚不完善。
+ 3. 实质上的架构只提供了两遍的源码扫描，这就导致它对表达式的要求比较严格，
+    不能处理需要多遍扫描才能完成的表达式，这方面的内容可参阅NASM的帮助文档中的
+    Critical Expressions一节。
+ 4. 在可输出的目标格式文件中，只有少数几个支持生成含有调试信息的目标文件。
+
+---------------------------------------------------------------------
+仓促之间，错漏难免，敬请指正。
+    Homepage: [[http://www.jingtao.net][www.jingtao.net]]   
+    Email   : [[mailto:jingtaozf@gmail.com][jingtaozf@gmail.com]]
+
+Footnotes:
+ [1] 虽然NASM不能处理浮点数的的运算，但不意味着它不能利用自己强大的宏功能来
+处理类似(eax != 0)的表达式。网友bg7jzw通过在宏中附加指令的方法来使
+NASM像MASM一样支持ADDR关键字。同样的方法也可以实现对类似(eax != 0)表达
+式的支持。
+
+callapi宏如下：
+#+BEGIN_SRC asm
+  ;example: callapi BeginPaint,dword [hWnd], addr [ps]
+  %idefine ADDR               "ADDR",
+  %imacro callapi 1-*
+  %assign i   %0
+          %if %0 > 1
+                  %rep %0 - 1
+                          %rotate -1
+                          %assign i   i-1
+
+                          ;查看前一个数是否为'ADDR'
+                          %rotate -1
+                          %ifidni %1,"ADDR"
+                                  ;将参数列表移到当前并处理
+                                  %rotate 1
+                                  lea eax,    %1
+                                  push        eax
+                                  ;跳过ADDR参数
+                                  %rotate -1
+                                  %assign i   i-1
+                          %else
+                                  %rotate 1
+                                  xpush {%1}
+                          %endif
+
+
+                          %if i <=1
+                                  %exitrep
+                          %endif
+                  %endrep
+                  %rotate -1
+          %endif
+          extern      %1
+          call        [%1]
+  %endmacro
+#+END_SRC
+
+    /*$Id: nasm_1.html,v 1.6 2003/12/09 10:39:09 jingtao Exp $*/
+
+

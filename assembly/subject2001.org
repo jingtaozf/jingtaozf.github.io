@@ -1,0 +1,45 @@
+#+title: 《Windows 核心编程》部分改编的汇编代码
+
+* 专题内容
+原书作者： Jeffrey Richter.
+ 
+原书名称： "Programming Applications for Microsoft Windows,Fourth Edition." 
+ 
+中文译本： Windows 核心编程.(机械工业出版社）
+ 
+专题目的： 用Masm32改写本书所有源代码.
+ 
+专题说明： 为简单起见，大部分改写的源程序将暂时只保证在Win98上正确运行.也欢迎您贡献出自己的源代码.
+ 
+专题日期： 2001.11.25---2002.??
+ 
+
+
+* 编程环境
+
+ [[http://www.movsd.com/masm.htm][Masm32v7]] [[./subject2001/headers.zip][头文件下载]] (包含　[[./subject2001/CmnHdr.inc][CmnHdr.inc]] [[./subject2001/Objects.INC][Objects.INC]] [[./subject2001/Seh-2.inc][Seh-2.inc]] ) 
+
+* 专题代码
+
+|-------------+------------+-------------------------------------------|
+| Name        |       Date | Describe                                  |
+|-------------+------------+-------------------------------------------|
+| [[./subject2000/17-MMFShare.zip][MMFShare]]    | 2001.11.26 | a demo of Memory mapping file             |
+| [[./subject2001/26-CopyData.zip][CopyData]]    | 2001.11.27 | a demo of WM_COPYDATA                     |
+| [[./subject2001/AppInst.zip][AppInst]]     | 2001.11.28 | a demo of shared section in PE file.      |
+| [[./subject2001/Handshake.zip][Handshake]]   | 2001.11.28 | a demo of use auto-reset event.           |
+| [[./subject2001/Summation.zip][Summation]]   | 2001.12.19 | a demo of use SEH when stack overflow     |
+| [[./subject2001/23-SEHTerm.zip][SEHTerm]]     | 2001.12.19 | a demo of use final Exception Handle      |
+| [[./subject2001/01-ErrorShow.zip][ErrorShow]]   | 2001.12.27 | get text description for an error code    |
+| [[./subject2001/07-SchedLab.zip][SchedLab]]    | 2001.12.27 | process and thread priority classes       |
+| [[./subject2001/10-swmrg.zip][SWMRG]]       | 2001.12.27 | The Single Writer/Multiple Reader Guard   |
+| [[./subject2001/12-Counter.zip][Counter]]     | 2001.12.27 | background processing using fibers        |
+| [[./subject2001/14-VMStat.zip][VMStat]]      | 2001.12.27 | how to get Virtual Memory Status          |
+| [[./subject2001/15-MemReset.zip][MemReset]]    | 2001.12.27 | change the protection attributes of pages |
+| [[./subject2001/17-FileRev.zip][FileRev]]     | 2002.02.04 | how to use memory-mapped files            |
+| [[./subject2001/09-Queue.zip][Queue]]       | 2002.02.04 | how to uses a mutex and a semaphore       |
+| [[./subject2001/11-TimedMsgBox.zip][TimedMsgBox]] | 2002.02.05 | use the thread pool's timer functions     |
+| [[./subject2001/27-LISWatch.zip][LISWatch]]    | 2002.02.05 | Local Input State Laboratory              |
+| [[./subject2001/14-SysInfo.zip][SysInfo]]     | 2002.02.06 | call GetSystemInfo,display info returned  |
+|-------------+------------+-------------------------------------------|
+  

@@ -1,0 +1,76 @@
+#+title: 使用GVIM阅读MASM代码
+
+
+* 说明
+
+作者个人收集整理的VIM配置文件可在 [[./vim/vimset.zip][这里]] 下载，它仅做示例之用，您可以据此修改以满足自己的需求。
+您还需要有grep,ctags等外部程序于系统路径中，并最好安装有cygwin。
+
+在阅读下面的示例前，作者假设您已经配置好了系统环境，并在源代码的目录使用作者
+修改的ctags程序生成了tags文件。
+
+* 所需程序
+
+[[http://www.vim.org/download.php][Gvim]] [[./vim/ctags-5.2-1.zip][Ctags]] [[./vim/grep.zip][grep]] [[http://www.cygwin.com/][cygwin]] [[./vim/vimset.zip][vimset]]
+
+* 示例
+
+1. 如何查阅MASM代码及C代码中的所有函数和全局变量：
+#+BEGIN_QUOTE
+    使用命令:Tlist（需要当前目录下有tags文件）。
+#+END_QUOTE
+
+2. 当看到调用另一个子程序的代码时，如何跳转到这个子程序处：
+#+BEGIN_QUOTE
+    光标移动到子程序名处，按Ctrl-]键，返回可按Ctrl-O或ctrl-T。
+#+END_QUOTE
+
+3. 如何在一个程序间跳来跳去：
+#+BEGIN_QUOTE
+    利用VIM的书签功能。在某行上按mx添加一个名为x的书签（其中x为26个英文字母中的一个）,
+    当想返回书签处时，只需按下"x即可。
+#+END_QUOTE
+
+4. 如何重复执行一些命令：
+#+BEGIN_QUOTE
+　  利用VIM的宏记录功能，按下qx(x为26个英文字母中的一个）开始记录命令，
+    当完成需要记录的命令后，再按q结束宏记录。以后当你想重复执行这些命令
+    时只需要按下@x即可。
+#+END_QUOTE
+5. 如何知道一个子函数在哪里被调用过：
+#+BEGIN_QUOTE
+    执行命令:grep procname *.asm *.inc　，然后执行:cl命令即可看到当前
+    目录下所有asm,inc文件中调用procname的地方，执行命令:cc n
+    可跳到第n个出现procname的地方。
+#+END_QUOTE
+    
+6. 如何在各个BUFFER间转换：
+#+BEGIN_QUOTE
+    可以使用命令:bn和:bp，作者的配置文件使用了快捷键F11和Shift-F11来
+    替代它们。
+#+END_QUOTE
+
+7. 如何同时注释掉数行代码：
+#+BEGIN_QUOTE
+    使用v命令选择需要注释的多行代码，然后选择F6注释掉它们，或者选择Shift-F6
+    取消注释。
+#+END_QUOTE
+
+8. 如何查看到一个常量，变量或函数的定义：
+#+BEGIN_QUOTE
+    光标移动到对应的单词处，按[i键，如果显示错误或者未显示完整，可按F4键，
+    并从列表中选择您想查看的内容（这需要您配置好_gvimrc中的绝对路径）。
+#+END_QUOTE
+
+9.  如何启用代码自动完成功能：
+#+BEGIN_QUOTE
+    执行菜单项“工具-->Word Completion”。
+#+END_QUOTE
+
+10. 如何在VIM中调用WINDOWS下的帮助文件。
+#+BEGIN_QUOTE
+ 1. 使用菜单项winhelp增加HLP帮助文件，在需要帮助的单词(通常是API或其它WINDOWS
+   数据结构和常量定义)上按"Ctrl-k"或"Ctrl-l"。
+ 2. 执行程序mh.exe，选择相应的CHM或COL文件，可查看mh.txt文件了解mh.exe的使用方法。
+   然后在需要帮助的单词上按"mK"。
+#+END_QUOTE

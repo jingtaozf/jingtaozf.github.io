@@ -1,171 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+<!-- 2019-05-23 Thu 12:38 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NASM源码中的数据结构</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Jingtao Xu" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
 
-  <title>NASM源码中的数据结构</title>
-  <meta name="author" content="Xu Jingtao" />
-  <meta name="generator" content="Muse" />
-  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
-  <link rel="shortcut icon" href="/images/web/favicon.ico" />
-  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
-  
-<style type="text/css" media="all">
-/*<![CDATA[*/
-      @import url("../css/core.css");
-      
-/*]]>*/
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
-  <link rel="made" href="mailto:jingtaozf@gmail.com" />
-    <script type="text/javascript">//<![CDATA[
-this.onload = function () {
-(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
-}
 
-//]]></script>
+ <link rel="stylesheet" type="text/css" href="/css/core.css" />
+ <link rel="shortcut icon" href="/images/web/favicon.ico" />
+ <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+ <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": { scale: 100,
+                        linebreaks: { automatic: "false" },
+                        webFont: "TeX"
+                       },
+        SVG: {scale: 100,
+              linebreaks: { automatic: "false" },
+              font: "TeX"},
+        NativeMML: {scale: 100},
+        TeX: { equationNumbers: {autoNumber: "AMS"},
+               MultLineWidth: "85%",
+               TagSide: "right",
+               TagIndent: ".8em"
+             }
+});
+</script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script>
 </head>
 <body>
-  <div id="banner">
-    <p><span id="title">NASM源码中的数据结构</span></p>
-  </div>
-    <!-- Page published by Emacs Muse begins here -->
-<div class="contents">
-<dl>
-<dt>
-<a href="#sec1">概述</a>
-</dt>
-<dt>
-<a href="#sec2">详解</a>
-</dt>
-</dl>
+
+ <ul class="navigation">
+ <li class="site-name">Jingtao Xu</li>
+ <li><a accesskey="a" href="/index.html">Articles</a></li>
+ <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
+ <li><a accesskey="A" href="/about.html">About</a></li>
+ </ul><div id="preamble" class="status">
+
+    <script type="text/javascript">//<![CDATA[
+  this.onload = function () {
+  (new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+ }
+ //]]></script>
+</div>
+<div id="content">
+<h1 class="title">NASM源码中的数据结构</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4f8e837">1. 概述</a></li>
+<li><a href="#org14d6fa3">2. 详解</a></li>
+</ul>
+</div>
 </div>
 
 
-<h2><a name="sec1" id="sec1"></a>
-概述</h2>
+<div id="outline-container-org4f8e837" class="outline-2">
+<h2 id="org4f8e837"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+NASM是一个模块化的，可重用的汇编器（有关这方面的内容请参照
+源码中的doc\internal.doc文件）。它涉及到的数据结构有数组，链表和HASH表等。
+</p>
+</div>
+</div>
 
-<p class="first">NASM是一个模块化的，可重用的汇编器（有关这方面的内容请参照源码中的doc\internal.doc文件）。它涉及到的数据结构有数组，链表和HASH表等。</p>
-
-
-<h2><a name="sec2" id="sec2"></a>
-详解</h2>
-
-<ol>
+<div id="outline-container-org14d6fa3" class="outline-2">
+<h2 id="org14d6fa3"><span class="section-number-2">2</span> 详解</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
 <li>用数组存储表达式求值程序计算出的值。</li>
 </ol>
 
-<p>由于这些生成的值只会被用来查询，不会被修改，所以很适合用数组来表示。</p>
-
-<pre class="src">
- <span class="comment-delimiter">/*</span><span class="comment">
-  * Expression-evaluator datatype. Expressions, within the
-  * evaluator, are stored as an array of these beasts, terminated by
-  * a record with type==0. Mostly, it's a vector type: each type
-  * denotes some kind of a component, and the value denotes the
-  * multiple of that component present in the expression. The
-  * exception is the WRT type, whose `value' field denotes the
-  * segment to which the expression is relative. These segments will
-  * be segment-base types, i.e. either odd segment values or SEG_ABS
-  * types. So it is still valid to assume that anything with a
-  * `value' field of zero is insignificant.
-  </span><span class="comment-delimiter">*/</span>
- <span class="keyword">typedef</span> <span class="keyword">struct</span> {
-     <span class="type">long</span> <span class="variable-name">type</span>;                             <span class="comment-delimiter">/* </span><span class="comment">a register, or EXPR_xxx </span><span class="comment-delimiter">*/</span>
-     <span class="type">long</span> <span class="variable-name">value</span>;                            <span class="comment-delimiter">/* </span><span class="comment">must be &gt;= 32 bits </span><span class="comment-delimiter">*/</span>
- } <span class="type">expr</span>;
+<p>
+由于这些生成的值只会被用来查询，不会被修改，所以很适合用数组来表示。
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-comment-delimiter">/*</span>
+<span class="org-comment"> * Expression-evaluator datatype. Expressions, within the</span>
+<span class="org-comment"> * evaluator, are stored as an array of these beasts, terminated by</span>
+<span class="org-comment"> * a record with type==0. Mostly, it's a vector type: each type</span>
+<span class="org-comment"> * denotes some kind of a component, and the value denotes the</span>
+<span class="org-comment"> * multiple of that component present in the expression. The</span>
+<span class="org-comment"> * exception is the WRT type, whose `value' field denotes the</span>
+<span class="org-comment"> * segment to which the expression is relative. These segments will</span>
+<span class="org-comment"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
+<span class="org-comment"> * types. So it is still valid to assume that anything with a</span>
+<span class="org-comment"> * `value' field of zero is insignificant.</span>
+<span class="org-comment"> </span><span class="org-comment-delimiter">*/</span>
+<span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
+    <span class="org-type">long</span> <span class="org-variable-name">type</span>;                             <span class="org-comment-delimiter">/* </span><span class="org-comment">a register, or EXPR_xxx </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">long</span> <span class="org-variable-name">value</span>;                            <span class="org-comment-delimiter">/* </span><span class="org-comment">must be &gt;= 32 bits </span><span class="org-comment-delimiter">*/</span>
+} <span class="org-type">expr</span>;
 </pre>
+</div>
 
-<p>2. 通过HASH值将数组和链表结合在一起来存储预处理中遇到的宏。</p>
+<ol class="org-ol">
+<li>通过HASH值将数组和链表结合在一起来存储预处理中遇到的宏。</li>
+</ol>
 
-<p>这样HASH数组中的每一项都指向一个链表，链表中的每个结点都存储着一个宏的相关信息，而且各个结点宏名字具有相同的HASH值。这种数组和链表通过HASH算法结合在一起的结构可以更加快速地找到指定名字的宏。</p>
+<p>
+这样HASH数组中的每一项都指向一个链表，链表中的每个结点都存储着一个宏的相关信息，
+而且各个结点宏名字具有相同的HASH值。这种数组和链表通过HASH算法结合在一起的结构
+可以更加快速地找到指定名字的宏。
+</p>
 
-<p>3. NASM在运行时会动态分配两块内存。</p>
+<ol class="org-ol">
+<li>NASM在运行时会动态分配两块内存。</li>
+</ol>
 
-<p>一块用来进行随机内存存取，以树状结构表示，每个叶结点中存储实际的数据；</p>
+<p>
+一块用来进行随机内存存取，以树状结构表示，每个叶结点中存储实际的数据；
+</p>
 
-<p>另一块用来进行顺序内存存取，以链状结构表示。</p>
+<p>
+另一块用来进行顺序内存存取，以链状结构表示。
+</p>
 
-<p>这样程序在需要许多小的内存块时就不必每次去分配，只在已分配的内存块被用完时再分配。即提高了效率，也易于管理。</p>
+<p>
+这样程序在需要许多小的内存块时就不必每次去分配，只在已分配的内存块被用
+完时再分配。即提高了效率，也易于管理。
+</p>
 
 
-<blockquote>
-<p class="quoted"><strong>SAA</strong> :dynamic sequential-access array.</p>
-</blockquote>
+<p>
+<b><b>SAA</b></b> :dynamic sequential-access array.
+</p>
 
-<blockquote>
-<p class="quoted"><strong>RAA</strong> :dynamic random access array.</p>
-</blockquote>
+<p>
+<b><b>RAA</b></b> :dynamic random access array.
+</p>
 
-<pre class="src">
- struct SAA {
-     /*
-      * members `end' and `elem_len' are only valid in first link in
-      * list; `rptr' and `rpos' are used for reading
-      */
-     struct SAA *next, *end, *rptr;
-     long elem_len, length, posn, start, rpos;
-     char *data;
- };
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">struct</span> <span class="org-type">SAA</span> {
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * members `end' and `elem_len' are only valid in first link in</span>
+<span class="org-comment">     * list; `rptr' and `rpos' are used for reading</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-keyword">struct</span> <span class="org-type">SAA</span> *<span class="org-variable-name">next</span>, *<span class="org-variable-name">end</span>, *<span class="org-variable-name">rptr</span>;
+    <span class="org-type">long</span> <span class="org-variable-name">elem_len</span>, <span class="org-variable-name">length</span>, <span class="org-variable-name">posn</span>, <span class="org-variable-name">start</span>, <span class="org-variable-name">rpos</span>;
+    <span class="org-type">char</span> *<span class="org-variable-name">data</span>;
+};
 
- struct RAA {
-     /*
-      * Number of layers below this one to get to the real data. 0
-      * means this structure is a leaf, holding RAA_BLKSIZE real
-      * data items; 1 and above mean it's a branch, holding
-      * RAA_LAYERSIZE pointers to the next level branch or leaf
-      * structures.
-      */
-     int layers;
-     /*
-      * Number of real data items spanned by one position in the
-      * `data' array at this level. This number is 1, trivially, for
-      * a leaf (level 0): for a level 1 branch it should be
-      * RAA_BLKSIZE, and for a level 2 branch it's
-      * RAA_LAYERSIZE*RAA_BLKSIZE.
-      */
-     long stepsize;
-     union RAA_UNION {
-     struct RAA_LEAF {
-         long data[RAA_BLKSIZE];
-     } l;
-     struct RAA_BRANCH {
-         struct RAA *data[RAA_LAYERSIZE];
-     } b;
-     } u;
- };
+<span class="org-keyword">struct</span> <span class="org-type">RAA</span> {
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * Number of layers below this one to get to the real data. 0</span>
+<span class="org-comment">     * means this structure is a leaf, holding RAA_BLKSIZE real</span>
+<span class="org-comment">     * data items; 1 and above mean it's a branch, holding</span>
+<span class="org-comment">     * RAA_LAYERSIZE pointers to the next level branch or leaf</span>
+<span class="org-comment">     * structures.</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">layers</span>;
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * Number of real data items spanned by one position in the</span>
+<span class="org-comment">     * `data' array at this level. This number is 1, trivially, for</span>
+<span class="org-comment">     * a leaf (level 0): for a level 1 branch it should be</span>
+<span class="org-comment">     * RAA_BLKSIZE, and for a level 2 branch it's</span>
+<span class="org-comment">     * RAA_LAYERSIZE*RAA_BLKSIZE.</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">long</span> <span class="org-variable-name">stepsize</span>;
+    <span class="org-keyword">union</span> <span class="org-type">RAA_UNION</span> {
+    <span class="org-keyword">struct</span> <span class="org-type">RAA_LEAF</span> {
+        <span class="org-type">long</span> <span class="org-variable-name">data</span>[RAA_BLKSIZE];
+    } <span class="org-variable-name">l</span>;
+    <span class="org-keyword">struct</span> <span class="org-type">RAA_BRANCH</span> {
+        <span class="org-keyword">struct</span> <span class="org-type">RAA</span> *<span class="org-variable-name">data</span>[RAA_LAYERSIZE];
+    } <span class="org-variable-name">b</span>;
+    } <span class="org-variable-name">u</span>;
+};
 </pre>
+</div>
 
-<p>4. 其它</p>
+<ol class="org-ol">
+<li>其它</li>
+</ol>
 
-<p>每条合法指令的模板如下表示：</p>
-
-<pre class="src">
- <span class="keyword">struct</span> <span class="type">itemplate</span> {
-     <span class="type">int</span> <span class="variable-name">opcode</span>;                    <span class="comment-delimiter">/* </span><span class="comment">the token, passed from "parser.c" </span><span class="comment-delimiter">*/</span>
-     <span class="type">int</span> <span class="variable-name">operands</span>;                  <span class="comment-delimiter">/* </span><span class="comment">number of operands </span><span class="comment-delimiter">*/</span>
-     <span class="type">long</span> <span class="variable-name">opd</span>[3];                   <span class="comment-delimiter">/* </span><span class="comment">bit flags for operand types </span><span class="comment-delimiter">*/</span>
-     <span class="keyword">const</span> <span class="type">char</span> *<span class="variable-name">code</span>;              <span class="comment-delimiter">/* </span><span class="comment">the code it assembles to </span><span class="comment-delimiter">*/</span>
-     <span class="type">unsigned</span> <span class="type">long</span> <span class="variable-name">flags</span>;           <span class="comment-delimiter">/* </span><span class="comment">some flags </span><span class="comment-delimiter">*/</span>
- };
+<p>
+每条合法指令的模板如下表示：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">struct</span> <span class="org-type">itemplate</span> {
+    <span class="org-type">int</span> <span class="org-variable-name">opcode</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">the token, passed from "parser.c" </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">operands</span>;                  <span class="org-comment-delimiter">/* </span><span class="org-comment">number of operands </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">long</span> <span class="org-variable-name">opd</span>[3];                   <span class="org-comment-delimiter">/* </span><span class="org-comment">bit flags for operand types </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-keyword">const</span> <span class="org-type">char</span> *<span class="org-variable-name">code</span>;              <span class="org-comment-delimiter">/* </span><span class="org-comment">the code it assembles to </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">flags</span>;           <span class="org-comment-delimiter">/* </span><span class="org-comment">some flags </span><span class="org-comment-delimiter">*/</span>
+};
 </pre>
+</div>
 
-<p>其中在第四项code中，用特定的值来表示生成的机器码中可能出现的情况，比如若指令模板中存在\320，则表示该指令需要一个固定大小为16位的操作数。这样，如果目标代码为32位时，机器码就需要一个操作数前缀。</p>
+<p>
+其中在第四项code中，用特定的值来表示生成的机器码中可能出现的情况，
+比如若指令模板中存在\320，则表示该指令需要一个固定大小为16位的
+操作数。这样，如果目标代码为32位时，机器码就需要一个操作数前缀。
+</p>
 
-<blockquote>
-<p class="quoted">/*$Id: nasm_data.html,v 1.2 2003/10/27 09:17:26 jingtao Exp $*/</p>
-</blockquote>
-
-
-<!-- -*- encoding: utf-8 -*- -->
-<p>&nbsp;</p>
-    <div id="footer">
-          <div id="footlink">
-            [<a href="../index.html">返回首页</a> ]</div>
-            <div id="footdate">
-            2014 年 02 月 28 日更新
-            </div>
-    </div>
+<p>
+<i><b>$Id: nasm<sub>data.html,v</sub> 1.2 2003/10/27 09:17:26 jingtao Exp $</b></i>
+</p>
+</div>
+</div>
+</div>
 </body>
 </html>

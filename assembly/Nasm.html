@@ -1,353 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+<!-- 2019-05-23 Thu 12:38 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NASM源码阅读笔记</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Jingtao Xu" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
 
-  <title>NASM源码阅读笔记</title>
-  <meta name="author" content="Xu Jingtao" />
-  <meta name="generator" content="Muse" />
-  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
-  <link rel="shortcut icon" href="/images/web/favicon.ico" />
-  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
-  
-<style type="text/css" media="all">
-/*<![CDATA[*/
-      @import url("../css/core.css");
-      
-/*]]>*/
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
-  <link rel="made" href="mailto:jingtaozf@gmail.com" />
-    <script type="text/javascript">//<![CDATA[
-this.onload = function () {
-(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
-}
 
-//]]></script>
+ <link rel="stylesheet" type="text/css" href="/css/core.css" />
+ <link rel="shortcut icon" href="/images/web/favicon.ico" />
+ <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+ <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
 </head>
 <body>
-  <div id="banner">
-    <p><span id="title">NASM源码阅读笔记</span></p>
-  </div>
-    <!-- Page published by Emacs Muse begins here -->
-<div class="contents">
-<dl>
-<dt>
-<a href="#sec1">各模块简介：</a>
-</dt>
-<dd>
-<dl>
-<dt>
-<a href="#sec2">强大的预处理器preproc.c:</a>
-</dt>
-<dt>
-<a href="#sec3">功能单一的解析模块parser.c:</a>
-</dt>
-<dt>
-<a href="#sec4">代码生成器assemble.c:</a>
-</dt>
-<dt>
-<a href="#sec5">简单的表达式求值模块eval.c:</a>
-</dt>
-<dt>
-<a href="#sec6">标号处理器label.c:</a>
-</dt>
-<dt>
-<a href="#sec7">列表文件生成模块listing.c:</a>
-</dt>
-<dt>
-<a href="#sec8">浮点数转换模块float.c:</a>
-</dt>
-<dt>
-<a href="#sec9">指令模板集模块insnsa.c:</a>
-</dt>
-<dt>
-<a href="#sec10">为其它模块提供支持的nasmlib.c:</a>
-</dt>
-<dt>
-<a href="#sec11">目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：</a>
-</dt>
-</dl>
-</dd>
-<dt>
-<a href="#sec12">流程简介：</a>
-</dt>
-<dt>
-<a href="#sec13">阅读小结</a>
-</dt>
-</dl>
+
+ <ul class="navigation">
+ <li class="site-name">Jingtao Xu</li>
+ <li><a accesskey="a" href="/index.html">Articles</a></li>
+ <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
+ <li><a accesskey="A" href="/about.html">About</a></li>
+ </ul><div id="preamble" class="status">
+
+    <script type="text/javascript">//<![CDATA[
+  this.onload = function () {
+  (new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+ }
+ //]]></script>
+</div>
+<div id="content">
+<h1 class="title">NASM源码阅读笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org3a909c6">1. 各模块简介：</a></li>
+<li><a href="#org26dcb3f">2. 流程简介：</a></li>
+<li><a href="#org6e5c974">3. 阅读小结</a></li>
+</ul>
+</div>
 </div>
 
 
-<h2><a name="sec1" id="sec1"></a>
-各模块简介：</h2>
+<div id="outline-container-org3a909c6" class="outline-2">
+<h2 id="org3a909c6"><span class="section-number-2">1</span> 各模块简介：</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+NASM按功能将汇编器的各个部分独立为模块，各个模块之间并不进行直接的联系。
+这种编程结构使得阅读源代码变得轻松起来，可以将各个模块独立出来分别阅读。
+在源码中的doc/internal.doc中有一个模块间的结构图：
+</p>
+<pre class="example">
+          +--- preproc.c ----+
+          |                  |
+          +---- parser.c ----+
+          |        |         |
+          |     float.c      |
+          |                  |
+          +--- assemble.c ---+
+          |        |         |
+nasm.c ---+     insnsa.c     +--- nasmlib.c
+          |                  |
+          +--- listing.c ----+
+          |                  |
+          +---- labels.c ----+
+          |                  |
+          +--- outform.c ----+
+          |                  |
+          +----- *out.c -----+
+</pre>
 
+
+<p>
+图中没有出现的其它模块有eval.c和float.c。eval.c是表达式求值模块,用于
+preproc.c,parser.c和*out.c；float.c是浮点数常量存储转换模块，用于parser.c。
+各模块将需要导出的函数和数据结构的定义放入对应的头文件中，以便被其它模块调用。
+</p>
+
+<p>
+<b><b>需要注意的是许多函数指针或包含函数指针的结构以参数的形式在各模块间传递，
+这种间接性使得模块之间的结构更加清晰。</b></b>
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="org775afbd"></a>强大的预处理器preproc.c:<br />
+<div class="outline-text-3" id="text-1-1">
+<p>
+预处理部分是NASM中最复杂，也是代码最多的模块，有四千多行代码。
+它使用自己的源码扫描程序ppscan，支持名字相同但参数不同的宏，支持
+各个宏通过上下文相关堆栈来交换信息，支持宏内进行预处理循环等。
+(可参阅NASM使用文档来了解预处理的功能和使用方法)
+</p>
+
+<p>
+preproc.c对外仅导出一个结构：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * Called at the start of a pass; given a file name, the number</span>
+<span class="org-comment">     * of the pass, an error reporting function, an evaluator</span>
+<span class="org-comment">     * function, and a listing generator to talk to.</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">void</span> (*reset) (<span class="org-type">char</span> *, <span class="org-type">int</span>, efunc, evalfunc, <span class="org-type">ListGen</span> *);
+
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * Called to fetch a line of preprocessed source. The line</span>
+<span class="org-comment">     * returned has been malloc'ed, and so should be freed after</span>
+<span class="org-comment">     * use.</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">char</span> *(*getline) (<span class="org-type">void</span>);
+
+    <span class="org-comment-delimiter">/*</span>
+<span class="org-comment">     * Called at the end of a pass.</span>
+<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">void</span> (*cleanup) (<span class="org-type">int</span>);
+} <span class="org-type">Preproc</span>;
+</pre>
+</div>
+
+<p>
+其中reset用于初始化，cleanup用于预处理后的清理工作。
+而函数名getline则是相对于主程序来说的。它对编译器内嵌的宏和汇编源程序
+从上至下进行处理，记录遇到的宏信息，用实际的代码和数据替换调用的宏，并
+返回一行可以被下一个模块(这里是parser.c)使用的“规范的”汇编代码。
+</p>
+
+<p>
+<b><b>预处理部分相对于主程序后面调用的模块来说是透明的。</b></b>
+</p>
+</div>
+</li>
+
+<li><a id="org9b8481d"></a>功能单一的解析模块parser.c:<br />
+<div class="outline-text-3" id="text-1-2">
+<p>
+按作者的说法，解析模块的作用就是解析由`标号',`指令',`操作数'和`注释'组成的
+“规范的”汇编代码行，填充并返回这行代码的insn结构：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {                    <span class="org-comment-delimiter">/* </span><span class="org-comment">an instruction itself </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">char</span> *<span class="org-variable-name">label</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">the label defined, or NULL </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">prefixes</span>[MAXPREFIX];       <span class="org-comment-delimiter">/* </span><span class="org-comment">instruction prefixes, if any </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">nprefix</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">number of entries in above </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">opcode</span>;                     <span class="org-comment-delimiter">/* </span><span class="org-comment">the opcode - not just the string </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">condition</span>;                  <span class="org-comment-delimiter">/* </span><span class="org-comment">the condition code, if Jcc/SETcc </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">operands</span>;                   <span class="org-comment-delimiter">/* </span><span class="org-comment">how many operands? 0-3 </span>
+<span class="org-comment">                                    * (more if db et al) </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">operand</span> <span class="org-variable-name">oprs</span>[3];        <span class="org-comment-delimiter">/* </span><span class="org-comment">the operands, defined as above </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">extop</span> *<span class="org-variable-name">eops</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">extended operands </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">eops_float</span>;                <span class="org-comment-delimiter">/* </span><span class="org-comment">true if DD and floating </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">long</span> <span class="org-variable-name">times</span>;                     <span class="org-comment-delimiter">/* </span><span class="org-comment">repeat count (TIMES prefix) </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">int</span> <span class="org-variable-name">forw_ref</span>;                   <span class="org-comment-delimiter">/* </span><span class="org-comment">is there a forward reference? </span><span class="org-comment-delimiter">*/</span>
+} <span class="org-type">insn</span>;
+</pre>
+</div>
+
+<p>
+该模块导出三个函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">void</span> <span class="org-function-name">parser_global_info</span> (<span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">output</span>, <span class="org-type">loc_t</span> *<span class="org-variable-name">locp</span>);
+<span class="org-type">insn</span> *<span class="org-function-name">parse_line</span> (<span class="org-type">int</span> <span class="org-variable-name">pass</span>, <span class="org-type">char</span> *<span class="org-variable-name">buffer</span>, <span class="org-type">insn</span> *<span class="org-variable-name">result</span>,
+               <span class="org-type">efunc</span> <span class="org-variable-name">error</span>, <span class="org-type">evalfunc</span> <span class="org-variable-name">evaluate</span>, <span class="org-type">ldfunc</span> <span class="org-variable-name">ldef</span>);
+<span class="org-type">void</span> <span class="org-function-name">cleanup_insn</span> (<span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>);
+</pre>
+</div>
+
+<p>
+其中parser_global_info用于解析前的初始化工作(这里是初始化输出的文件格式和
+当前行所在的位置，在定义标号时需要用到)。cleanup_insn用于解析后的清理工作。
+</p>
+
+<p>
+而parse_line的功能就是按照上面提到的`标号',`指令',`操作数'和`注释'的
+顺序对buffer里的代码进行解析，并对相应部分的合法性做一些检查，比如检查指令的前缀是
+不是超过了所能允许的最大值，操作数是否为内存地址，代码中是否含有一个向前的引用等。
+它还提供了对伪指令DB,DD,RESB,RESD,INCBIN等的支持。
+</p>
+</div>
+</li>
+
+<li><a id="org0ed935f"></a>代码生成器assemble.c:<br />
+<div class="outline-text-3" id="text-1-3">
+<p>
+当parser.c填充好insn结构后，assemble.c就按照Intel机器码规则生成实际的
+机器码，并传给out*.c来生成具体格式的目标文件。
+</p>
+
+<p>
+它导出两个函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">long</span> <span class="org-function-name">insn_size</span> (<span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">int</span> <span class="org-variable-name">bits</span>, <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">cpu</span>,
+             <span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<span class="org-type">long</span> <span class="org-function-name">assemble</span> (<span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">int</span> <span class="org-variable-name">bits</span>, <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">cpu</span>,
+            <span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">output</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>,
+            <span class="org-type">ListGen</span> *<span class="org-variable-name">listgen</span>);
+</pre>
+</div>
+
+<p>
+其中insn_size一般用在第一遍分析源码时，用于确定某一行代码在实际目标文件中所需的
+空间，而assemble则一般用在第二遍分析源码时，它转化insn结构中的指令为实际的机器码，
+并输出到out*.c中以生成具体格式的目标文件。
+</p>
+</div>
+</li>
+
+<li><a id="org5263512"></a>简单的表达式求值模块eval.c:<br />
+<div class="outline-text-3" id="text-1-4">
+<p>
+eval.c用于计算并返回代码中表达式的值，其中运算符||,^^,&amp;&amp;等用于条件汇编%if类指令
+的表达式中，返回真或假，|,^,&amp;,&lt;&lt;,+,*,/等用于对常量值进行运算，SEG，WRT等则用于得到
+程序中段(或节)实际的基址和偏移。
+</p>
+
+<p>
+eval.c的功能比较简单，不能像MASM那样处理类似(eax != 0)这样的表达式。(后记[1])。
+eval.c利用标准的scan程序扫描表达式缓冲区，找出存在的运算符进行运算，并将
+处理后的值存入expr结构中：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-comment-delimiter">/*</span>
+<span class="org-comment"> * Expression-evaluator datatype. Expressions, within the</span>
+<span class="org-comment"> * evaluator, are stored as an array of these beasts, terminated by</span>
+<span class="org-comment"> * a record with type==0. Mostly, it's a vector type: each type</span>
+<span class="org-comment"> * denotes some kind of a component, and the value denotes the</span>
+<span class="org-comment"> * multiple of that component present in the expression. The</span>
+<span class="org-comment"> * exception is the WRT type, whose `value' field denotes the</span>
+<span class="org-comment"> * segment to which the expression is relative. These segments will</span>
+<span class="org-comment"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
+<span class="org-comment"> * types. So it is still valid to assume that anything with a</span>
+<span class="org-comment"> * `value' field of zero is insignificant.</span>
+<span class="org-comment"> </span><span class="org-comment-delimiter">*/</span>
+<span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
+    <span class="org-type">long</span> <span class="org-variable-name">type</span>;                             <span class="org-comment-delimiter">/* </span><span class="org-comment">a register, or EXPR_xxx </span><span class="org-comment-delimiter">*/</span>
+    <span class="org-type">long</span> <span class="org-variable-name">value</span>;                            <span class="org-comment-delimiter">/* </span><span class="org-comment">must be &gt;= 32 bits </span><span class="org-comment-delimiter">*/</span>
+} <span class="org-type">expr</span>;
+</pre>
+</div>
+
+<p>
+值得注意的是eval.c只在第一遍分析源码时处理运算符||,^^，&amp;&amp;等，因为它们只在
+预处理表达式中才可能出现。
+</p>
+</div>
+</li>
+
+<li><a id="org449faae"></a>标号处理器label.c:<br />
+<div class="outline-text-3" id="text-1-5">
+<p>
+NASM的标号分局部标号和全局标号两种(外部标号可看作是在另一个源程序中的全局标号)。
+</p>
+
+<p>
+局部标号名最终将由两部分组成："上一个全局标号名＋局部标号名"。
+</p>
+
+<p>
+全局标号名最终将由三部分组成："lprefix+全局标号名+lpostfix"。
+</p>
+
+<p>
+其中lprefix和lpostfix都是可选的，它们分别用于在所有的全局标号名的前面和后面添加字符串。
+比如在编译时指定选项 &#x2013;prefix_ 将会在所在的全局标号名前加下划线，
+这就会和在C中生成标号的情况差不多。
+最终label.c会将标号的相关信息传给对应的out*.c来生成目标文件中的符号。
+</p>
+
+<p>
+这个模块导出以下数据和函数：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-keyword">extern</span> <span class="org-type">char</span> <span class="org-variable-name">lprefix</span>[PREFIX_MAX];
+<span class="org-keyword">extern</span> <span class="org-type">char</span> <span class="org-variable-name">lpostfix</span>[PREFIX_MAX];
+
+<span class="org-type">int</span> <span class="org-function-name">lookup_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> *<span class="org-variable-name">segment</span>, <span class="org-type">long</span> *<span class="org-variable-name">offset</span>);
+<span class="org-type">int</span> <span class="org-function-name">is_extern</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>);
+<span class="org-type">void</span> <span class="org-function-name">define_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
+                   <span class="org-type">int</span> <span class="org-variable-name">is_norm</span>, <span class="org-type">int</span> <span class="org-variable-name">isextrn</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<span class="org-type">void</span> <span class="org-function-name">redefine_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
+                   <span class="org-type">int</span> <span class="org-variable-name">is_norm</span>, <span class="org-type">int</span> <span class="org-variable-name">isextrn</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<span class="org-type">void</span> <span class="org-function-name">define_common</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">size</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
+                    <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<span class="org-type">void</span> <span class="org-function-name">declare_as_global</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<span class="org-type">int</span> <span class="org-function-name">init_labels</span> (<span class="org-type">void</span>);
+<span class="org-type">void</span> <span class="org-function-name">cleanup_labels</span> (<span class="org-type">void</span>);
+</pre>
+</div>
+
+<p>
+函数init_labels和cleanup_labels分别用于内部数据的初始化和清理工作。
+</p>
+
+<p>
+函数lookup_label用于查找存在的标号并返回对应的段和偏移的值。
+</p>
+
+<p>
+函数define_label用于定义标号并将信息传递给相应的out*.c来生成目标文件中的符号。
+</p>
+
+<p>
+函数redefine_label用于检查标号是否存在定位错误并对其进行修正(按作者的说法，虽然大多
+数的汇编器都存在这个功能，但在这里好像并不能起到什么作用)。
+</p>
+</div>
+</li>
+
+<li><a id="org563442a"></a>列表文件生成模块listing.c:<br />
+<div class="outline-text-3" id="text-1-6">
+<p>
+list.c用于生成列表文件。列表文件的格式如下：
+</p>
+
+<p>
+列表文件的行号 代码在目标文件中的偏移 &lt;列表嵌套层数&gt;　源代码行或宏展开后的代码
+</p>
+
+<p>
+其中的列表嵌套层数用于INCBIN,TIMES,INCLUDE和MACRO等伪指令，用于表示这些指令展开后在
+代码中嵌套的层数。在实际生成的列表文件中不对TIMES指令和指定了.nolist的宏进行展开操作。
+</p>
+
+<p>
+list.c对外导出如下结构：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">ListGen</span> <span class="org-variable-name">nasmlist</span> = {
+    list_init,
+    list_cleanup,
+    list_output,
+    list_line,
+    list_uplevel,
+    list_downlevel
+};
+</pre>
+</div>
+
+<p>
+其中list_init和list_cleanup分别用于模块内部数据的初始化和清理操作。
+</p>
+
+<p>
+list_output用于生成列表文件格式中的的前两部分，list_line用于生成列表文件格式中的
+后两部分。
+</p>
+
+<p>
+list_upleve和list_downlevel被其它模块调用，以更新list.c中的列表嵌套层数。
+</p>
+
+<p>
+值得注意的是源码中的数据结构MacroInhibit目前在模块中并没有什么实际的作用，而且list.c
+也没有对传入的参数进行充分的处理。按作者的说法，这些函数实现并没有经过很好的考虑，
+它们只是因为"差不多能够工作"，所以才被保留至今。
+</p>
+</div>
+</li>
+
+<li><a id="orgc243255"></a>浮点数转换模块float.c:<br />
+<div class="outline-text-3" id="text-1-7">
+<p>
+float.c模块导出一个函数float_const：
+</p>
+<div class="org-src-container">
+<pre class="src src-C"><span class="org-type">int</span> <span class="org-function-name">float_const</span> (<span class="org-type">char</span> *<span class="org-variable-name">number</span>, <span class="org-type">long</span> <span class="org-variable-name">sign</span>, <span class="org-type">unsigned</span> <span class="org-type">char</span> *<span class="org-variable-name">result</span>, <span class="org-type">int</span> <span class="org-variable-name">bytes</span>,
+ <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+</pre>
+</div>
+
+<p>
+这个函数负责将指令DD, DQ和DT后的浮点数常量转换为Intel机器内部的数据表达形式。
+float.c能识别的浮点数格式如下：
+</p>
 <blockquote>
-<p class="quoted">NASM按功能将汇编器的各个部分独立为模块，各个模块之间并不进行直接的联系。这种编程结构使得阅读源代码变得轻松起来，可以将各个模块独立出来分别阅读。在源码中的doc/internal.doc中有一个模块间的结构图：</p>
+<p>
+dd    1.2                     ; an easy one
+dq    1.e10                   ; 10,000,000,000
+dq    1.e+10                  ; synonymous with 1.e10
+dq    1.e-10                  ; 0.000 000 000 1
+dt    3.141592653589793238462 ; pi
+</p>
 </blockquote>
 
-<pre class="example">
-                  +--- preproc.c ----+
-                  |                  |
-                  +---- parser.c ----+
-                  |        |         |
-                  |     float.c      |
-                  |                  |
-                  +--- assemble.c ---+
-                  |        |         |
-        nasm.c ---+     insnsa.c     +--- nasmlib.c
-                  |                  |
-                  +--- listing.c ----+
-                  |                  |
-                  +---- labels.c ----+
-                  |                  |
-                  +--- outform.c ----+
-                  |                  |
-                  +----- *out.c -----+
-</pre>
-
-<p>图中没有出现的其它模块有eval.c和float.c。eval.c是表达式求值模块,用于
-preproc.c,parser.c和*out.c；float.c是浮点数常量存储转换模块，用于parser.c。各模块将需要导出的函数和数据结构的定义放入对应的头文件中，以便被其它模块调用。</p>
-
-<p><strong>需要注意的是许多函数指针或包含函数指针的结构以参数的形式在各模块间传递，这种间接性使得模块之间的结构更加清晰。</strong></p>
-
-<h3><a name="sec2" id="sec2"></a>
-强大的预处理器preproc.c:</h3>
-
-<p class="first">预处理部分是NASM中最复杂，也是代码最多的模块，有四千多行代码。它使用自己的源码扫描程序ppscan，支持名字相同但参数不同的宏，支持各个宏通过上下文相关堆栈来交换信息，支持宏内进行预处理循环等。
-(可参阅NASM使用文档来了解预处理的功能和使用方法)</p>
-
-<p>preproc.c对外仅导出一个结构：</p>
-
-<pre class="src">
-  <span class="keyword">typedef</span> <span class="keyword">struct</span> {
-      <span class="comment-delimiter">/*</span><span class="comment">
-       * Called at the start of a pass; given a file name, the number
-       * of the pass, an error reporting function, an evaluator
-       * function, and a listing generator to talk to.
-       </span><span class="comment-delimiter">*/</span>
-      <span class="type">void</span> (*<span class="function-name">reset</span>) (<span class="type">char</span> *, <span class="type">int</span>, efunc, evalfunc, <span class="type">ListGen</span> *);
-
-      <span class="comment-delimiter">/*</span><span class="comment">
-       * Called to fetch a line of preprocessed source. The line
-       * returned has been malloc'ed, and so should be freed after
-       * use.
-       </span><span class="comment-delimiter">*/</span>
-      <span class="type">char</span> *(*<span class="function-name">getline</span>) (<span class="type">void</span>);
-
-      <span class="comment-delimiter">/*</span><span class="comment">
-       * Called at the end of a pass.
-       </span><span class="comment-delimiter">*/</span>
-      <span class="type">void</span> (*<span class="function-name">cleanup</span>) (<span class="type">int</span>);
-  } <span class="type">Preproc</span>;
-</pre>
-
-<p>其中reset用于初始化，cleanup用于预处理后的清理工作。而函数名getline则是相对于主程序来说的。它对编译器内嵌的宏和汇编源程序从上至下进行处理，记录遇到的宏信息，用实际的代码和数据替换调用的宏，并返回一行可以被下一个模块(这里是parser.c)使用的“规范的”汇编代码。</p>
-
-<p><strong>预处理部分相对于主程序后面调用的模块来说是透明的。</strong></p>
-
-
-<h3><a name="sec3" id="sec3"></a>
-功能单一的解析模块parser.c:</h3>
-
-<p class="first">按作者的说法，解析模块的作用就是解析由`标号',`指令',`操作数'和`注释'组成的“规范的”汇编代码行，填充并返回这行代码的insn结构：</p>
-
-<pre class="src">
-  <span class="keyword">typedef</span> <span class="keyword">struct</span> {                    <span class="comment-delimiter">/* </span><span class="comment">an instruction itself </span><span class="comment-delimiter">*/</span>
-      <span class="type">char</span> *<span class="variable-name">label</span>;                    <span class="comment-delimiter">/* </span><span class="comment">the label defined, or NULL </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">prefixes</span>[MAXPREFIX];       <span class="comment-delimiter">/* </span><span class="comment">instruction prefixes, if any </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">nprefix</span>;                    <span class="comment-delimiter">/* </span><span class="comment">number of entries in above </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">opcode</span>;                     <span class="comment-delimiter">/* </span><span class="comment">the opcode - not just the string </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">condition</span>;                  <span class="comment-delimiter">/* </span><span class="comment">the condition code, if Jcc/SETcc </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">operands</span>;                   <span class="comment-delimiter">/* </span><span class="comment">how many operands? 0-3
-                                      * (more if db et al) </span><span class="comment-delimiter">*/</span>
-      <span class="type">operand</span> <span class="variable-name">oprs</span>[3];        <span class="comment-delimiter">/* </span><span class="comment">the operands, defined as above </span><span class="comment-delimiter">*/</span>
-      <span class="type">extop</span> *<span class="variable-name">eops</span>;                    <span class="comment-delimiter">/* </span><span class="comment">extended operands </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">eops_float</span>;                <span class="comment-delimiter">/* </span><span class="comment">true if DD and floating </span><span class="comment-delimiter">*/</span>
-      <span class="type">long</span> <span class="variable-name">times</span>;                     <span class="comment-delimiter">/* </span><span class="comment">repeat count (TIMES prefix) </span><span class="comment-delimiter">*/</span>
-      <span class="type">int</span> <span class="variable-name">forw_ref</span>;                   <span class="comment-delimiter">/* </span><span class="comment">is there a forward reference? </span><span class="comment-delimiter">*/</span>
-  } <span class="type">insn</span>;
-</pre>
-
-<p>该模块导出三个函数：</p>
-
-<pre class="src">
-  void parser_global_info (struct ofmt *output, loc_t *locp);
-  insn *parse_line (int pass, char *buffer, insn *result,
-                 efunc error, evalfunc evaluate, ldfunc ldef);
-  void cleanup_insn (insn *instruction);
-</pre>
-
-<p>其中parser_global_info用于解析前的初始化工作(这里是初始化输出的文件格式和当前行所在的位置，在定义标号时需要用到)。cleanup_insn用于解析后的清理工作。</p>
-
-<p>而parse_line的功能就是按照上面提到的`标号',`指令',`操作数'和`注释'的顺序对buffer里的代码进行解析，并对相应部分的合法性做一些检查，比如检查指令的前缀是不是超过了所能允许的最大值，操作数是否为内存地址，代码中是否含有一个向前的引用等。它还提供了对伪指令DB,DD,RESB,RESD,INCBIN等的支持。</p>
-
-
-<h3><a name="sec4" id="sec4"></a>
-代码生成器assemble.c:</h3>
-
-<p class="first">当parser.c填充好insn结构后，assemble.c就按照Intel机器码规则生成实际的机器码，并传给out*.c来生成具体格式的目标文件。</p>
-
-<p>它导出两个函数：</p>
-
-<pre class="src">
-  <span class="type">long</span> <span class="function-name">insn_size</span> (<span class="type">long</span> <span class="variable-name">segment</span>, <span class="type">long</span> <span class="variable-name">offset</span>, <span class="type">int</span> <span class="variable-name">bits</span>, <span class="type">unsigned</span> <span class="type">long</span> <span class="variable-name">cpu</span>,
-               <span class="type">insn</span> *<span class="variable-name">instruction</span>, <span class="type">efunc</span> <span class="variable-name">error</span>);
-  <span class="type">long</span> <span class="function-name">assemble</span> (<span class="type">long</span> <span class="variable-name">segment</span>, <span class="type">long</span> <span class="variable-name">offset</span>, <span class="type">int</span> <span class="variable-name">bits</span>, <span class="type">unsigned</span> <span class="type">long</span> <span class="variable-name">cpu</span>,
-              <span class="type">insn</span> *<span class="variable-name">instruction</span>, <span class="keyword">struct</span> <span class="type">ofmt</span> *<span class="variable-name">output</span>, <span class="type">efunc</span> <span class="variable-name">error</span>,
-              <span class="type">ListGen</span> *<span class="variable-name">listgen</span>);
-</pre>
-
-<p>其中insn_size一般用在第一遍分析源码时，用于确定某一行代码在实际目标文件中所需的空间，而assemble则一般用在第二遍分析源码时，它转化insn结构中的指令为实际的机器码，并输出到out*.c中以生成具体格式的目标文件。</p>
-
-
-<h3><a name="sec5" id="sec5"></a>
-简单的表达式求值模块eval.c:</h3>
-
-<p class="first">eval.c用于计算并返回代码中表达式的值，其中运算符||,^^,&amp;&amp;等用于条件汇编%if类指令的表达式中，返回真或假，|,^,&amp;,&lt;&lt;,+,*,/等用于对常量值进行运算，SEG，WRT等则用于得到程序中段(或节)实际的基址和偏移。</p>
-
-<p>eval.c的功能比较简单，不能像MASM那样处理类似(eax != 0)这样的表达式。(后记<sup><a class="footref" name="fnr.1" href="#fn.1">1</a></sup>)。
-eval.c利用标准的scan程序扫描表达式缓冲区，找出存在的运算符进行运算，并将处理后的值存入expr结构中：</p>
-
-<pre class="src">
-  <span class="comment-delimiter">/*</span><span class="comment">
-   * Expression-evaluator datatype. Expressions, within the
-   * evaluator, are stored as an array of these beasts, terminated by
-   * a record with type==0. Mostly, it's a vector type: each type
-   * denotes some kind of a component, and the value denotes the
-   * multiple of that component present in the expression. The
-   * exception is the WRT type, whose `value' field denotes the
-   * segment to which the expression is relative. These segments will
-   * be segment-base types, i.e. either odd segment values or SEG_ABS
-   * types. So it is still valid to assume that anything with a
-   * `value' field of zero is insignificant.
-   </span><span class="comment-delimiter">*/</span>
-  <span class="keyword">typedef</span> <span class="keyword">struct</span> {
-      <span class="type">long</span> <span class="variable-name">type</span>;                             <span class="comment-delimiter">/* </span><span class="comment">a register, or EXPR_xxx </span><span class="comment-delimiter">*/</span>
-      <span class="type">long</span> <span class="variable-name">value</span>;                            <span class="comment-delimiter">/* </span><span class="comment">must be &gt;= 32 bits </span><span class="comment-delimiter">*/</span>
-  } <span class="type">expr</span>;
-</pre>
-
-<p>值得注意的是eval.c只在第一遍分析源码时处理运算符||,^^，&amp;&amp;等，因为它们只在预处理表达式中才可能出现。</p>
-
-
-<h3><a name="sec6" id="sec6"></a>
-标号处理器label.c:</h3>
-
-<p class="first">NASM的标号分局部标号和全局标号两种(外部标号可看作是在另一个源程序中的全局标号)。</p>
-
-<p>局部标号名最终将由两部分组成：&quot;上一个全局标号名＋局部标号名&quot;。</p>
-
-<p>全局标号名最终将由三部分组成：&quot;lprefix+全局标号名+lpostfix&quot;。</p>
-
-<p>其中lprefix和lpostfix都是可选的，它们分别用于在所有的全局标号名的前面和后面添加字符串。比如在编译时指定选项 &mdash;prefix_ 将会在所在的全局标号名前加下划线，这就会和在C中生成标号的情况差不多。最终label.c会将标号的相关信息传给对应的out*.c来生成目标文件中的符号。</p>
-
-<p>这个模块导出以下数据和函数：</p>
-
-<pre class="src">
-  <span class="keyword">extern</span> <span class="type">char</span> <span class="variable-name">lprefix</span>[PREFIX_MAX];
-  <span class="keyword">extern</span> <span class="type">char</span> <span class="variable-name">lpostfix</span>[PREFIX_MAX];
-
-  <span class="type">int</span> <span class="function-name">lookup_label</span> (<span class="type">char</span> *<span class="variable-name">label</span>, <span class="type">long</span> *<span class="variable-name">segment</span>, <span class="type">long</span> *<span class="variable-name">offset</span>);
-  <span class="type">int</span> <span class="function-name">is_extern</span> (<span class="type">char</span> *<span class="variable-name">label</span>);
-  <span class="type">void</span> <span class="function-name">define_label</span> (<span class="type">char</span> *<span class="variable-name">label</span>, <span class="type">long</span> <span class="variable-name">segment</span>, <span class="type">long</span> <span class="variable-name">offset</span>, <span class="type">char</span> *<span class="variable-name">special</span>,
-                     <span class="type">int</span> <span class="variable-name">is_norm</span>, <span class="type">int</span> <span class="variable-name">isextrn</span>, <span class="keyword">struct</span> <span class="type">ofmt</span> *<span class="variable-name">ofmt</span>, <span class="type">efunc</span> <span class="variable-name">error</span>);
-  <span class="type">void</span> <span class="function-name">redefine_label</span> (<span class="type">char</span> *<span class="variable-name">label</span>, <span class="type">long</span> <span class="variable-name">segment</span>, <span class="type">long</span> <span class="variable-name">offset</span>, <span class="type">char</span> *<span class="variable-name">special</span>,
-                     <span class="type">int</span> <span class="variable-name">is_norm</span>, <span class="type">int</span> <span class="variable-name">isextrn</span>, <span class="keyword">struct</span> <span class="type">ofmt</span> *<span class="variable-name">ofmt</span>, <span class="type">efunc</span> <span class="variable-name">error</span>);
-  <span class="type">void</span> <span class="function-name">define_common</span> (<span class="type">char</span> *<span class="variable-name">label</span>, <span class="type">long</span> <span class="variable-name">segment</span>, <span class="type">long</span> <span class="variable-name">size</span>, <span class="type">char</span> *<span class="variable-name">special</span>,
-                      <span class="keyword">struct</span> <span class="type">ofmt</span> *<span class="variable-name">ofmt</span>, <span class="type">efunc</span> <span class="variable-name">error</span>);
-  <span class="type">void</span> <span class="function-name">declare_as_global</span> (<span class="type">char</span> *<span class="variable-name">label</span>, <span class="type">char</span> *<span class="variable-name">special</span>, <span class="type">efunc</span> <span class="variable-name">error</span>);
-  <span class="type">int</span> <span class="function-name">init_labels</span> (<span class="type">void</span>);
-  <span class="type">void</span> <span class="function-name">cleanup_labels</span> (<span class="type">void</span>);
-</pre>
-
-<p>函数init_labels和cleanup_labels分别用于内部数据的初始化和清理工作。</p>
-
-<p>函数lookup_label用于查找存在的标号并返回对应的段和偏移的值。</p>
-
-<p>函数define_label用于定义标号并将信息传递给相应的out*.c来生成目标文件中的符号。</p>
-
-<p>函数redefine_label用于检查标号是否存在定位错误并对其进行修正(按作者的说法，虽然大多数的汇编器都存在这个功能，但在这里好像并不能起到什么作用)。</p>
-
-
-<h3><a name="sec7" id="sec7"></a>
-列表文件生成模块listing.c:</h3>
-
-<p class="first">list.c用于生成列表文件。列表文件的格式如下：</p>
-
-<p>列表文件的行号 代码在目标文件中的偏移 &lt;列表嵌套层数&gt;　源代码行或宏展开后的代码</p>
-
-<p>其中的列表嵌套层数用于INCBIN,TIMES,INCLUDE和MACRO等伪指令，用于表示这些指令展开后在代码中嵌套的层数。在实际生成的列表文件中不对TIMES指令和指定了.nolist的宏进行展开操作。</p>
-
-<p>list.c对外导出如下结构：</p>
-
-<pre class="src">
-  <span class="type">ListGen</span> <span class="variable-name">nasmlist</span> = {
-      list_init,
-      list_cleanup,
-      list_output,
-      list_line,
-      list_uplevel,
-      list_downlevel
-  };
-</pre>
-
-<p>其中list_init和list_cleanup分别用于模块内部数据的初始化和清理操作。</p>
-
-<p>list_output用于生成列表文件格式中的的前两部分，list_line用于生成列表文件格式中的后两部分。</p>
-
-<p>list_upleve和list_downlevel被其它模块调用，以更新list.c中的列表嵌套层数。</p>
-
-<p>值得注意的是源码中的数据结构MacroInhibit目前在模块中并没有什么实际的作用，而且list.c
-也没有对传入的参数进行充分的处理。按作者的说法，这些函数实现并没有经过很好的考虑，它们只是因为&quot;差不多能够工作&quot;，所以才被保留至今。</p>
-
-
-<h3><a name="sec8" id="sec8"></a>
-浮点数转换模块float.c:</h3>
-
-<p class="first">float.c模块导出一个函数float_const：</p>
-
-<pre class="src">
- <span class="type">int</span> <span class="function-name">float_const</span> (<span class="type">char</span> *<span class="variable-name">number</span>, <span class="type">long</span> <span class="variable-name">sign</span>, <span class="type">unsigned</span> <span class="type">char</span> *<span class="variable-name">result</span>, <span class="type">int</span> <span class="variable-name">bytes</span>,
-  <span class="type">efunc</span> <span class="variable-name">error</span>);
-</pre>
-
-<p>这个函数负责将指令DD, DQ和DT后的浮点数常量转换为Intel机器内部的数据表达形式。
-float.c能识别的浮点数格式如下：</p>
-
-<pre class="example">
-             dd    1.2                     ; an easy one
-             dq    1.e10                   ; 10,000,000,000
-             dq    1.e+10                  ; synonymous with 1.e10
-             dq    1.e-10                  ; 0.000 000 000 1
-             dt    3.141592653589793238462 ; pi
-</pre>
-
-<p>需要注意的是NASM不提供浮点数的表达式求值运算，这是因为NASM认为不能保证所有存在ANSI C编译器的的系统都提供浮点数运算的库函数，而自己实现又有点得不偿失。</p>
-
-
-<h3><a name="sec9" id="sec9"></a>
-指令模板集模块insnsa.c:</h3>
-
-<p class="first">NASM的CVS库中有三个与该模块有关的文件：</p>
-
-<ul>
+<p>
+需要注意的是NASM不提供浮点数的表达式求值运算，这是因为NASM认为不能保证所有
+存在ANSI C编译器的的系统都提供浮点数运算的库函数，而自己实现又有点得不偿失。
+</p>
+</div>
+</li>
+
+<li><a id="org7d602e2"></a>指令模板集模块insnsa.c:<br />
+<div class="outline-text-3" id="text-1-8">
+<p>
+NASM的CVS库中有三个与该模块有关的文件：
+</p>
+
+<ul class="org-ul">
 <li>insns.h(指令模板结构定义和其它常量定义),</li>
 <li>insns.dat(NASM能识别的Intel指令集信息表)，</li>
 <li>insns.pl(用于从insns.dat中生成insnsa.c, insnsd.c, insnsi.h, insnsn.c等文件的Perl脚本)。</li>
 </ul>
 
-<p>在insns.pl生成的四个文件中，insnsa.c和insnd.c是C格式的指令集信息表，分别用于
-assemble.c和ndisasm.c。insnsi.h是指令集名字的枚举表，insnsn.c是指令集名字的字符串表，这两个文件用在扫描(nasmlib.c)和反汇编(ndisasm.c)中。</p>
+<p>
+在insns.pl生成的四个文件中，insnsa.c和insnd.c是C格式的指令集信息表，分别用于
+assemble.c和ndisasm.c。insnsi.h是指令集名字的枚举表，insnsn.c是指令集名字的字符串表，
+这两个文件用在扫描(nasmlib.c)和反汇编(ndisasm.c)中。
+</p>
+</div>
+</li>
 
-
-<h3><a name="sec10" id="sec10"></a>
-为其它模块提供支持的nasmlib.c:</h3>
-
-<p class="first">nasmlib.c提供如下函数：</p>
-
-<ul>
+<li><a id="orgc6681a2"></a>为其它模块提供支持的nasmlib.c:<br />
+<div class="outline-text-3" id="text-1-9">
+<p>
+nasmlib.c提供如下函数：
+</p>
+<ul class="org-ul">
 <li>具有报错和记录功能的内存分配和释放函数;</li>
 <li>字符串和数字间的转换和赋值函数;</li>
 <li>对动态分配的随机存储数组(RAA)和顺序存储数组(SAA)进行管理的函数;</li>
@@ -356,150 +659,179 @@ assemble.c和ndisasm.c。insnsi.h是指令集名字的枚举表，insnsn.c是指
 <li>为目标文件自动添加扩展名的函数;</li>
 <li>对源码和目标文件提供支持的其它函数。</li>
 </ul>
+</div>
+</li>
 
+<li><a id="orga9ef702"></a>目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：<br />
+<div class="outline-text-3" id="text-1-10">
+<p>
+output目录下的*out.c是NASM所能输出的目标格式文件的源代码实现。
+每一个输出模块一般只导出一个ofmt形式的数据结构(ofmt数据结构的定义可参见nasm.h文件)。
+</p>
 
-<h3><a name="sec11" id="sec11"></a>
-目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：</h3>
-
-<p class="first">output目录下的*out.c是NASM所能输出的目标格式文件的源代码实现。每一个输出模块一般只导出一个ofmt形式的数据结构(ofmt数据结构的定义可参见nasm.h文件)。</p>
-
-<p>out*.c还提供了对特定格式的附加指令支持。比如如果在生成OBJ格式时想导入其它DLL的函数，可以使用import指令，如下将导入wsock32.dll中的函数WSAStartup：</p>
-
-<pre class="example">
+<p>
+out*.c还提供了对特定格式的附加指令支持。
+比如如果在生成OBJ格式时想导入其它DLL的函数，可以使用import指令，
+如下将导入wsock32.dll中的函数WSAStartup：
+</p>
+<blockquote>
+<p>
 import WSAStartup wsock32.dll
-</pre>
+</p>
+</blockquote>
 
-<p>outform.c提供了对上述模块进行查找，列举和注册的功能。</p>
+<p>
+outform.c提供了对上述模块进行查找，列举和注册的功能。
+</p>
+</div>
+</li>
+</ol>
+</div>
 
+<div id="outline-container-org26dcb3f" class="outline-2">
+<h2 id="org26dcb3f"><span class="section-number-2">2</span> 流程简介：</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+主程序nasm.c的流程如下：
+</p>
 
-
-<h2><a name="sec12" id="sec12"></a>
-流程简介：</h2>
-
-<p class="first">主程序nasm.c的流程如下：</p>
-
-<ol>
+<ol class="org-ol">
 <li>初始化需要的数据结构，注册编译器支持的目标文件格式。</li>
 <li>使用内部函数parse_cmdline解析命令行参数，设置对应的参数值或输出相应的帮助信息后退出。</li>
 <li>如果生成的目标格式中含有附加的标准宏，调用预处理中的函数对其进行注册。</li>
 <li>调用函数parser_global_info和eval_global_info分别初始化parser.c和eval.c。</li>
 <li>根据变量operating_mode的值判断操作模式，默认为op_normal。
-
-<ul>
-<li>如果operating_mode为op_depend(编译时指定了参数-M)，则对外输出makefile格式的文件依赖关系;</li>
-<li>如果operating_mode为op_preprocess(编译时指定了参数-e)，则只对源代码进行预处理操作，并添加相应的行号信息，然后输出到目标文件或标准输出(stdout);</li>
+<ul class="org-ul">
+<li>如果operating_mode为op_depend(编译时指定了参数-M)，
+则对外输出makefile格式的文件依赖关系;</li>
+<li>如果operating_mode为op_preprocess(编译时指定了参数-e)，
+则只对源代码进行预处理操作，并添加相应的行号信息，然后输出到目标文件或标准输出(stdout);</li>
 <li>如果operating_mode为op_normal，则先调用函数init_labels和ofmt-&gt;init
-分别初始化label.c和out*.c，然后调用函数assemble_file对源文件进行编译处理。</li>
+分别初始化label.c和out*.c，
+然后调用函数assemble_file对源文件进行编译处理。</li>
 </ul></li>
 <li>释放掉程序动态分配的内存(RAA和SAA),调用函数eval_cleanup和nasmlib_cleanup
 进行相应模块的清理工作。然后根据变量terminate_after_phase的值设置程序返回值并结束运行。</li>
 </ol>
 
-<p>其中的函数 <strong>assemble_file</strong> 负责了最主要的工作，它接收源程序文件名，并调用各个模块对源程序进行预处理，解析，编译，生成指定目标格式文件等操作。</p>
+<p>
+其中的函数 <b><b>assemble_file</b></b> 负责了最主要的工作，它接收源程序文件名，
+并调用各个模块对源程序进行预处理，解析，编译，生成指定目标格式文件等操作。
+</p>
 
-<p><strong>assemble_file</strong> 函数流程如下：</p>
+<p>
+<b><b>assemble_file</b></b> 函数流程如下：
+</p>
 
-<ol>
+<ol class="org-ol">
 <li>初始化目标文件格式中的段(节)和偏移值，初始化预处理模块，设置当前扫描次数。</li>
-<li>调用预处理模块中的函数preproc-&gt;getline()返回一行可以被解析使用的“标准”汇编代码，并增加当前行数。</li>
+<li>调用预处理模块中的函数preproc-&gt;getline()返回一行可以被解析使用的“标准”汇编代码，
+并增加当前行数。</li>
 <li>调用函数getkw(line,&amp;value)来判断当前行格式是否为[directive value]并返回
-directive和value相应的值。这里的directive是指NASM自己的一些伪指令，例如SECTION，EXTERN，GLOBAL等。若上述格式getkw无法识别，则调用ofmt-&gt;directive (line+1, value, 1)来判断是否为目标文件格式的附加指令。</li>
+directive和value相应的值。
+这里的directive是指NASM自己的一些伪指令，例如SECTION，EXTERN，GLOBAL等。
+若上述格式getkw无法识别，则调用ofmt-&gt;directive (line+1, value, 1)来判断
+是否为目标文件格式的附加指令。</li>
 <li>若当前行不是上述格式，则调用标准的解析函数parse_line解析当前行。</li>
 <li>记录或处理当前行指令中的向前引用。</li>
-<li>处理EQU指令，并只在第二次解析时才处理标号前缀为&quot;..&quot;的特殊EQU指令。</li>
-<li>调用编译模块进行处理。第一次扫描源码时调用insn_size，并对伪指令RESB，DB等调用函数ofmt-&gt;current_dfmt-&gt;debug_typevalue(typeinfo)来设置调试信息;
+<li>处理EQU指令，并只在第二次解析时才处理标号前缀为".."的特殊EQU指令。</li>
+<li>调用编译模块进行处理。第一次扫描源码时调用insn_size，并对伪指令RESB，DB等调用
+函数ofmt-&gt;current_dfmt-&gt;debug_typevalue(typeinfo)来设置调试信息;
 第二次扫描时则直接调用assemble来生成目标代码。</li>
 <li>调用函数preproc-&gt;cleanup()和nasmlist.cleanup()进行扫描后的清理工作。</li>
 <li>若扫描次数小于2,则跳转到(1)进行下一遍扫描。</li>
 </ol>
+</div>
+</div>
 
 
-
-<h2><a name="sec13" id="sec13"></a>
-阅读小结</h2>
-
-<p class="first">通过对NASM源码的阅读，我认为它有以下优点：</p>
-
-<ol>
+<div id="outline-container-org6e5c974" class="outline-2">
+<h2 id="org6e5c974"><span class="section-number-2">3</span> 阅读小结</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+通过对NASM源码的阅读，我认为它有以下优点：
+</p>
+<ol class="org-ol">
 <li>采用了模块化的开发模式，各个模块间相对独立，便于扩展功能和修改，也利于被其它程序使用。</li>
 <li>预处理功能比较强大，对宏的命名和参数量要求比较灵活。</li>
 <li>使用了通过HASH运算将数组和链表结合在一起的数据结构，提高了查找效率。</li>
 <li>使用文档和代码间的注释相当齐全，便于他人阅读。</li>
 </ol>
 
-<p>同时，NASM也存在以下问题：</p>
-
-<ol>
-<li>各模块间无法进行相互间的通信。这就导致模块间存在一些重复性代码。另外在模块内部也有少许重复代码。</li>
+<p>
+同时，NASM也存在以下问题：
+</p>
+<ol class="org-ol">
+<li>各模块间无法进行相互间的通信。这就导致模块间存在一些重复性代码。
+另外在模块内部也有少许重复代码。</li>
 <li>listing.c模块和eval.c模块功能简单，特别是listing.c目前尚不完善。</li>
-<li>实质上的架构只提供了两遍的源码扫描，这就导致它对表达式的要求比较严格，不能处理需要多遍扫描才能完成的表达式，这方面的内容可参阅NASM的帮助文档中的
+<li>实质上的架构只提供了两遍的源码扫描，这就导致它对表达式的要求比较严格，
+不能处理需要多遍扫描才能完成的表达式，这方面的内容可参阅NASM的帮助文档中的
 Critical Expressions一节。</li>
 <li>在可输出的目标格式文件中，只有少数几个支持生成含有调试信息的目标文件。</li>
 </ol>
 
-<hr>
+<hr />
+<p>
 仓促之间，错漏难免，敬请指正。
-<blockquote>
-<p class="quoted">Homepage: <a href="http://www.jingtao.net">www.jingtao.net</a>
-Email   : <a href="mailto:jingtaozf@gmail.com">jingtaozf@gmail.com</a></p>
-</blockquote>
+    Homepage: <a href="http://www.jingtao.net">www.jingtao.net</a>   
+    Email   : <a href="mailto:jingtaozf@gmail.com">jingtaozf@gmail.com</a>
+</p>
 
-<hr>
-<p class="footnote"><a class="footnum" name="fn.1" href="#fnr.1">1.</a> 虽然NASM不能处理浮点数的的运算，但不意味着它不能利用自己强大的宏功能来处理类似(eax != 0)的表达式。网友bg7jzw通过在宏中附加指令的方法来使
-NASM像MASM一样支持ADDR关键字。同样的方法也可以实现对类似(eax != 0)表达式的支持。</p>
+<p>
+Footnotes:
+ [1] 虽然NASM不能处理浮点数的的运算，但不意味着它不能利用自己强大的宏功能来
+处理类似(eax != 0)的表达式。网友bg7jzw通过在宏中附加指令的方法来使
+NASM像MASM一样支持ADDR关键字。同样的方法也可以实现对类似(eax != 0)表达
+式的支持。
+</p>
 
-<p>callapi宏如下：</p>
+<p>
+callapi宏如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-asm"><span class="org-comment-delimiter">;</span><span class="org-comment">example: callapi BeginPaint,dword [hWnd], addr [ps]</span>
+<span class="org-function-name">%idefine</span> <span class="org-keyword">ADDR</span>               <span class="org-string">"ADDR"</span>,
+<span class="org-function-name">%imacro</span> <span class="org-keyword">callapi</span> 1-*
+<span class="org-function-name">%assign</span> <span class="org-keyword">i</span>   <span class="org-variable-name">%0</span>
+        <span class="org-keyword">%if</span> <span class="org-variable-name">%0</span> &gt; 1
+                <span class="org-keyword">%rep</span> <span class="org-variable-name">%0</span> - 1
+                        <span class="org-keyword">%rotate</span> -1
+                        <span class="org-keyword">%assign</span> i   i-1
 
-<pre class="src">
-  <span class="comment-delimiter">;</span><span class="comment">example: callapi BeginPaint,dword [hWnd], addr [ps]
-</span>  <span class="keyword">%idefine</span> ADDR               <span class="string">"ADDR"</span>,
-  <span class="keyword">%imacro</span> callapi 1-*
-  <span class="keyword">%assign</span> i   <span class="variable-name">%0</span>
-          <span class="keyword">%if</span> <span class="variable-name">%0</span> &gt; 1
-                  <span class="keyword">%rep</span> <span class="variable-name">%0</span> - 1
-                          <span class="keyword">%rotate</span> -1
-                          <span class="keyword">%assign</span> i   i-1
-
-                          <span class="comment-delimiter">;</span><span class="comment">查看前一个数是否为'ADDR'
-</span>                          <span class="keyword">%rotate</span> -1
-                          <span class="keyword">%ifidni</span> <span class="variable-name">%1</span>,<span class="string">"ADDR"</span>
-                                  <span class="comment-delimiter">;</span><span class="comment">将参数列表移到当前并处理
-</span>                                  <span class="keyword">%rotate</span> 1
-                                  <span class="keyword">lea</span> eax,    <span class="variable-name">%1</span>
-                                  <span class="keyword">push</span>        eax
-                                  <span class="comment-delimiter">;</span><span class="comment">跳过ADDR参数
-</span>                                  <span class="keyword">%rotate</span> -1
-                                  <span class="keyword">%assign</span> i   i-1
-                          <span class="keyword">%else</span>
-                                  <span class="keyword">%rotate</span> 1
-                                  <span class="keyword">xpush</span> {<span class="variable-name">%1</span>}
-                          <span class="keyword">%endif</span>
+                        <span class="org-comment-delimiter">;</span><span class="org-comment">查看前一个数是否为'ADDR'</span>
+                        <span class="org-keyword">%rotate</span> -1
+                        <span class="org-keyword">%ifidni</span> <span class="org-variable-name">%1</span>,<span class="org-string">"ADDR"</span>
+                                <span class="org-comment-delimiter">;</span><span class="org-comment">将参数列表移到当前并处理</span>
+                                <span class="org-keyword">%rotate</span> 1
+                                <span class="org-keyword">lea</span> eax,    <span class="org-variable-name">%1</span>
+                                <span class="org-keyword">push</span>        eax
+                                <span class="org-comment-delimiter">;</span><span class="org-comment">跳过ADDR参数</span>
+                                <span class="org-keyword">%rotate</span> -1
+                                <span class="org-keyword">%assign</span> i   i-1
+                        <span class="org-keyword">%else</span>
+                                <span class="org-keyword">%rotate</span> 1
+                                <span class="org-keyword">xpush</span> {<span class="org-variable-name">%1</span>}
+                        <span class="org-keyword">%endif</span>
 
 
-                          <span class="keyword">%if</span> i &lt;=1
-                                  <span class="keyword">%exitrep</span>
-                          <span class="keyword">%endif</span>
-                  <span class="keyword">%endrep</span>
-                  <span class="keyword">%rotate</span> -1
-          <span class="keyword">%endif</span>
-          <span class="keyword">extern</span>      <span class="variable-name">%1</span>
-          <span class="keyword">call</span>        [<span class="variable-name">%1</span>]
-  <span class="keyword">%endmacro</span>
+                        <span class="org-keyword">%if</span> i &lt;=1
+                                <span class="org-keyword">%exitrep</span>
+                        <span class="org-keyword">%endif</span>
+                <span class="org-keyword">%endrep</span>
+                <span class="org-keyword">%rotate</span> -1
+        <span class="org-keyword">%endif</span>
+        <span class="org-keyword">extern</span>      <span class="org-variable-name">%1</span>
+        <span class="org-keyword">call</span>        [<span class="org-variable-name">%1</span>]
+<span class="org-function-name">%endmacro</span>
 </pre>
+</div>
 
-<blockquote>
-<p class="quoted">/*$Id: nasm_1.html,v 1.6 2003/12/09 10:39:09 jingtao Exp $*/</p>
-</blockquote>
-
-
-<!-- -*- encoding: utf-8 -*- -->
-<p>&nbsp;</p>
-    <div id="footer">
-          <div id="footlink">
-            [<a href="../index.html">返回首页</a> ]</div>
-            <div id="footdate">
-            2014 年 02 月 28 日更新
-            </div>
-    </div>
+<p>
+<i><b>$Id: nasm_1.html,v 1.6 2003/12/09 10:39:09 jingtao Exp $</b></i>
+</p>
+</div>
+</div>
+</div>
 </body>
 </html>

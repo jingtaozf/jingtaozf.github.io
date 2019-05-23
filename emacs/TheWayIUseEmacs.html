@@ -1,276 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-  <meta http-equiv="Content-Type" content= "text/html; charset=utf-8" />
+<!-- 2019-05-23 Thu 12:38 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>我是如何使用Emacs的</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Jingtao Xu" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
 
-  <title>The way I use Emacs</title>
-  <meta name="author" content="Xu Jingtao" />
-  <meta name="generator" content="Muse" />
-  <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
-  <link rel="shortcut icon" href="/images/web/favicon.ico" />
-  <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
-  
-<style type="text/css" media="all">
-/*<![CDATA[*/
-      @import url("../css/core.css");
-      
-/*]]>*/
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
 </style>
-  <link rel="made" href="mailto:jingtaozf@gmail.com" />
-    <script type="text/javascript">//<![CDATA[
-this.onload = function () {
-(new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
-}
 
-//]]></script>
+ <link rel="stylesheet" type="text/css" href="/css/core.css" />
+ <link rel="shortcut icon" href="/images/web/favicon.ico" />
+ <link rel="icon" type="image/gif" href="/images/web/animated_favicon1.gif" />
+ <META NAME="keywords" CONTENT="jingtao,elisp,lisp,common lisp,emacs,org-mode,muse,mew,assembly,masm32,masm,win32,nasm" />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
 </head>
 <body>
-  <div id="banner">
-    <p><span id="title">The way I use Emacs</span></p>
-  </div>
+
+ <ul class="navigation">
+ <li class="site-name">Jingtao Xu</li>
+ <li><a accesskey="a" href="/index.html">Articles</a></li>
+ <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
+ <li><a accesskey="A" href="/about.html">About</a></li>
+ </ul><div id="preamble" class="status">
+
+    <script type="text/javascript">//<![CDATA[
+  this.onload = function () {
+  (new Image()).src = "http://cb.amazingcounters.com/counter.php?i=2623438&c=7870627";
+ }
+ //]]></script>
+</div>
+<div id="content">
+<h1 class="title">我是如何使用Emacs的</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org2e2deed">1. 从VIM转向Emacs</a></li>
+<li><a href="#orgd882783">2. ELISP介绍</a></li>
+<li><a href="#org3d2c7b7">3. GTD时间管理</a></li>
+<li><a href="#org7ce0f17">4. 收发邮件</a></li>
+<li><a href="#org656032b">5. 目录浏览</a></li>
+<li><a href="#org259ddc4">6. 像使用VI一样使用Emacs</a></li>
+<li><a href="#org6429f80">7. 智能化</a></li>
+<li><a href="#org069f557">8. 优化工作流程</a></li>
+<li><a href="#orgc650fa0">9. Emacs的缺点</a></li>
+</ul>
+</div>
+</div>
 <blockquote>
-<p class="quoted">I would not give a fig for the simplicity on this side of complexity,
-but I would give my life for the simplicity on the other side of complexity.</p>
+<p>
+I would not give a fig for the simplicity on this side of complexity,
+but I would give my life for the simplicity on the other side of complexity.
+</p>
+
+<p>
+&#x2013; Oliver Wendell Holmes
+</p>
 </blockquote>
 
-<center>
-<p>&mdash; Oliver Wendell Holmes</p>
-</center>
-
-<div class="contents">
-<dl>
-<dt>
-<a href="#sec1">从VIM转向Emacs</a>
-</dt>
-<dt>
-<a href="#sec2">ELISP介绍</a>
-</dt>
-<dt>
-<a href="#sec3">GTD时间管理</a>
-</dt>
-<dt>
-<a href="#sec4">收发邮件</a>
-</dt>
-<dt>
-<a href="#sec5">目录浏览</a>
-</dt>
-<dt>
-<a href="#sec6">像使用VI一样使用Emacs</a>
-</dt>
-<dt>
-<a href="#sec7">智能化</a>
-</dt>
-<dt>
-<a href="#sec8">优化工作流程</a>
-</dt>
-<dt>
-<a href="#sec9">Emacs的缺点</a>
-</dt>
-</dl>
+<div id="outline-container-org2e2deed" class="outline-2">
+<h2 id="org2e2deed"><span class="section-number-2">1</span> 从VIM转向Emacs</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+03到08年间我一直使用VI做为编辑器，所以对VI的快捷键操作比较熟悉。后来
+由于要学习Common Lisp语言，而Common Lisp强大的开发环境Slime基于Emacs
+编写，因此而开始使用Emacs编辑器。现在我用它来编辑文件，阅读邮件和<a href="http://zh.wikipedia.org/wiki/GTD">GTD</a>管理。
+</p>
+</div>
 </div>
 
-
-<h2><a name="sec1" id="sec1"></a>
-从VIM转向Emacs</h2>
-
-<blockquote>
-<p class="quoted">03到08年间我一直使用VI做为编辑器，所以对VI的快捷键操作比较熟悉。后来
-由于要学习Common Lisp语言，而Common Lisp强大的开发环境Slime基于Emacs
-编写，因此而开始使用Emacs编辑器。现在我用它来编辑文件，阅读邮件和<a href="http://zh.wikipedia.org/wiki/GTD">GTD</a>管理。</p>
-</blockquote>
-
-
-<h2><a name="sec2" id="sec2"></a>
-ELISP介绍</h2>
-
-<blockquote>
-<p class="quoted">Emacs的强大之处在于，它的硬件相关代码使用类LISP格式的C语言来完成，
+<div id="outline-container-orgd882783" class="outline-2">
+<h2 id="orgd882783"><span class="section-number-2">2</span> ELISP介绍</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Emacs的强大之处在于，它的硬件相关代码使用类LISP格式的C语言来完成，
 而大量上层的代码则是由一种解释语言ELisp完成的。ELisp是Lisp的一种方
 言，而Lisp是一种易于扩展的动态语言。Emacs的每个按键，默认都会对应
-elisp中的一个函数。这就允许你可以使用elisp来改变Emacs的所有默认行为。</p>
-</blockquote>
+elisp中的一个函数。这就允许你可以使用elisp来改变Emacs的所有默认行为。
+</p>
 
+<p>
+elisp语言的语法非常简单，如下：
+</p>
+<ul class="org-ul">
+<li><p>
+基本形式
+</p>
+
+<p>
+对一个数学函数f(x,y,z) = f1(x) + f2(y,z) + &#x2026;在elisp中为
+</p>
 <blockquote>
-<p class="quoted">elisp语言的语法非常简单，如下：</p>
-</blockquote>
-
-<ul>
-<li>基本形式
-
-<p>对一个数学函数f(x,y,z) = f1(x) + f2(y,z) + ...在elisp中为</li>
-</ul>
-<blockquote>
-<p class="quoted"></p>
-</blockquote> 
-
-<pre class="src">
-      (+ (f1 x) (f2 y z) ...)
-    </pre>
-
-<ul>
-<li>特殊形式</li>
-</ul>
-<blockquote>
-<p class="quoted"></p>
-</blockquote> 
-
-<pre class="src">
-      'a = (quote a)
-    </pre>
-
-
-<h2><a name="sec3" id="sec3"></a>
-GTD时间管理</h2>
-
-<h3>GTD简介</h3>
-
-<p class="first">GTD是英文Getting Things Done的缩写，是一种行为管理的方法，也是David Allen写的一本书的书名。</p>
-
-<p>GTD的主要原则在于一个人需要通过记录的方式把头脑中的各种任务移出来。通过这样的方式，头脑可以
-不用塞满各种需要完成的事情，而集中精力在正在完成的事情。</p>
-
-<p>我使用Emacs <a href="http://orgmode.org/">org mode</a>来进行GTD管理。</p>
-
-
-
-<h3>三分钟法则</h3>
-
-<p class="first">三分钟法则是说，任何可以在三分钟（也可以稍大或稍小，意指比较短的时间
-段）内可以完成的事情，就迅速把它完成。生活中许多的小事都属于这一类。</p>
-
-
-<h3>添加默认任务</h3>
-
-<blockquote>
-<p class="quoted">在org文件的任务项下添加下列行，当执行函数org-agenda后，该任务就会成为
-默认任务。</p>
-</blockquote>
-
-<pre class="src">
-%%(progn (org-clock-mark-default-task) nil)
+<p>
+(+ (f0 x) (f2 y z) &#x2026;)
+</p>
+</blockquote></li>
+<li><p>
+特殊形式
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">'a = (quote a)
 </pre>
+</div></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org3d2c7b7" class="outline-2">
+<h2 id="org3d2c7b7"><span class="section-number-2">3</span> GTD时间管理</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<ol class="org-ol">
+<li><a id="org86092a2"></a>GTD简介<br />
+<div class="outline-text-3" id="text-3-1">
+<p>
+GTD是英文Getting Things Done的缩写，是一种行为管理的方法，也是David Allen写的一本书的书名。
+</p>
+
+<p>
+GTD的主要原则在于一个人需要通过记录的方式把头脑中的各种任务移出来。通过这样的方式，头脑可以
+不用塞满各种需要完成的事情，而集中精力在正在完成的事情。
+</p>
+
+<p>
+我使用Emacs <a href="http://orgmode.org/">org mode</a>来进行GTD管理。
+</p>
+</div>
+</li>
 
 
-<h3>没有clock in任务时在状态栏提醒</h3>
+<li><a id="org0e1b8f2"></a>三分钟法则<br />
+<div class="outline-text-3" id="text-3-2">
+<p>
+三分钟法则是说，任何可以在三分钟（也可以稍大或稍小，意指比较短的时间
+段）内可以完成的事情，就迅速把它完成。生活中许多的小事都属于这一类。
+</p>
+</div>
+</li>
 
-<blockquote>
-<p class="quoted">emacs org mode支持对一个任务进行clock in/out的操作，并在状态栏显示
+<li><a id="org106b342"></a>添加默认任务<br />
+<div class="outline-text-3" id="text-3-3">
+<p>
+在org文件的任务项下添加下列行，当执行函数org-agenda后，该任务就会成为
+默认任务。
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">%%(progn (org-clock-mark-default-task) nil)
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org8aedc98"></a>没有clock in任务时在状态栏提醒<br />
+<div class="outline-text-3" id="text-3-4">
+<p>
+emacs org mode支持对一个任务进行clock in/out的操作，并在状态栏显示
 clock in的任务。而我希望在尽可能的时间都能clock in一个具体的任务，以
 便始终高效地处理问题。因此对org mode进行了扩展，当没有clock in的
-任务时，状态栏会以醒目的颜色显示一个&quot;NO CLOCK&quot;的提示信息。
-方法如下：</p>
-</blockquote>
+任务时，状态栏会以醒目的颜色显示一个"NO CLOCK"的提示信息。
+方法如下：
+</p>
 
-<ul>
-<li>创建一个idle.org文件，内容如下：</li>
+<ul class="org-ul">
+<li><p>
+创建一个idle.org文件，内容如下：
+&lt;src&gt;
+</p>
+<ul class="org-ul">
+<li><b>NO TASK</b></li>
 </ul>
-<blockquote>
-<p class="quoted"></p>
-</blockquote> 
+<p>
+This heading is used by keeping clocks is always opening.
+%%(progn (xjt/org-clock-mark-idle-task) nil)
+</p>
 
-<pre class="src">
-    * *NO TASK*
-    This heading is used by keeping clocks is always opening.
-    %%(progn (xjt/org-clock-mark-idle-task) nil)
+<p>
+#+END<sub>SRC</sub>
+</p></li>
 
-    # Local Variables&#58; ***
-    # buffer-save-without-query : t ***
-    # End: ***
-    </pre>
+<li><p>
+在Emacs启动时执行如下代码
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">*org-clock-idle-task*</span> nil)
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">*org-clock-idle-quit*</span> nil)
+(<span class="org-keyword">defun</span> <span class="org-function-name">xjt/org-clock-mark-idle-task</span> ()
+  <span class="org-doc">"Mark current task as idle task."</span>
+  (interactive)
+  (save-excursion
+    (org-back-to-heading t)
+    (setq *org-clock-idle-task* (make-marker))
+    (move-marker *org-clock-idle-task* (point))))
 
-<ul>
-<li>在Emacs启动时执行如下代码</li>
-</ul>
-<blockquote>
-<p class="quoted"></p>
-</blockquote> 
-
-<pre class="src">
-    (defvar *org-clock-idle-task* nil)
-    (defvar *org-clock-idle-quit* nil)
-    (defun xjt/org-clock-mark-idle-task ()
-      <span class="string">"Mark current task as idle task."</span>
-      (interactive)
+(<span class="org-keyword">defun</span> <span class="org-function-name">xjt/clock-to-idle-maybe</span> ()
+  (unless org-clock-clocking-in
+    (when (and (not *org-clock-idle-quit*)
+               *org-clock-idle-task*)
       (save-excursion
-        (org-back-to-heading t)
-        (setq *org-clock-idle-task* (make-marker))
-        (move-marker *org-clock-idle-task* (point))))
+        (with-current-buffer (marker-buffer *org-clock-idle-task*)
+          (goto-char (marker-position *org-clock-idle-task*))
+          (org-clock-in))))))
+(add-hook 'org-clock-out-hook 'xjt/clock-to-idle-maybe 'append)
 
-    (defun xjt/clock-to-idle-maybe ()
-      (unless org-clock-clocking-in
-        (when (and (not *org-clock-idle-quit*)
-                   *org-clock-idle-task*)
-          (save-excursion
-            (with-current-buffer (marker-buffer *org-clock-idle-task*)
-              (goto-char (marker-position *org-clock-idle-task*))
-              (org-clock-in))))))
-    (add-hook 'org-clock-out-hook 'xjt/clock-to-idle-maybe 'append)
+(org-copy-face 'modeline 'org-mode-line-clock-idle
+  <span class="org-string">"Face used for clock display for idle tasks in mode line."</span>
+  :background <span class="org-string">"IndianRed3"</span>)
+(<span class="org-keyword">defadvice</span> <span class="org-function-name">org-clock-update-mode-line</span> (around xjt/org-clock-update-mode-line)
+  (if (string= <span class="org-string">"*NO TASK*"</span> org-clock-heading)
+    (progn
+      (setq org-mode-line-string (org-propertize <span class="org-string">"*NO TASK*"</span> 'face 'org-mode-line-clock-idle))
+      (force-mode-line-update))
+    ad-do-it))
+(ad-activate 'org-clock-update-mode-line)
 
-    (org-copy-face 'modeline 'org-mode-line-clock-idle
-      <span class="string">"Face used for clock display for idle tasks in mode line."</span>
-      :background <span class="string">"IndianRed3"</span>)
-    (defadvice org-clock-update-mode-line (around xjt/org-clock-update-mode-line)
-      (if (string= <span class="string">"*NO TASK*"</span> org-clock-heading)
-        (progn
-          (setq org-mode-line-string (org-propertize <span class="string">"*NO TASK*"</span> 'face 'org-mode-line-clock-idle))
-          (force-mode-line-update))
-        ad-do-it))
-    (ad-activate 'org-clock-update-mode-line)
+(<span class="org-keyword">defadvice</span> <span class="org-function-name">org-clock-save</span> (before xjt/org-clock-idle-save)
+  (setq *org-clock-idle-quit* t)
+  (when (string= <span class="org-string">"*NO TASK*"</span> org-clock-heading)
+    (org-clock-out)
+    (with-current-buffer <span class="org-string">"idle.org"</span>
+    (save-buffer))))
+(ad-activate 'org-clock-save)
+</pre>
+</div></li>
 
-    (defadvice org-clock-save (before xjt/org-clock-idle-save)
-      (setq *org-clock-idle-quit* t)
-      (when (string= <span class="string">"*NO TASK*"</span> org-clock-heading)
-        (org-clock-out)
-        (with-current-buffer <span class="string">"idle.org"</span>
-        (save-buffer))))
-    (ad-activate 'org-clock-save)
-    </pre>
-
-<ul>
-<li>最后，执行如下代码就会使org mode在没有clock in任务时在状态栏显示提醒信息。
-（&quot;D&quot;是我自定义的Daily agenda view）</li>
+<li><p>
+最后，执行如下代码就会使org mode在没有clock in任务时在状态栏显示提醒信息。
+（"D"是我自定义的Daily agenda view）
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(let ((org-agenda-files (append org-agenda-files (list (concat org-directory <span class="org-string">"idle.org"</span>)))))
+  (org-agenda nil <span class="org-string">"D"</span>)
+  (xjt/clock-to-idle-maybe))
+</pre>
+</div></li>
 </ul>
-<blockquote>
-<p class="quoted"></p>
-</blockquote> 
+</div>
+</li>
+<li><a id="org8e1f076"></a>让其他人了解自己的工作进展<br />
+<div class="outline-text-3" id="text-3-5">
+<p>
+我会将自己制作的GTD列表导出到html中，这样别人就可以通过WEB网站了解我的工作安排与工作进展。
+如果某项工作不需要导出到html中，只需要将该项工作列表的tag设置为noexport即可。
+</p>
 
-<pre class="src">
-      (let ((org-agenda-files (append org-agenda-files (list (concat org-directory <span class="string">"idle.org"</span>)))))
-        (org-agenda nil <span class="string">"D"</span>)
-        (xjt/clock-to-idle-maybe))
-    </pre>
-
-
-<h3>让其他人了解自己的工作进展</h3>
-
-<p class="first">我会将自己制作的GTD列表导出到html中，这样别人就可以通过WEB网站了解我的工作安排与工作进展。
-如果某项工作不需要导出到html中，只需要将该项工作列表的tag设置为noexport即可。</p>
-
-
-
-
-
-
-
-<h2><a name="sec4" id="sec4"></a>
-收发邮件</h2>
-
-<h3>一次性收取多个邮箱的邮件</h3>
-
-<p class="first">我使用Emacs <a href="http://mew.org">mew</a>来收发邮件，由于有多个邮箱帐户，因此扩展了mew来一次性接
-收多个邮箱的邮件，方法如下：</p>
-
-<pre class="src">
-;;; utils to retrieve all accounts mails.
-(defvar my-mew-cases '(<span class="string">"default"</span> <span class="string">"hotmail"</span> <span class="string">"ixiaozhushou.com"</span> <span class="string">"jingtao.net"</span>))
-(defvar my-mew-orig-case <span class="string">"default"</span>)
-(defvar my-mew-current-caselist my-mew-cases)
-(defun my-mew-summary-set-case (case)
-  <span class="string">"Set the case."</span>
+<p>
+; ** APPT
+; - my-daily-appt
+; <b>* html publish 让其他人更好地了解我的工作
+; *</b> 核查清单
+</p>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org7ce0f17" class="outline-2">
+<h2 id="org7ce0f17"><span class="section-number-2">4</span> 收发邮件</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<ol class="org-ol">
+<li><a id="orgf688b73"></a>一次性收取多个邮箱的邮件<br />
+<div class="outline-text-3" id="text-4-1">
+<p>
+我使用Emacs <a href="http://mew.org">mew</a>来收发邮件，由于有多个邮箱帐户，因此扩展了mew来一次性接
+收多个邮箱的邮件，方法如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;; </span><span class="org-g2-public-documentation">utils to retrieve all accounts mails.</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-cases</span> '(<span class="org-string">"default"</span> <span class="org-string">"hotmail"</span> <span class="org-string">"ixiaozhushou.com"</span> <span class="org-string">"jingtao.net"</span>))
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-orig-case</span> <span class="org-string">"default"</span>)
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-current-caselist</span> my-mew-cases)
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-mew-summary-set-case</span> (case)
+  <span class="org-doc">"Set the case."</span>
   (setq mew-case case)
-  (let ((case mew-case)) ;; side effect
+  (let ((case mew-case)) <span class="org-comment-delimiter">;; </span><span class="org-comment">side effect</span>
     (save-excursion
       (dolist (buf mew-buffers)
         (when (get-buffer buf)
@@ -285,13 +518,13 @@ clock in的任务。而我希望在尽可能的时间都能clock in一个具体�
                     case
                     (mew-proto-inbox-folder (mew-proto case) case))))
         (mew-summary-visit-folder inbox)))))
-(defun my-mew-summary-retrieve-all ()
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-mew-summary-retrieve-all</span> ()
   (interactive)
   (setq my-mew-orig-case mew-case)
   (my-mew-summary-set-case (car my-mew-cases))
   (setq my-mew-current-caselist (cdr my-mew-cases))
   (mew-summary-retrieve))
-(defadvice mew-net-disp-info-display (after my-cache-save-postfix-action)
+(<span class="org-keyword">defadvice</span> <span class="org-function-name">mew-net-disp-info-display</span> (after my-cache-save-postfix-action)
   (sleep-for 2)
   (cond (my-mew-current-caselist
          (my-mew-summary-set-case (car my-mew-current-caselist))
@@ -299,118 +532,128 @@ clock in的任务。而我希望在尽可能的时间都能clock in一个具体�
          (mew-summary-retrieve))
         (my-mew-orig-case
          (sleep-for 2)
-         (message <span class="string">"retrieve all accounts done."</span>)
+         (message <span class="org-string">"retrieve all accounts done."</span>) 
          (my-mew-summary-set-case my-mew-orig-case)
          (setq my-mew-orig-case nil))))
 (ad-activate 'mew-net-disp-info-display)
-(define-key mew-summary-mode-map <span class="string">"I"</span>    'my-mew-summary-retrieve-all)
+(define-key mew-summary-mode-map <span class="org-string">"I"</span>    'my-mew-summary-retrieve-all)
 </pre>
+</div>
+</div>
+</li>
 
+<li><a id="orgf0ed5b3"></a>使mew能够发送中文名的附件<br />
+<div class="outline-text-3" id="text-4-2">
+<p>
+如果使用Outlook(gmail则没有个问题)来接收mew发出的邮件，会发现不能识别中文附件名。下面的补
+丁可以解决这个问题。
+</p>
 
-<h3>使mew能够发送中文名的附件</h3>
-
-<p class="first">如果使用Outlook(gmail则没有个问题)来接收mew发出的邮件，会发现不能识别中文附件名。下面的补
-丁可以解决这个问题。</p>
-
-<pre class="src">
-(defvar *mew-header-encoding-method* :rfc2047)
-(defun mew-header-insert (key value &amp;optional no-fold)
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">*mew-header-encoding-method*</span> :rfc2047)
+(<span class="org-keyword">defun</span> <span class="org-function-name">mew-header-insert</span> (key value &amp;optional no-fold)
   (if (and value (stringp key))
       (let ((beg (point)) params med parname parval)
         (when (listp value)
           (setq params (cdr value))
           (setq value (car value)))
         (insert key)
-        (insert <span class="string">" "</span>)
+        (insert <span class="org-string">" "</span>)
         (setq med (point))
-        (if (string-match <span class="string">"^[\t -~]*$"</span> value)
+        (if (string-match <span class="org-string">"^[\t -~]*$"</span> value)
             (insert value)
           (mew-header-encode-text value nil (length key)))
         (dolist (par params)
           (mew-set '(parname parval) par)
-          (insert <span class="string">";"</span>)
+          (insert <span class="org-string">";"</span>)
           (cond
-           ((string-match <span class="string">"^[-a-zA-Z0-9]+$"</span> parval)
-            ) ;; do nothing
+           ((string-match <span class="org-string">"^[-a-zA-Z0-9]+$"</span> parval)
+            ) <span class="org-comment-delimiter">;; </span><span class="org-comment">do nothing</span>
            ((and (string= (mew-charset-guess-string parval) mew-us-ascii)
-                 (not (string-match <span class="string">"\""</span> parval)))
-            (setq parval (concat <span class="string">"\""</span> parval <span class="string">"\""</span>)))
+                 (not (string-match <span class="org-string">"\""</span> parval)))
+            (setq parval (concat <span class="org-string">"\""</span> parval <span class="org-string">"\""</span>)))
            (t
             (case *mew-header-encoding-method*
               (:rfc2047
                (when (loop for c across parval
                         thereis (&gt; c 255))
-                 (setq parval (concat <span class="string">"\""</span> (rfc2047-encode-string parval)
-                                      <span class="string">"\""</span>))))
+                 (setq parval (concat <span class="org-string">"\""</span> (rfc2047-encode-string parval)
+                                      <span class="org-string">"\""</span>))))
               (t (setq parval (mew-param-encode parval))
-                 (setq parname (concat parname <span class="string">"*"</span>))))))
-          (insert <span class="string">" "</span> parname <span class="string">"="</span> parval))
-        (insert <span class="string">"\n"</span>)
+                 (setq parname (concat parname <span class="org-string">"*"</span>))))))
+          (insert <span class="org-string">" "</span> parname <span class="org-string">"="</span> parval))
+        (insert <span class="org-string">"\n"</span>)
         (unless no-fold
           (mew-header-fold-region beg (point) med)))))
 </pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
 
-
-
-<h2><a name="sec5" id="sec5"></a>
-目录浏览</h2>
-
-<h3>根据文件后缀名使用不同程序打开文件</h3>
-
-<p class="first">Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来根据文件
+<div id="outline-container-org656032b" class="outline-2">
+<h2 id="org656032b"><span class="section-number-2">5</span> 目录浏览</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+<ol class="org-ol">
+<li><a id="org31e0340"></a>根据文件后缀名使用不同程序打开文件<br />
+<div class="outline-text-3" id="text-5-1">
+<p>
+Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来根据文件
 后缀自动打开各种类型的文件，下面的配置能自动打开doc文件，pdf文件，图片
-文件等。（需要安装Wine及相关的软件）</p>
-
-<pre class="src">
-(require 'dired)
+文件等。（需要安装Wine及相关的软件）
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(require 'dired)
   (require 'dired-tar)
-  (GNULinux ; gnome-open
-   (defvar *open-with-wine* '(<span class="string">"wine"</span> <span class="string">"start"</span> <span class="string">"/Unix"</span>))
+  (GNULinux <span class="org-comment-delimiter">; </span><span class="org-comment">gnome-open</span>
+   (<span class="org-keyword">defvar</span> <span class="org-variable-name">*open-with-wine*</span> '(<span class="org-string">"wine"</span> <span class="org-string">"start"</span> <span class="org-string">"/Unix"</span>))
    (setq *dired-extention-open-list*
-         `((<span class="string">"pdf$"</span> <span class="string">"/opt/bin/acroread"</span>)
-           (<span class="string">"htm$"</span> <span class="string">"google-chrome"</span>)
-           (<span class="string">"html$"</span> <span class="string">"google-chrome"</span>)
-           (<span class="string">"doc$"</span> ,@*open-with-wine*)
-           (<span class="string">"docx$"</span> ,@*open-with-wine*)
-           (<span class="string">"exe$"</span> ,@*open-with-wine*)
-           (<span class="string">"ps$"</span> <span class="string">"gsview"</span>)))
+         `((<span class="org-string">"pdf$"</span> <span class="org-string">"/opt/bin/acroread"</span>)
+           (<span class="org-string">"htm$"</span> <span class="org-string">"google-chrome"</span>)
+           (<span class="org-string">"html$"</span> <span class="org-string">"google-chrome"</span>)
+           (<span class="org-string">"doc$"</span> ,@*open-with-wine*)
+           (<span class="org-string">"docx$"</span> ,@*open-with-wine*)
+           (<span class="org-string">"exe$"</span> ,@*open-with-wine*)
+           (<span class="org-string">"ps$"</span> <span class="org-string">"gsview"</span>)))
    (require 'dired-extension)
-   (eval-after-load <span class="string">"dired"</span>
+   (eval-after-load <span class="org-string">"dired"</span>
      '(progn
         (define-key dired-mode-map [C-return] 'my-dired-open-file)
         (define-key dired-mode-map [menu-bar immediate dired-run-associated-program]
-          '(<span class="string">"Open Associated Application"</span> . dired-gnome-open-file)))))
+          '(<span class="org-string">"Open Associated Application"</span> . dired-gnome-open-file)))))
 
-;;;###autoload
-(defun my-dired-open-file ()
-  <span class="string">"Dired find file function. Open file use another tool"</span>
+<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-dired-open-file</span> ()
+  <span class="org-doc">"Dired find file function. Open file use another tool"</span>
   (interactive)
   (dolist (file (dired-get-marked-files))
     (my-dired-open-file-internal file)))
 
-(defvar *use-doc-view* nil)
-(defvar *dired-extention-open-list* nil)
-;;;###autoload
-(defun my-dired-open-file-internal (file)
-  <span class="string">"Open diversified format FILE."</span>
-  (interactive <span class="string">"fFile: "</span>)
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">*use-doc-view*</span> nil)
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">*dired-extention-open-list*</span> nil)
+<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-dired-open-file-internal</span> (file)
+  <span class="org-doc">"Open diversified format FILE."</span>
+  (interactive <span class="org-string">"fFile: "</span>)
   (require 'emms)
   (let ((file-extension (file-name-extension file)))
     (if file-extension
-        (cond ((string-match <span class="string">"\\(s?html?\\)$"</span> file-extension)
+        (cond ((string-match <span class="org-string">"\\(s?html?\\)$"</span> file-extension)
                (require 'w3m)
                (w3m-copy-buffer)
-               (message <span class="string">"%s"</span> file)
+               (message <span class="org-string">"%s"</span> file)
                (w3m-find-file file))
-              ((string-match <span class="string">"\\(chm\\)$"</span> file-extension)
+              ((string-match <span class="org-string">"\\(chm\\)$"</span> file-extension)
                (require 'chm-view)
                (chm-view-file file))
-              ((string-match <span class="string">"\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$"</span> file-extension)
+              ((string-match <span class="org-string">"\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$"</span> file-extension)
                (shell-command
-                (concat <span class="string">"wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"</span>
-                        <span class="string">" `winepath -w "</span> file <span class="string">"` &amp;"</span>)))
+                (concat <span class="org-string">"wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"</span>
+                        <span class="org-string">" `winepath -w "</span> file <span class="org-string">"` &amp;"</span>)))
               ((and *use-doc-view*
-                    (string-match <span class="string">"\\(pdf\\|ps\\|dvi\\)$"</span> file-extension))
+                    (string-match <span class="org-string">"\\(pdf\\|ps\\|dvi\\)$"</span> file-extension))
                (require 'doc-view)
                (dired-view-file)
                (doc-view-mode))
@@ -429,309 +672,332 @@ clock in的任务。而我希望在尽可能的时间都能clock in一个具体�
                                      *dired-extention-open-list*)))
                  (if match
                      (my-open-external-progam-in-emacs
-                      <span class="string">"*dired open*"</span>
+                      <span class="org-string">"*dired open*"</span>
                       (if (&lt; 1 (length (cdr match)))
                           (append (cdr match) (list file))
                         (list (cadr match)
                               file)))
                    (find-file file)))))))))
 </pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
 
-
-
-<h2><a name="sec6" id="sec6"></a>
-像使用VI一样使用Emacs</h2>
-
-<blockquote>
-<p class="quoted">Emacs编辑器的默认按键需要大量使用组合键，特别是Ctrl键，时间长了左小
+<div id="outline-container-org259ddc4" class="outline-2">
+<h2 id="org259ddc4"><span class="section-number-2">6</span> 像使用VI一样使用Emacs</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Emacs编辑器的默认按键需要大量使用组合键，特别是Ctrl键，时间长了左小
 手指会很受伤，而我特别习惯于VI的快捷键，在网上查询后发现了Emacs
 的一个VI插件<a href="http://www.emacswiki.org/emacs/ViperMode">viper</a>，现在我的Emacs编辑器就是大量基于viper来使用的，在
 大部分的情况下，我会使用VI的快捷键来操作Emacs，只在很少数的情况下会
-使用Emacs自带的快捷键。</p>
-</blockquote>
+使用Emacs自带的快捷键。
+</p>
+</div>
 
-<h3>全局快捷键以z开头</h3>
-
-<blockquote>
-<p class="quoted">一些在所有buffer都需要执行的快捷键我称之为全局快捷键，比如切换
+<ol class="org-ol">
+<li><a id="orgeb88e87"></a>全局快捷键以z开头<br />
+<div class="outline-text-3" id="text-6-1">
+<p>
+  一些在所有buffer都需要执行的快捷键我称之为全局快捷键，比如切换
 buffer，文件保存等操作。全局快捷键的设置存储在变量
-*viper-basic-mode-z-based-maps*中</p>
-</blockquote>
-
-<pre class="src">
-;;in viper mode &amp; some other modes,use z as my custom command prefix.
-(defvar *viper-basic-mode-z-based-maps* nil)
+*viper-basic-mode-z-based-maps*中
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">in viper mode &amp; some other modes,use z as my custom command prefix.</span>
+(<span class="org-keyword">defvar</span> <span class="org-variable-name">*viper-basic-mode-z-based-maps*</span> nil)
 (setq *viper-basic-mode-z-based-maps*
         `(
-          (<span class="string">"0"</span> delete-window)
-          (<span class="string">"1"</span> delete-other-windows)
-          (<span class="string">"2"</span> split-window-vertically)
-          (<span class="string">"b"</span> ido-switch-buffer)
-          (<span class="string">"c"</span> comment-region)
-          (<span class="string">"u"</span> uncomment-region)
+          (<span class="org-string">"0"</span> delete-window)
+          (<span class="org-string">"1"</span> delete-other-windows)
+          (<span class="org-string">"2"</span> split-window-vertically)
+          (<span class="org-string">"b"</span> ido-switch-buffer)
+          (<span class="org-string">"c"</span> comment-region)
+          (<span class="org-string">"u"</span> uncomment-region)
 
-          (<span class="string">"f"</span> ido-find-file)
-          (<span class="string">"i"</span> my-insert)
-          (<span class="string">"j"</span> idomenu)
-          (<span class="string">"k"</span> kill-current-buffer)
+          (<span class="org-string">"f"</span> ido-find-file)
+          (<span class="org-string">"i"</span> my-insert)
+          (<span class="org-string">"j"</span> idomenu)
+          (<span class="org-string">"k"</span> kill-current-buffer)
 
-          (<span class="string">"A"</span> org-agenda)
-          (<span class="string">"D"</span> kid-cl-speaker)
-          (<span class="string">"S"</span> my-save-buffers)
-          (<span class="string">"N"</span> tabbar-forward-group)
-          (<span class="string">"P"</span> tabbar-backward-group)
-          (<span class="string">"Q"</span> save-buffers-kill-terminal)
+          (<span class="org-string">"A"</span> org-agenda)
+          (<span class="org-string">"D"</span> kid-cl-speaker)
+          (<span class="org-string">"S"</span> my-save-buffers)
+          (<span class="org-string">"N"</span> tabbar-forward-group)
+          (<span class="org-string">"P"</span> tabbar-backward-group)
+          (<span class="org-string">"Q"</span> save-buffers-kill-terminal)
           ))
-(defmacro apply-viper-z-map (&amp;rest body)
+(<span class="org-keyword">defmacro</span> <span class="org-function-name">apply-viper-z-map</span> (&amp;rest body)
   `(loop for (char action) in *viper-basic-mode-z-based-maps*
       do ,@body))
-(defmacro apply-viper-z-keymap (map-name)
+(<span class="org-keyword">defmacro</span> <span class="org-function-name">apply-viper-z-keymap</span> (map-name)
   `(loop for (char action) in *viper-basic-mode-z-based-maps*
-      do (ignore-errors (define-key ,map-name (concat <span class="string">"z"</span> char) action))))
+      do (ignore-errors (define-key ,map-name (concat <span class="org-string">"z"</span> char) action))))
 
 (with-my-hook 'org-mode-hook
-  (org-defkey org-agenda-mode-map <span class="string">"z"</span> nil)
-  ;; map original key <span class="string">"z"</span> to <span class="string">"zz"</span> in org agenda mode.
-  (org-defkey org-agenda-mode-map <span class="string">"zz"</span> 'org-agenda-add-note)
-  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat <span class="string">"z"</span> char) action)))
+  (org-defkey org-agenda-mode-map <span class="org-string">"z"</span> nil)
+  <span class="org-comment-delimiter">;; </span><span class="org-comment">map original key "z" to "zz" in org agenda mode.</span>
+  (org-defkey org-agenda-mode-map <span class="org-string">"zz"</span> 'org-agenda-add-note)
+  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat <span class="org-string">"z"</span> char) action)))
 
-(define-key viper-vi-basic-map <span class="string">"z"</span> nil) ; delete `viper-nil' binding
+(define-key viper-vi-basic-map <span class="org-string">"z"</span> nil) <span class="org-comment-delimiter">; </span><span class="org-comment">delete `</span><span class="org-keyword">viper-nil</span><span class="org-comment">' binding</span>
 (apply-viper-z-keymap viper-vi-basic-map)
 </pre>
-<h4>ze全局操作外部命令相关</h4>
-
-<pre class="src">
-          ;; use ze as external &amp; enlish invoke
-          (<span class="string">"ec"</span> my-external-program)
-          (<span class="string">"eb"</span> my-bash-shell)
-          (<span class="string">"ed"</span> kid-star-dict)
-          (<span class="string">"eD"</span> kid-sdcv-to-buffer)
-          (<span class="string">"em"</span> compile)
-          (<span class="string">"ep"</span> my-plink)
-          (<span class="string">"es"</span> dos-shell)
+</div>
+</div>
+<ol class="org-ol">
+<li><a id="org5d46c8b"></a>ze全局操作外部命令相关<br />
+<div class="outline-text-4" id="text-6-1-1">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use ze as external &amp; enlish invoke</span>
+(<span class="org-string">"ec"</span> my-external-program)
+(<span class="org-string">"eb"</span> my-bash-shell)
+(<span class="org-string">"ed"</span> kid-star-dict)
+(<span class="org-string">"eD"</span> kid-sdcv-to-buffer)
+(<span class="org-string">"em"</span> compile)
+(<span class="org-string">"ep"</span> my-plink)
+(<span class="org-string">"es"</span> dos-shell)
 
 
 </pre>
-
-
-<h4>zd全局操作目录相关</h4>
-
-<pre class="src">
-          ;;use zd as dired invoke.
-          (<span class="string">"db"</span> my-dired-buffers)
-          (<span class="string">"dj"</span> dired-jump)
-          (<span class="string">"df"</span> my-traverse-deep-rfind)
-          (<span class="string">"dg"</span> my-dired-go)
-          (<span class="string">"do"</span> dired-jump)
+</div>
+</div>
+</li>
+<li><a id="orgedaf640"></a>zd全局操作目录相关<br />
+<div class="outline-text-4" id="text-6-1-2">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use zd as dired invoke.</span>
+(<span class="org-string">"db"</span> my-dired-buffers)
+(<span class="org-string">"dj"</span> dired-jump)
+(<span class="org-string">"df"</span> my-traverse-deep-rfind)
+(<span class="org-string">"dg"</span> my-dired-go)
+(<span class="org-string">"do"</span> dired-jump)
 </pre>
-
-
-<h4>zw全局操作w3m相关</h4>
-
-<pre class="src">
-          ;;use w as w3m prefix
-          (<span class="string">"wb"</span> my-w3m-buffers)
-          (<span class="string">"ws"</span> w3m-browse-url-new-session)
-          (<span class="string">"wq"</span> my-google-search)
-          (<span class="string">"wg"</span> w3m-browse-url)
+</div>
+</div>
+</li>
+<li><a id="orgefabf6c"></a>zw全局操作w3m相关<br />
+<div class="outline-text-4" id="text-6-1-3">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use w as w3m prefix </span>
+(<span class="org-string">"wb"</span> my-w3m-buffers)
+(<span class="org-string">"ws"</span> w3m-browse-url-new-session)
+(<span class="org-string">"wq"</span> my-google-search)
+(<span class="org-string">"wg"</span> w3m-browse-url)
 </pre>
-
-
-<h4>zg全局操作org mode</h4>
-
-<pre class="src">
-          ;; use zg as org-mode prefix
-          (<span class="string">"g "</span> org-table-edit-field)
-          (<span class="string">"ga"</span> my-org-agenda-buffer)
-          (<span class="string">"gA"</span> org-agenda)
-          (<span class="string">"gb"</span> org-switchb)
-          (<span class="string">"gcd"</span> org-clock-mark-default-task)
-          (<span class="string">"gci"</span> my-org-clock-in)
-          (<span class="string">"gco"</span> org-clock-out)
-          (<span class="string">"gcj"</span> my-org-clock-goto)
-          (<span class="string">"gcJ"</span> my-org-recent-clock)
-          (<span class="string">"gC"</span> org-columns)
-          (<span class="string">"ge"</span> org-set-effort)
-          (<span class="string">"gE"</span> org-clock-modify-effort-estimate)
-          (<span class="string">"gd"</span> org-decrypt-entry)
-          (<span class="string">"gl"</span> org-store-link)
-          (<span class="string">"gg"</span> org-ctrl-c-ctrl-c)
-          (<span class="string">"gi"</span> org-insert-link)
-          (<span class="string">"go"</span> org-open-at-point)
-          (<span class="string">"gr"</span> org-remember)
-          (<span class="string">"gs"</span> org-schedule)
-          (<span class="string">"gS"</span> org-archive-to-archive-sibling);org-advertized-archive-subtree
-          (<span class="string">"gt"</span> org-todo)
-          (<span class="string">"gT"</span> tea-time)
-          (<span class="string">"gu"</span> org-update-statistics-cookies)
-          (<span class="string">"gp"</span> links)
-
-</pre>
-
-
-<h4>zm全局操作个人定制(my)</h4>
-
-<pre class="src">
-          ;;use m as my prefix
-          (<span class="string">"mb"</span> bookmark-set)
-          (<span class="string">"md"</span> my-sql-pool)
-          (<span class="string">"mD"</span> diff-buffer-with-file)
-          (<span class="string">"mc"</span> calendar)
-          (<span class="string">"me"</span> emms)
-          (<span class="string">"mf"</span> my-bookmark-jump-via-ido)
-          (<span class="string">"mh"</span> highlight-regexp)
-          (<span class="string">"mH"</span> hi-lock-unface-buffer)
-          (<span class="string">"mj"</span> my-bookmark-jump-via-ido)
-          (<span class="string">"ml"</span> w3m-external-view-this-url)
-          (<span class="string">"mL"</span> my-browser-url)
-          (<span class="string">"mk"</span> browse-kill-ring)
-          (<span class="string">"mm"</span> my-favorite-menubar)
-          (<span class="string">"mn"</span> my-rss)
-          (<span class="string">"mo"</span> find-file-at-point)
-          (<span class="string">"mp"</span> my-plink)
-          (<span class="string">"mt"</span> xjt-create/switch-scratch)
-          (<span class="string">"ms"</span> find-file-recursively)
-          (<span class="string">"mv"</span> my-virsh)
-          (<span class="string">"my"</span> my-eye-save)
-          (<span class="string">"n"</span> tabbar-forward-tab)
-          (<span class="string">"p"</span> tabbar-backward-tab)
-          (<span class="string">"q"</span> my-w3m-google-search)
-          (<span class="string">"o"</span> other-window)
-          (<span class="string">"r"</span> ido-recentf-open)
-          (<span class="string">"s"</span> save-buffer)
+</div>
+</div>
+</li>
+<li><a id="orga68b1d9"></a>zg全局操作org mode<br />
+<div class="outline-text-4" id="text-6-1-4">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use zg as org-mode prefix</span>
+(<span class="org-string">"g "</span> org-table-edit-field)
+(<span class="org-string">"ga"</span> my-org-agenda-buffer)
+(<span class="org-string">"gA"</span> org-agenda)
+(<span class="org-string">"gb"</span> org-switchb)
+(<span class="org-string">"gcd"</span> org-clock-mark-default-task)
+(<span class="org-string">"gci"</span> my-org-clock-in)
+(<span class="org-string">"gco"</span> org-clock-out)
+(<span class="org-string">"gcj"</span> my-org-clock-goto)
+(<span class="org-string">"gcJ"</span> my-org-recent-clock)
+(<span class="org-string">"gC"</span> org-columns)
+(<span class="org-string">"ge"</span> org-set-effort)
+(<span class="org-string">"gE"</span> org-clock-modify-effort-estimate)
+(<span class="org-string">"gd"</span> org-decrypt-entry)
+(<span class="org-string">"gl"</span> org-store-link)
+(<span class="org-string">"gg"</span> org-ctrl-c-ctrl-c)
+(<span class="org-string">"gi"</span> org-insert-link)
+(<span class="org-string">"go"</span> org-open-at-point)
+(<span class="org-string">"gr"</span> org-remember)
+(<span class="org-string">"gs"</span> org-schedule)
+(<span class="org-string">"gS"</span> org-archive-to-archive-sibling)<span class="org-comment-delimiter">;</span><span class="org-comment">org-advertized-archive-subtree</span>
+(<span class="org-string">"gt"</span> org-todo)
+(<span class="org-string">"gT"</span> tea-time)
+(<span class="org-string">"gu"</span> org-update-statistics-cookies)
+(<span class="org-string">"gp"</span> links)
 
 </pre>
+</div>
+</div>
+</li>
+<li><a id="orgf7f3746"></a>zm全局操作个人定制(my)<br />
+<div class="outline-text-4" id="text-6-1-5">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use m as my prefix</span>
+(<span class="org-string">"mb"</span> bookmark-set)
+(<span class="org-string">"md"</span> my-sql-pool)
+(<span class="org-string">"mD"</span> diff-buffer-with-file)
+(<span class="org-string">"mc"</span> calendar)
+(<span class="org-string">"me"</span> emms)
+(<span class="org-string">"mf"</span> my-bookmark-jump-via-ido)
+(<span class="org-string">"mh"</span> highlight-regexp)
+(<span class="org-string">"mH"</span> hi-lock-unface-buffer)
+(<span class="org-string">"mj"</span> my-bookmark-jump-via-ido)
+(<span class="org-string">"ml"</span> w3m-external-view-this-url)
+(<span class="org-string">"mL"</span> my-browser-url)
+(<span class="org-string">"mk"</span> browse-kill-ring)
+(<span class="org-string">"mm"</span> my-favorite-menubar)
+(<span class="org-string">"mn"</span> my-rss)
+(<span class="org-string">"mo"</span> find-file-at-point)
+(<span class="org-string">"mp"</span> my-plink)
+(<span class="org-string">"mt"</span> xjt-create/switch-scratch)
+(<span class="org-string">"ms"</span> find-file-recursively)
+(<span class="org-string">"mv"</span> my-virsh)
+(<span class="org-string">"my"</span> my-eye-save)
+(<span class="org-string">"n"</span> tabbar-forward-tab)
+(<span class="org-string">"p"</span> tabbar-backward-tab)
+(<span class="org-string">"q"</span> my-w3m-google-search)
+(<span class="org-string">"o"</span> other-window)
+(<span class="org-string">"r"</span> ido-recentf-open)
+(<span class="org-string">"s"</span> save-buffer)
 
-
-<h4>zh全局操作帮助相关</h4>
-
-<pre class="src">
-          (<span class="string">"ha"</span> apropos)
-          (<span class="string">"hf"</span> describe-function)
-          (<span class="string">"hv"</span> describe-variable)
 </pre>
-
-
-<h4>zv全局操作VC(version control)相关</h4>
-
-<pre class="src">
-          ;; use zv as version control prefix
-          (<span class="string">"vd"</span> my-ediff-revision)
-          (<span class="string">"vD"</span> ediff-revision)
-          (<span class="string">"vm"</span> magit-status)
-          (<span class="string">"vv"</span> vc-next-action)
+</div>
+</div>
+</li>
+<li><a id="org91c2a1e"></a>zh全局操作帮助相关<br />
+<div class="outline-text-4" id="text-6-1-6">
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-string">"ha"</span> apropos)
+(<span class="org-string">"hf"</span> describe-function)
+(<span class="org-string">"hv"</span> describe-variable)
 </pre>
-
-
-
-<h3>不同mode的快捷键以s开头</h3>
-
-<p class="first">以c/c++ mode为例：</p>
-
-<pre class="src">
-(setq my-cc-modified-vi-map
+</div>
+</div>
+</li>
+<li><a id="org06144e3"></a>zv全局操作VC(version control)相关<br />
+<div class="outline-text-4" id="text-6-1-7">
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use zv as version control prefix</span>
+(<span class="org-string">"vd"</span> my-ediff-revision)
+(<span class="org-string">"vD"</span> ediff-revision)
+(<span class="org-string">"vm"</span> magit-status)
+(<span class="org-string">"vv"</span> vc-next-action)
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</li>
+<li><a id="org1a42333"></a>不同mode的快捷键以s开头<br />
+<div class="outline-text-3" id="text-6-2">
+<p>
+以c/c++ mode为例：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(setq my-cc-modified-vi-map
       (let ((map (make-sparse-keymap)))
-        (viper-special-defkey map <span class="string">"b"</span> 'semantic-ia-fast-jump-back)
-        (viper-special-defkey map <span class="string">"df"</span> 'my-cc-function-header)
-        (viper-special-defkey map <span class="string">"dc"</span> 'my-cc-variable-header)
-        (viper-special-defkey map <span class="string">"dv"</span> 'my-cc-variable-header)
-        (viper-special-defkey map <span class="string">"f"</span> 'my-toggle-selective-display)
-        ;; (viper-special-defkey map <span class="string">"fa"</span> 'semantic-tag-folding-fold-all)
-        ;; (viper-special-defkey map <span class="string">"fi"</span> 'semantic-tag-folding-fold-block)
-        ;; (viper-special-defkey map <span class="string">"fo"</span> 'semantic-tag-folding-show-block)
-        ;; (viper-special-defkey map <span class="string">"ft"</span> 'global-semantic-tag-folding-mode)
-        ;; (viper-special-defkey map <span class="string">"fu"</span> 'semantic-tag-folding-show-all)
-        (viper-special-defkey map <span class="string">"g"</span> 'proj-gtags)
-        (viper-special-defkey map <span class="string">"h"</span> 'sourcepair-load);c-open-relational-file
-        (viper-special-defkey map <span class="string">"i"</span> 'semantic-analyze-proto-impl-toggle)
-        (viper-special-defkey map <span class="string">"j"</span> 'my-gtags-find-tag)
-        (viper-special-defkey map <span class="string">"eg"</span> 'next-error)
-        (viper-special-defkey map <span class="string">"mc"</span> 'viss-bookmark-clear-all-buffer)
-        (viper-special-defkey map <span class="string">"mi"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="string">"mt"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="string">"mo"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="string">"mp"</span> 'viss-bookmark-prev-buffer)
-        (viper-special-defkey map <span class="string">"mn"</span> 'viss-bookmark-next-buffer)
-        (viper-special-defkey map <span class="string">"sa"</span> 'cscope-set-initial-directory)
-        (viper-special-defkey map <span class="string">"sc"</span> 'cscope-find-functions-calling-this-function)
-        (viper-special-defkey map <span class="string">"sC"</span> 'cscope-find-called-functions)
-        (viper-special-defkey map <span class="string">"sf"</span> 'cscope-find-this-file)
-        (viper-special-defkey map <span class="string">"sg"</span> 'cscope-find-global-definition-no-prompting)
-        (viper-special-defkey map <span class="string">"sG"</span> 'cscope-find-global-definition)
-        (viper-special-defkey map <span class="string">"si"</span> 'cscope-find-files-including-file)
-        (viper-special-defkey map <span class="string">"sI"</span> 'cscope-index-files)
-        (viper-special-defkey map <span class="string">"ss"</span> 'cscope-find-this-symbol)
-        (viper-special-defkey map <span class="string">"su"</span> 'cscope-pop-mark)
-        (viper-special-defkey map <span class="string">";"</span> 'c-toggle-auto-newline)
+        (viper-special-defkey map <span class="org-string">"b"</span> 'semantic-ia-fast-jump-back)
+        (viper-special-defkey map <span class="org-string">"df"</span> 'my-cc-function-header)
+        (viper-special-defkey map <span class="org-string">"dc"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span class="org-string">"dv"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span class="org-string">"f"</span> 'my-toggle-selective-display)
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fa" 'semantic-tag-folding-fold-all)</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fi" 'semantic-tag-folding-fold-block)</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fo" 'semantic-tag-folding-show-block)</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "ft" 'global-semantic-tag-folding-mode)</span>
+        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fu" 'semantic-tag-folding-show-all)</span>
+        (viper-special-defkey map <span class="org-string">"g"</span> 'proj-gtags)
+        (viper-special-defkey map <span class="org-string">"h"</span> 'sourcepair-load)<span class="org-comment-delimiter">;</span><span class="org-comment">c-open-relational-file</span>
+        (viper-special-defkey map <span class="org-string">"i"</span> 'semantic-analyze-proto-impl-toggle)
+        (viper-special-defkey map <span class="org-string">"j"</span> 'my-gtags-find-tag)
+        (viper-special-defkey map <span class="org-string">"eg"</span> 'next-error)
+        (viper-special-defkey map <span class="org-string">"mc"</span> 'viss-bookmark-clear-all-buffer)
+        (viper-special-defkey map <span class="org-string">"mi"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="org-string">"mt"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="org-string">"mo"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span class="org-string">"mp"</span> 'viss-bookmark-prev-buffer)
+        (viper-special-defkey map <span class="org-string">"mn"</span> 'viss-bookmark-next-buffer)
+        (viper-special-defkey map <span class="org-string">"sa"</span> 'cscope-set-initial-directory)
+        (viper-special-defkey map <span class="org-string">"sc"</span> 'cscope-find-functions-calling-this-function)
+        (viper-special-defkey map <span class="org-string">"sC"</span> 'cscope-find-called-functions)
+        (viper-special-defkey map <span class="org-string">"sf"</span> 'cscope-find-this-file)
+        (viper-special-defkey map <span class="org-string">"sg"</span> 'cscope-find-global-definition-no-prompting)
+        (viper-special-defkey map <span class="org-string">"sG"</span> 'cscope-find-global-definition)
+        (viper-special-defkey map <span class="org-string">"si"</span> 'cscope-find-files-including-file)
+        (viper-special-defkey map <span class="org-string">"sI"</span> 'cscope-index-files)
+        (viper-special-defkey map <span class="org-string">"ss"</span> 'cscope-find-this-symbol)
+        (viper-special-defkey map <span class="org-string">"su"</span> 'cscope-pop-mark)
+        (viper-special-defkey map <span class="org-string">";"</span> 'c-toggle-auto-newline)
         map))
 (viper-modify-major-mode 'c-mode 'vi-state my-cc-modified-vi-map)
 (viper-modify-major-mode 'c++-mode 'vi-state my-cc-modified-vi-map)
 </pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-org6429f80" class="outline-2">
+<h2 id="org6429f80"><span class="section-number-2">7</span> 智能化</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<ol class="org-ol">
+<li><a id="orgd722fb1"></a>buffer切换<br />
+<div class="outline-text-3" id="text-7-1">
+<p>
+Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用不同的快捷
+键，来显示不同类型的buffer，并从中进行选择，比如：
+</p>
 
-
-
-<h2><a name="sec7" id="sec7"></a>
-智能化</h2>
-
-<h3>buffer切换</h3>
-
-<p class="first">Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用不同的快捷
-键，来显示不同类型的buffer，并从中进行选择，比如：</p>
-
-<ul>
-<li>&quot;zgb&quot; ==&gt; 打开org mode的buffer</li>
-<li>&quot;zdb&quot; ==&gt; 打开dired mode的buffer(即目录相关的buffer)</li>
-<li>&quot;zwb&quot; ==&gt; 打开w3m mode的buffer</li>
+<ul class="org-ul">
+<li>"zgb" ==&gt; 打开org mode的buffer</li>
+<li>"zdb" ==&gt; 打开dired mode的buffer(即目录相关的buffer)</li>
+<li>"zwb" ==&gt; 打开w3m mode的buffer</li>
 </ul>
-
-
-<h3>基于my-select-windows的便捷列表选择</h3>
-
-<p class="first">使用Emacs命令时经常要从一组列表(命令)中选择一项进行操作。我创建了一个函数
+</div>
+</li>
+<li><a id="orgecbc0be"></a>基于my-select-windows的便捷列表选择<br />
+<div class="outline-text-3" id="text-7-2">
+<p>
+使用Emacs命令时经常要从一组列表(命令)中选择一项进行操作。我创建了一个函数
 my-select-windows，会自动根据列表中的字符串生成不同的快捷键，用户只需
-按下一个键，而不需要按额外的回车键就可以选中它。函数实现为：</p>
-
-<pre class="src">
-;;;###autoload
-(defun my-select-window (list &amp;optional prompt nodelay-select)
-  <span class="string">"Select a cmd with its prefix key."</span>
+按下一个键，而不需要按额外的回车键就可以选中它。函数实现为：
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp"><span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-select-window</span> (list &amp;optional prompt nodelay-select)
+  <span class="org-doc">"Select a cmd with its prefix key."</span>
   (interactive)
   (when (null list)
-    (error <span class="string">"%s: list is empty"</span> (if prompt prompt <span class="string">"Error in my-select-window"</span>)))
+    (error <span class="org-string">"%s: list is empty"</span> (if prompt prompt <span class="org-string">"Error in my-select-window"</span>)))
   (if (= 1 (length list))
       (car list)
     (let ((list (my-string-shortcuts list)))
       (if (and
            (not nodelay-select)
-           (setq rpl (read-char-exclusive <span class="string">""</span> nil 1))
+           (setq rpl (read-char-exclusive <span class="org-string">""</span> nil 1))
            (assoc rpl list))
           (cdr (assoc rpl list))
         (save-window-excursion
           (org-switch-to-buffer-other-window
-           (get-buffer-create <span class="string">"*String to Select*"</span>))
+           (get-buffer-create <span class="org-string">"*String to Select*"</span>))
           (erase-buffer)
-          (insert (org-add-props (concat (or prompt <span class="string">"String to select"</span>) <span class="string">"\n"</span>)
+          (insert (org-add-props (concat (or prompt <span class="org-string">"String to select"</span>) <span class="org-string">"\n"</span>)
                       nil 'face 'bold))
           (loop for (k . s) in list
-                do (insert (format <span class="string">"[%c] %s\n"</span> k s)))
+                do (insert (format <span class="org-string">"[%c] %s\n"</span> k s)))
           (org-fit-window-to-buffer)
-          ;;FIXME: how to make window height suitable for display.
+          <span class="org-comment-delimiter">;;</span><span class="org-comment">FIXME: how to make window height suitable for display.</span>
           (enlarge-window (window-height))
-          (message (or prompt <span class="string">"Select one from list:"</span>))
+          (message (or prompt <span class="org-string">"Select one from list:"</span>))
           (setq rpl (read-char-exclusive))
-          (bury-buffer <span class="string">"*String to Select*"</span>)
+          (bury-buffer <span class="org-string">"*String to Select*"</span>)
           (cond
-           ((eq rpl 27) nil); 27 &lt;==&gt; Escape
+           ((eq rpl 27) nil)<span class="org-comment-delimiter">; </span><span class="org-comment">27 &lt;==&gt; Escape</span>
            ((assoc rpl list) (cdr (assoc rpl list)))
-           (t (error <span class="string">"Invalid task choice %c"</span> rpl))))))))
-;;;###autoload
-(defun test-my-select-window ()
+           (t (error <span class="org-string">"Invalid task choice %c"</span> rpl))))))))
+<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">test-my-select-window</span> ()
   (interactive)
-  (let* ((cmds '(<span class="string">"aaaa"</span> <span class="string">"bbcd"</span> <span class="string">"ccdb"</span> <span class="string">"dbde"</span>))
+  (let* ((cmds '(<span class="org-string">"aaaa"</span> <span class="org-string">"bbcd"</span> <span class="org-string">"ccdb"</span> <span class="org-string">"dbde"</span>))
          (result (my-select-window cmds)))
     (message result)))
-;;;###autoload
-(defun my-string-shortcuts (list)
+<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">my-string-shortcuts</span> (list)
   (require 'tmm)
   (let ((tmm-short-cuts))
     (tmm-add-shortcuts (mapcar #'list list))
@@ -739,16 +1005,23 @@ my-select-windows，会自动根据列表中的字符串生成不同的快捷键
           for k in tmm-short-cuts
           collect (cons k s))))
 </pre>
+</div>
+<p>
 举例如下：
+</p>
 
-<ul>
-<li>快捷键&quot;zi&quot;实现快速插入
+<ul class="org-ul">
+<li><p>
+快捷键"zi"实现快速插入
+</p>
 
-<p>当你按下&quot;zi&quot;时，会等待一秒钟让你输入一个字母来决定要插入什么内容，如果1秒钟内你没有输入
-任何内容或输入错了，就会弹出一个buffer提示快捷键并让你继续输入：</p></li>
+<p>
+当你按下"zi"时，会等待一秒钟让你输入一个字母来决定要插入什么内容，如果1秒钟内你没有输入
+</p></li>
 </ul>
-
-<pre class="src">
+<p>
+任何内容或输入错了，就会弹出一个buffer提示快捷键并让你继续输入：
+&lt;src&gt;
 type to insert:
 [c] calc
 [f] file
@@ -756,98 +1029,100 @@ type to insert:
 [d] date
 [t] time
 [s] shell command
-</pre>
+#+END<sub>SRC</sub>
 按下c就会插入一个计算式的结果，按下u就会插入用户名。
+</p>
 
 
-<p>这样，当你想插入日期时，只需在VI模式下按下&quot;zid&quot;就可以了。</p>
+<p>
+这样，当你想插入日期时，只需在VI模式下按下"zid"就可以了。
+</p>
 
-<p>同样，当我想对当前Emacs中的org项目进行publish操作时，输入&quot;sp&quot;就会弹出一个buffer，
+<p>
+同样，当我想对当前Emacs中的org项目进行publish操作时，输入"sp"就会弹出一个buffer，
 让你选择想pubish的项目，如果你记得项目对应的快捷字母是'c'，直接输入c就不会出现
-快捷键列表，而会直接对选中的项目进行publish操作。</p>
+快捷键列表，而会直接对选中的项目进行publish操作。
+</p>
 
-<p>这个函数可以用在许多地方，让你不需要额外的快捷键就可以处理包含多种情况的问题。</p>
+<p>
+这个函数可以用在许多地方，让你不需要额外的快捷键就可以处理包含多种情况的问题。
+</p>
 
-<p><a href="http://www.emacswiki.org/emacs/Anything">Anything</a> 插件在处理列表时功能更强大，而这里的my-select-window则更便捷。</p>
+<p>
+<a href="http://www.emacswiki.org/emacs/Anything">Anything</a> 插件在处理列表时功能更强大，而这里的my-select-window则更便捷。
+</p>
+</div>
+</li>
+</ol>
+</div>
 
-
-
-<h2><a name="sec8" id="sec8"></a>
-优化工作流程</h2>
-
-<h3>在任务栏显示提示信息</h3>
-
-<blockquote>
-<p class="quoted">当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
-Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py">trayicon-appt.py</a>来完成的。</p>
-</blockquote>
-
-<pre class="src">
+<div id="outline-container-org069f557" class="outline-2">
+<h2 id="org069f557"><span class="section-number-2">8</span> 优化工作流程</h2>
+<div class="outline-text-2" id="text-8">
+</div>
+<ol class="org-ol">
+<li><a id="org391d60d"></a>在任务栏显示提示信息<br />
+<div class="outline-text-3" id="text-8-1">
+<p>
+  当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
+Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py">trayicon-appt.py</a>来完成的。
+&lt;src  lang="elisp"&gt;
 (defun my-systray-notification (text &amp;optional hour-low-limit hour-high-limit)
   (when (not (eq :x61 my-place))
-    (let ((cur-week (parse-integer (format-time-string <span class="string">"%w"</span>))))
+    (let ((cur-week (parse-integer (format-time-string "%w"))))
       (case cur-week
         ((or 1 2 3 4 5)
          (block my-systray-notification
            (when (and hour-high-limit hour-low-limit (&lt; hour-low-limit hour-high-limit))
-             (let ((cur-hour (parse-integer (format-time-string <span class="string">"%H"</span>))))
+             (let ((cur-hour (parse-integer (format-time-string "%H"))))
                (if (or (&lt; cur-hour hour-low-limit)
                        (&gt; cur-hour hour-high-limit))
                  (return-from my-systray-notification))))
            (my-open-external-progam-in-emacs
-            <span class="string">"trayicon"</span> (list (my-etc <span class="string">"trayicon-appt.py"</span>) text))))))))
+            "trayicon" (list (my-etc "trayicon-appt.py") text))))))))
+</p>
 
-</pre>
+<p>
+#+END<sub>SRC</sub>
+</p>
+</div>
+</li>
 
-
-<h3>隐藏一些后台处理用的buffer</h3>
-
-<pre class="src">
-(setq *tabbar-ignore-buffers* '(<span class="string">"idle.org"</span> <span class="string">".bbdb"</span> <span class="string">"diary"</span>))
+<li><a id="org886d2b2"></a>隐藏一些后台处理用的buffer<br />
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+<pre class="src src-elisp">(setq *tabbar-ignore-buffers* '(<span class="org-string">"idle.org"</span> <span class="org-string">".bbdb"</span> <span class="org-string">"diary"</span>))
 (setq tabbar-buffer-list-function
              (lambda ()
                (remove-if
                 (lambda (buffer)
-                  (and (not (eq (current-buffer) buffer)) ; Always include the current buffer.
-                       (loop for name in *tabbar-ignore-buffers* ;remove buffer name in this list.
+                  (and (not (eq (current-buffer) buffer)) <span class="org-comment-delimiter">; </span><span class="org-comment">Always include the current buffer.</span>
+                       (loop for name in *tabbar-ignore-buffers* <span class="org-comment-delimiter">;</span><span class="org-comment">remove buffer name in this list.</span>
                           thereis (string-equal (buffer-name buffer) name))))
                 (buffer-list))))
 </pre>
-
-
-<h3>在emacs中操作virsh</h3>
-
-<p class="first">在工作中我经常使用virsh来管理多台机器上的虚机。因此编写了一个
-<a href="site-lisp/virsh.el">virsh.el</a>
-来简化虚机的创建，销毁，VNC显示的操作。这使用了my-select-windows函数来
-帮助我快速选中需要操作的物理机，虚机及想进行的操作。</p>
-
-
-<h3><a href="site-lisp/kindlegen.el">kindlegen.el</a></h3>
-
-<p class="first">手中有一台kindle电子书，而kindle对txt格式的文件支持并不好，对mobi格式
-的文件则支持的非常好。因此，我根据网上的资料编写了一个emacs脚本来从txt文
-件生成mobi，并可在生成前进行mobi的目录预览。</p>
-
-
-
-<h2><a name="sec9" id="sec9"></a>
-Emacs的缺点</h2>
-
-<h3>Emacs是单线程的</h3>
-
-<p class="first">虽然现在的大多数common lisp实现都支持多线程，但Emacs目前仍然只支持单线
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgc650fa0" class="outline-2">
+<h2 id="orgc650fa0"><span class="section-number-2">9</span> Emacs的缺点</h2>
+<div class="outline-text-2" id="text-9">
+</div>
+<ol class="org-ol">
+<li><a id="org5590267"></a>Emacs是单线程的<br />
+<div class="outline-text-3" id="text-9-1">
+<p>
+虽然现在的大多数common lisp实现都支持多线程，但Emacs目前仍然只支持单线
 程。这意味着当某个操作需要大量时间才能完成时，Emacs会失去反应，不能响
 应任何键盘和鼠标操作。这经常会出现在你使用gnus收发邮件组，使用tramp访
-问网络连通不好的远程机器时。</p>
-<p>&nbsp;</p>
-    <div id="footer">
-          <div id="footlink">
-            [<a href="../index.html">返回首页</a> ]</div>
-            <div id="footdate">
-            2016 年 06 月 14 日更新
-            </div>
-    </div>
-
+问网络连通不好的远程机器时。
+</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
 </body>
 </html>

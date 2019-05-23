@@ -1,0 +1,37 @@
+#+title: Common lisp 与其它语言的集成
+
+* [[http://ecls.sourceforge.net/][ECL]]
+  ECL使用C/C++来编译lisp程序，可以同c/c++很好的集成在一起，互相调用。
+  它同[[http://www.gnu.org/software/guile/][guile]] 类似，不同的是guile不支持Common lisp。
+
+* [[http://www.cormanlisp.com/][Corman]]
+  Corman是为windows量身打造的，开放源代码，其IDE不免费。可以很好的同c/c++集成，
+  互相调用(in-process COM server),其提供的widnows api接口使用了CLOS，使用自然简洁。
+#+BEGIN_SRC lisp
+(defmethod handle-message ((window <hello-window>) (message <paint-message>) wparam lparam)
+	(declare (ignore wparam lparam))
+    (begin-paint window)
+	(let ((rect (hello-text-rect window)))
+		(GetClientRect (window-hwnd window) rect)
+		(DrawText (window-hdc window) 
+			(ct:create-c-string "Hello, World") 
+			-1 
+			rect
+			(logior DT_SINGLELINE DT_CENTER DT_VCENTER)))
+    (end-paint window)
+	0)
+#+END_SRC
+
+* [[http://common-lisp.net/project/cffi/][cffi]] 
+  cffi(Common Foreign Function Interface)为各种common lisp方言提供了统一的与c/c++语言通讯的接口。
+  可以调用windows api。同时由于[[http://www.swig.org/][swig]]支持cffi，所以可以使用swig来自动生成lisp下的接口代码。
+ [[http://code.google.com/p/lispbuilder/][lispbuilder]]提供了一个lispbuilder-windows(windows.h wrapper)模块，提供了windows.h的接口代码。
+ 并有一个演示gui的例子。
+
+* [[http://www.peter-herth.de/ltk/][ltk]]
+  如果使用common lisp进行一些gui编程，可以考虑ltk，它使用tcl/tk做为gui前端，并将
+  tk的代码转换成common lisp风格。扩展起来也比较容易。
+
+* [[http://wiht.link/common-lisp][Common Lisp: Intro, Resources and FAQ]]
+
+  这个网站上集成了各种lisp学习资源．

@@ -1,0 +1,28 @@
+#+title: Some win32 assembly codes between 2002-2003
+
+这是02-03年间学习汇编程序的一些资料，希望能对一些人有用。
+汇编是一门低级语言，win32下的汇编则直面windows的操作机制。
+
+* 一些程序
+
+- [[./works/CheckIntegrity.zip][CheckIntegrity]] 提供了一个 名为CheckFileIntegrity的库函数， 可以在Assembly/C/C++环境中调用这个库函数来检查自身或其它文件是否被病毒及其它程序修改过，以便做出相应的处理措施，比如防止自身程序在带毒或被修改的情况下运行等。
+- [[./works/netenum.zip][NetEnum v1.0]] 枚举局域网资源的小工具，
+- [[./works/asmcut.zip][汇编切割器]] 增加了浮动按扭，修正了一个BUG。 
+- [[./works/CFButton.zip][FButton ClassV1.02]] 实现浮动按纽（汇编语言下OOP编程例子）。 
+- [[./works/once-app.zip][Once-App Programme]] 只运行一个实例的三种方法. 
+- [[./works/harddisk.zip][Hard disk protect utility]] 网友kevin的作品，对硬盘进行密码保护 (网友作品，非工作室所有)。 
+
+* Iczelion教程打包下载
+|---------------+-----------------------------------------+-----------------+------------------|
+| [[./resources/lion-tu-c.zip][lion-tu-c.zip]] | [[./resources/lion-tu-c-sources.zip][lion-tu-c-sources.zip]] [[./resources/odbc-tutorial.zip][odbc-tutorial.zip]] | [[./resources/pe-tutorial.zip][pe-tutorial.zip]] | [[./resources/vxd-tutorial.zip][vxd-tutorial.zip]] |
+|---------------+-----------------------------------------+-----------------+------------------|
+
+* 收集的一些汇编网址
+
+|---------------------------------+--------------------------------------+-----------------------------------|
+| [[http://www.movsd.com/][Masm32 Offical Homepage]]         | [[http://win32assembly.online.fr/][Iczelion’s homepage]]                  | [[http://www.wotsit.org/][http://www.wotsit.org/]]            |
+| [[http://ourworld.compuserve.com/homepages/ernies_world/a.htm][Masm32 COM programming]]          | [[http://webster.cs.ucr.edu/][The art of Assembly]]                  | [[http://board.win32asmcommunity.net/][Win32ASM Community messageboard]]   |
+| [[http://www.madwizard.org/][Masm32 OOP programming]]          | [[http://www.grc.com/steve.htm][Small is Beautiful]]                   | [[http://developer.intel.com/design/PentiumII/manuals/][Intel Developer Manuals]]           |
+| [[http://win32assembly.online.fr/][http://win32assembly.online.fr/]] | [[http://users.daex.ufsc.br/~iczelion/][http://users.daex.ufsc.br/~iczelion/]] | [[http://spiff.tripnet.se/~Iczelion][http://spiff.tripnet.se/~Iczelion]] |
+|---------------------------------+--------------------------------------+-----------------------------------|
+

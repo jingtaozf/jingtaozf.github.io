@@ -1,0 +1,110 @@
+#+title: NASM源码中的数据结构
+
+
+* 概述
+
+NASM是一个模块化的，可重用的汇编器（有关这方面的内容请参照
+源码中的doc\internal.doc文件）。它涉及到的数据结构有数组，链表和HASH表等。
+
+* 详解
+
+ 1. 用数组存储表达式求值程序计算出的值。
+
+由于这些生成的值只会被用来查询，不会被修改，所以很适合用数组来表示。
+#+BEGIN_SRC C
+ /*
+  * Expression-evaluator datatype. Expressions, within the
+  * evaluator, are stored as an array of these beasts, terminated by
+  * a record with type==0. Mostly, it's a vector type: each type
+  * denotes some kind of a component, and the value denotes the
+  * multiple of that component present in the expression. The
+  * exception is the WRT type, whose `value' field denotes the
+  * segment to which the expression is relative. These segments will
+  * be segment-base types, i.e. either odd segment values or SEG_ABS
+  * types. So it is still valid to assume that anything with a
+  * `value' field of zero is insignificant.
+  */
+ typedef struct {
+     long type;                             /* a register, or EXPR_xxx */
+     long value;                            /* must be >= 32 bits */
+ } expr;
+#+END_SRC
+
+2. 通过HASH值将数组和链表结合在一起来存储预处理中遇到的宏。
+
+这样HASH数组中的每一项都指向一个链表，链表中的每个结点都存储着一个宏的相关信息，
+而且各个结点宏名字具有相同的HASH值。这种数组和链表通过HASH算法结合在一起的结构
+可以更加快速地找到指定名字的宏。
+
+3. NASM在运行时会动态分配两块内存。
+
+一块用来进行随机内存存取，以树状结构表示，每个叶结点中存储实际的数据；
+
+另一块用来进行顺序内存存取，以链状结构表示。
+
+这样程序在需要许多小的内存块时就不必每次去分配，只在已分配的内存块被用
+完时再分配。即提高了效率，也易于管理。
+
+
+  **SAA** :dynamic sequential-access array.
+
+  **RAA** :dynamic random access array.
+
+#+BEGIN_SRC C
+ struct SAA {
+     /*
+      * members `end' and `elem_len' are only valid in first link in
+      * list; `rptr' and `rpos' are used for reading
+      */
+     struct SAA *next, *end, *rptr;
+     long elem_len, length, posn, start, rpos;
+     char *data;
+ };
+
+ struct RAA {
+     /*
+      * Number of layers below this one to get to the real data. 0
+      * means this structure is a leaf, holding RAA_BLKSIZE real
+      * data items; 1 and above mean it's a branch, holding
+      * RAA_LAYERSIZE pointers to the next level branch or leaf
+      * structures.
+      */
+     int layers;
+     /*
+      * Number of real data items spanned by one position in the
+      * `data' array at this level. This number is 1, trivially, for
+      * a leaf (level 0): for a level 1 branch it should be
+      * RAA_BLKSIZE, and for a level 2 branch it's
+      * RAA_LAYERSIZE*RAA_BLKSIZE.
+      */
+     long stepsize;
+     union RAA_UNION {
+     struct RAA_LEAF {
+         long data[RAA_BLKSIZE];
+     } l;
+     struct RAA_BRANCH {
+         struct RAA *data[RAA_LAYERSIZE];
+     } b;
+     } u;
+ };
+#+END_SRC
+
+4. 其它
+
+每条合法指令的模板如下表示：
+#+BEGIN_SRC C
+ struct itemplate {
+     int opcode;                    /* the token, passed from "parser.c" */
+     int operands;                  /* number of operands */
+     long opd[3];                   /* bit flags for operand types */
+     const char *code;              /* the code it assembles to */
+     unsigned long flags;           /* some flags */
+ };
+#+END_SRC
+
+其中在第四项code中，用特定的值来表示生成的机器码中可能出现的情况，
+比如若指令模板中存在\320，则表示该指令需要一个固定大小为16位的
+操作数。这样，如果目标代码为32位时，机器码就需要一个操作数前缀。
+
+    /*$Id: nasm_data.html,v 1.2 2003/10/27 09:17:26 jingtao Exp $*/
+
