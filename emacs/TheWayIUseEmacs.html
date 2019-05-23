@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-23 Thu 12:38 -->
+<!-- 2019-05-23 Thu 12:46 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>我是如何使用Emacs的</title>
@@ -1066,25 +1066,24 @@ type to insert:
 <p>
   当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
 Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py">trayicon-appt.py</a>来完成的。
-&lt;src  lang="elisp"&gt;
-(defun my-systray-notification (text &amp;optional hour-low-limit hour-high-limit)
+</p>
+<div class="org-src-container">
+<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">my-systray-notification</span> (text &amp;optional hour-low-limit hour-high-limit)
   (when (not (eq :x61 my-place))
-    (let ((cur-week (parse-integer (format-time-string "%w"))))
+    (let ((cur-week (parse-integer (format-time-string <span class="org-string">"%w"</span>))))
       (case cur-week
         ((or 1 2 3 4 5)
          (block my-systray-notification
            (when (and hour-high-limit hour-low-limit (&lt; hour-low-limit hour-high-limit))
-             (let ((cur-hour (parse-integer (format-time-string "%H"))))
+             (let ((cur-hour (parse-integer (format-time-string <span class="org-string">"%H"</span>))))
                (if (or (&lt; cur-hour hour-low-limit)
                        (&gt; cur-hour hour-high-limit))
                  (return-from my-systray-notification))))
            (my-open-external-progam-in-emacs
-            "trayicon" (list (my-etc "trayicon-appt.py") text))))))))
-</p>
+            <span class="org-string">"trayicon"</span> (list (my-etc <span class="org-string">"trayicon-appt.py"</span>) text))))))))
 
-<p>
-#+END<sub>SRC</sub>
-</p>
+</pre>
+</div>
 </div>
 </li>
 
