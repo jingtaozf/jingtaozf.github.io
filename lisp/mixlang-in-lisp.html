@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-23 Thu 16:10 -->
+<!-- 2019-05-30 Thu 15:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Common lisp 与其它语言的集成</title>
@@ -252,6 +252,7 @@ for the JavaScript code in this tag.
  <li><a accesskey="a" href="/index.html">Articles</a></li>
  <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
  <li><a accesskey="A" href="/about.html">About</a></li>
+ <li><a accesskey="i" href="/theindex.html">Index</a></li>
  </ul><div id="preamble" class="status">
 
     <script type="text/javascript">//<![CDATA[
@@ -293,13 +294,13 @@ Corman是为windows量身打造的，开放源代码，其IDE不免费。可以�
 互相调用(in-process COM server),其提供的widnows api接口使用了CLOS，使用自然简洁。
 </p>
 <div class="org-src-container">
-<pre class="src src-lisp">(<span class="org-keyword">defmethod</span> <span class="org-function-name">handle-message</span> ((window &lt;hello-window&gt;) (message &lt;paint-message&gt;) wparam lparam)
+<pre class="src src-lisp">(<span style="color: #5FB3B3;">defmethod</span> <span style="color: #D8DEE9;">handle-message</span> ((window &lt;hello-window&gt;) (message &lt;paint-message&gt;) wparam lparam)
         (declare (ignore wparam lparam))
     (begin-paint window)
         (let ((rect (hello-text-rect window)))
                 (GetClientRect (window-hwnd window) rect)
                 (DrawText (window-hdc window) 
-                        (ct:create-c-string <span class="org-string">"Hello, World"</span>) 
+                        (ct:create-c-string <span style="color: #99C794;">"Hello, World"</span>) 
                         -1 
                         rect
                         (logior DT_SINGLELINE DT_CENTER DT_VCENTER)))
@@ -344,6 +345,7 @@ tk的代码转换成common lisp风格。扩展起来也比较容易。
 <div id="postamble" class="status">
 
 
+ </p> </p> </p>
  <script src="https://utteranc.es/client.js"
          repo="jingtaozf/jingtaozf.github.io"
          issue-term="homepage"

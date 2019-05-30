@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-23 Thu 16:10 -->
+<!-- 2019-05-30 Thu 15:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NASM源码中的数据结构</title>
@@ -274,6 +274,7 @@ for the JavaScript code in this tag.
  <li><a accesskey="a" href="/index.html">Articles</a></li>
  <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
  <li><a accesskey="A" href="/about.html">About</a></li>
+ <li><a accesskey="i" href="/theindex.html">Index</a></li>
  </ul><div id="preamble" class="status">
 
     <script type="text/javascript">//<![CDATA[
@@ -293,8 +294,6 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </div>
-
-
 <div id="outline-container-org4f8e837" class="outline-2">
 <h2 id="org4f8e837"><span class="section-number-2">1</span> 概述</h2>
 <div class="outline-text-2" id="text-1">
@@ -316,22 +315,22 @@ NASM是一个模块化的，可重用的汇编器（有关这方面的内容请�
 由于这些生成的值只会被用来查询，不会被修改，所以很适合用数组来表示。
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-comment-delimiter">/*</span>
-<span class="org-comment"> * Expression-evaluator datatype. Expressions, within the</span>
-<span class="org-comment"> * evaluator, are stored as an array of these beasts, terminated by</span>
-<span class="org-comment"> * a record with type==0. Mostly, it's a vector type: each type</span>
-<span class="org-comment"> * denotes some kind of a component, and the value denotes the</span>
-<span class="org-comment"> * multiple of that component present in the expression. The</span>
-<span class="org-comment"> * exception is the WRT type, whose `value' field denotes the</span>
-<span class="org-comment"> * segment to which the expression is relative. These segments will</span>
-<span class="org-comment"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
-<span class="org-comment"> * types. So it is still valid to assume that anything with a</span>
-<span class="org-comment"> * `value' field of zero is insignificant.</span>
-<span class="org-comment"> </span><span class="org-comment-delimiter">*/</span>
-<span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
-    <span class="org-type">long</span> <span class="org-variable-name">type</span>;                             <span class="org-comment-delimiter">/* </span><span class="org-comment">a register, or EXPR_xxx </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">long</span> <span class="org-variable-name">value</span>;                            <span class="org-comment-delimiter">/* </span><span class="org-comment">must be &gt;= 32 bits </span><span class="org-comment-delimiter">*/</span>
-} <span class="org-type">expr</span>;
+<pre class="src src-C"><span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;"> * Expression-evaluator datatype. Expressions, within the</span>
+<span style="color: #4F5B66;"> * evaluator, are stored as an array of these beasts, terminated by</span>
+<span style="color: #4F5B66;"> * a record with type==0. Mostly, it's a vector type: each type</span>
+<span style="color: #4F5B66;"> * denotes some kind of a component, and the value denotes the</span>
+<span style="color: #4F5B66;"> * multiple of that component present in the expression. The</span>
+<span style="color: #4F5B66;"> * exception is the WRT type, whose `value' field denotes the</span>
+<span style="color: #4F5B66;"> * segment to which the expression is relative. These segments will</span>
+<span style="color: #4F5B66;"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
+<span style="color: #4F5B66;"> * types. So it is still valid to assume that anything with a</span>
+<span style="color: #4F5B66;"> * `value' field of zero is insignificant.</span>
+<span style="color: #4F5B66;"> </span><span style="color: #4F5B66;">*/</span>
+<span style="color: #5FB3B3;">typedef</span> <span style="color: #5FB3B3;">struct</span> {
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">type</span>;                             <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">a register, or EXPR_xxx </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">value</span>;                            <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">must be &gt;= 32 bits </span><span style="color: #4F5B66;">*/</span>
+} <span style="color: #C594C5;">expr</span>;
 </pre>
 </div>
 
@@ -372,41 +371,41 @@ NASM是一个模块化的，可重用的汇编器（有关这方面的内容请�
 </p>
 
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-keyword">struct</span> <span class="org-type">SAA</span> {
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * members `end' and `elem_len' are only valid in first link in</span>
-<span class="org-comment">     * list; `rptr' and `rpos' are used for reading</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-keyword">struct</span> <span class="org-type">SAA</span> *<span class="org-variable-name">next</span>, *<span class="org-variable-name">end</span>, *<span class="org-variable-name">rptr</span>;
-    <span class="org-type">long</span> <span class="org-variable-name">elem_len</span>, <span class="org-variable-name">length</span>, <span class="org-variable-name">posn</span>, <span class="org-variable-name">start</span>, <span class="org-variable-name">rpos</span>;
-    <span class="org-type">char</span> *<span class="org-variable-name">data</span>;
+<pre class="src src-C"><span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">SAA</span> {
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * members `end' and `elem_len' are only valid in first link in</span>
+<span style="color: #4F5B66;">     * list; `rptr' and `rpos' are used for reading</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">SAA</span> *<span style="color: #C594C5;">next</span>, *<span style="color: #C594C5;">end</span>, *<span style="color: #C594C5;">rptr</span>;
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">elem_len</span>, <span style="color: #C594C5;">length</span>, <span style="color: #C594C5;">posn</span>, <span style="color: #C594C5;">start</span>, <span style="color: #C594C5;">rpos</span>;
+    <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">data</span>;
 };
 
-<span class="org-keyword">struct</span> <span class="org-type">RAA</span> {
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * Number of layers below this one to get to the real data. 0</span>
-<span class="org-comment">     * means this structure is a leaf, holding RAA_BLKSIZE real</span>
-<span class="org-comment">     * data items; 1 and above mean it's a branch, holding</span>
-<span class="org-comment">     * RAA_LAYERSIZE pointers to the next level branch or leaf</span>
-<span class="org-comment">     * structures.</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">layers</span>;
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * Number of real data items spanned by one position in the</span>
-<span class="org-comment">     * `data' array at this level. This number is 1, trivially, for</span>
-<span class="org-comment">     * a leaf (level 0): for a level 1 branch it should be</span>
-<span class="org-comment">     * RAA_BLKSIZE, and for a level 2 branch it's</span>
-<span class="org-comment">     * RAA_LAYERSIZE*RAA_BLKSIZE.</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">long</span> <span class="org-variable-name">stepsize</span>;
-    <span class="org-keyword">union</span> <span class="org-type">RAA_UNION</span> {
-    <span class="org-keyword">struct</span> <span class="org-type">RAA_LEAF</span> {
-        <span class="org-type">long</span> <span class="org-variable-name">data</span>[RAA_BLKSIZE];
-    } <span class="org-variable-name">l</span>;
-    <span class="org-keyword">struct</span> <span class="org-type">RAA_BRANCH</span> {
-        <span class="org-keyword">struct</span> <span class="org-type">RAA</span> *<span class="org-variable-name">data</span>[RAA_LAYERSIZE];
-    } <span class="org-variable-name">b</span>;
-    } <span class="org-variable-name">u</span>;
+<span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">RAA</span> {
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * Number of layers below this one to get to the real data. 0</span>
+<span style="color: #4F5B66;">     * means this structure is a leaf, holding RAA_BLKSIZE real</span>
+<span style="color: #4F5B66;">     * data items; 1 and above mean it's a branch, holding</span>
+<span style="color: #4F5B66;">     * RAA_LAYERSIZE pointers to the next level branch or leaf</span>
+<span style="color: #4F5B66;">     * structures.</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">layers</span>;
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * Number of real data items spanned by one position in the</span>
+<span style="color: #4F5B66;">     * `data' array at this level. This number is 1, trivially, for</span>
+<span style="color: #4F5B66;">     * a leaf (level 0): for a level 1 branch it should be</span>
+<span style="color: #4F5B66;">     * RAA_BLKSIZE, and for a level 2 branch it's</span>
+<span style="color: #4F5B66;">     * RAA_LAYERSIZE*RAA_BLKSIZE.</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">stepsize</span>;
+    <span style="color: #5FB3B3;">union</span> <span style="color: #C594C5;">RAA_UNION</span> {
+    <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">RAA_LEAF</span> {
+        <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">data</span>[RAA_BLKSIZE];
+    } <span style="color: #C594C5;">l</span>;
+    <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">RAA_BRANCH</span> {
+        <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">RAA</span> *<span style="color: #C594C5;">data</span>[RAA_LAYERSIZE];
+    } <span style="color: #C594C5;">b</span>;
+    } <span style="color: #C594C5;">u</span>;
 };
 </pre>
 </div>
@@ -419,12 +418,12 @@ NASM是一个模块化的，可重用的汇编器（有关这方面的内容请�
 每条合法指令的模板如下表示：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-keyword">struct</span> <span class="org-type">itemplate</span> {
-    <span class="org-type">int</span> <span class="org-variable-name">opcode</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">the token, passed from "parser.c" </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">operands</span>;                  <span class="org-comment-delimiter">/* </span><span class="org-comment">number of operands </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">long</span> <span class="org-variable-name">opd</span>[3];                   <span class="org-comment-delimiter">/* </span><span class="org-comment">bit flags for operand types </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-keyword">const</span> <span class="org-type">char</span> *<span class="org-variable-name">code</span>;              <span class="org-comment-delimiter">/* </span><span class="org-comment">the code it assembles to </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">flags</span>;           <span class="org-comment-delimiter">/* </span><span class="org-comment">some flags </span><span class="org-comment-delimiter">*/</span>
+<pre class="src src-C"><span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">itemplate</span> {
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">opcode</span>;                    <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the token, passed from "parser.c" </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">operands</span>;                  <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">number of operands </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">opd</span>[3];                   <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">bit flags for operand types </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #5FB3B3;">const</span> <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">code</span>;              <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the code it assembles to </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">unsigned</span> <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">flags</span>;           <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">some flags </span><span style="color: #4F5B66;">*/</span>
 };
 </pre>
 </div>
@@ -444,6 +443,7 @@ NASM是一个模块化的，可重用的汇编器（有关这方面的内容请�
 <div id="postamble" class="status">
 
 
+ </p> </p> </p>
  <script src="https://utteranc.es/client.js"
          repo="jingtaozf/jingtaozf.github.io"
          issue-term="homepage"

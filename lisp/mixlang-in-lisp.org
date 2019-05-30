@@ -1,4 +1,6 @@
 #+title: Common lisp 与其它语言的集成
+#+Index: Lisp!Common lisp 与其它语言的集成
+#+Index: ECL!Common lisp 与其它语言的集成
 
 * [[http://ecls.sourceforge.net/][ECL]]
   ECL使用C/C++来编译lisp程序，可以同c/c++很好的集成在一起，互相调用。

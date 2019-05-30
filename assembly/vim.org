@@ -1,4 +1,7 @@
 #+title: 使用GVIM阅读MASM代码
+#+Index: Masm!使用GVIM阅读MASM代码
+#+Index: Assembly!使用GVIM阅读MASM代码
+#+Index: vim!使用GVIM阅读MASM代码
 
 
 * 说明

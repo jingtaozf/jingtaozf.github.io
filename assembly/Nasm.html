@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-23 Thu 16:10 -->
+<!-- 2019-05-30 Thu 15:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NASM源码阅读笔记</title>
@@ -252,6 +252,7 @@ for the JavaScript code in this tag.
  <li><a accesskey="a" href="/index.html">Articles</a></li>
  <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
  <li><a accesskey="A" href="/about.html">About</a></li>
+ <li><a accesskey="i" href="/theindex.html">Index</a></li>
  </ul><div id="preamble" class="status">
 
     <script type="text/javascript">//<![CDATA[
@@ -329,26 +330,26 @@ preproc.c,parser.c和*out.c；float.c是浮点数常量存储转换模块，用�
 preproc.c对外仅导出一个结构：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * Called at the start of a pass; given a file name, the number</span>
-<span class="org-comment">     * of the pass, an error reporting function, an evaluator</span>
-<span class="org-comment">     * function, and a listing generator to talk to.</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">void</span> (*reset) (<span class="org-type">char</span> *, <span class="org-type">int</span>, efunc, evalfunc, <span class="org-type">ListGen</span> *);
+<pre class="src src-C"><span style="color: #5FB3B3;">typedef</span> <span style="color: #5FB3B3;">struct</span> {
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * Called at the start of a pass; given a file name, the number</span>
+<span style="color: #4F5B66;">     * of the pass, an error reporting function, an evaluator</span>
+<span style="color: #4F5B66;">     * function, and a listing generator to talk to.</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">void</span> (*reset) (<span style="color: #C594C5;">char</span> *, <span style="color: #C594C5;">int</span>, efunc, evalfunc, <span style="color: #C594C5;">ListGen</span> *);
 
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * Called to fetch a line of preprocessed source. The line</span>
-<span class="org-comment">     * returned has been malloc'ed, and so should be freed after</span>
-<span class="org-comment">     * use.</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">char</span> *(*getline) (<span class="org-type">void</span>);
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * Called to fetch a line of preprocessed source. The line</span>
+<span style="color: #4F5B66;">     * returned has been malloc'ed, and so should be freed after</span>
+<span style="color: #4F5B66;">     * use.</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">char</span> *(*getline) (<span style="color: #C594C5;">void</span>);
 
-    <span class="org-comment-delimiter">/*</span>
-<span class="org-comment">     * Called at the end of a pass.</span>
-<span class="org-comment">     </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">void</span> (*cleanup) (<span class="org-type">int</span>);
-} <span class="org-type">Preproc</span>;
+    <span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;">     * Called at the end of a pass.</span>
+<span style="color: #4F5B66;">     </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">void</span> (*cleanup) (<span style="color: #C594C5;">int</span>);
+} <span style="color: #C594C5;">Preproc</span>;
 </pre>
 </div>
 
@@ -372,20 +373,20 @@ preproc.c对外仅导出一个结构：
 “规范的”汇编代码行，填充并返回这行代码的insn结构：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {                    <span class="org-comment-delimiter">/* </span><span class="org-comment">an instruction itself </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">char</span> *<span class="org-variable-name">label</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">the label defined, or NULL </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">prefixes</span>[MAXPREFIX];       <span class="org-comment-delimiter">/* </span><span class="org-comment">instruction prefixes, if any </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">nprefix</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">number of entries in above </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">opcode</span>;                     <span class="org-comment-delimiter">/* </span><span class="org-comment">the opcode - not just the string </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">condition</span>;                  <span class="org-comment-delimiter">/* </span><span class="org-comment">the condition code, if Jcc/SETcc </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">operands</span>;                   <span class="org-comment-delimiter">/* </span><span class="org-comment">how many operands? 0-3 </span>
-<span class="org-comment">                                    * (more if db et al) </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">operand</span> <span class="org-variable-name">oprs</span>[3];        <span class="org-comment-delimiter">/* </span><span class="org-comment">the operands, defined as above </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">extop</span> *<span class="org-variable-name">eops</span>;                    <span class="org-comment-delimiter">/* </span><span class="org-comment">extended operands </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">eops_float</span>;                <span class="org-comment-delimiter">/* </span><span class="org-comment">true if DD and floating </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">long</span> <span class="org-variable-name">times</span>;                     <span class="org-comment-delimiter">/* </span><span class="org-comment">repeat count (TIMES prefix) </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">int</span> <span class="org-variable-name">forw_ref</span>;                   <span class="org-comment-delimiter">/* </span><span class="org-comment">is there a forward reference? </span><span class="org-comment-delimiter">*/</span>
-} <span class="org-type">insn</span>;
+<pre class="src src-C"><span style="color: #5FB3B3;">typedef</span> <span style="color: #5FB3B3;">struct</span> {                    <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">an instruction itself </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>;                    <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the label defined, or NULL </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">prefixes</span>[MAXPREFIX];       <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">instruction prefixes, if any </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">nprefix</span>;                    <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">number of entries in above </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">opcode</span>;                     <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the opcode - not just the string </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">condition</span>;                  <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the condition code, if Jcc/SETcc </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">operands</span>;                   <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">how many operands? 0-3 </span>
+<span style="color: #4F5B66;">                                    * (more if db et al) </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">operand</span> <span style="color: #C594C5;">oprs</span>[3];        <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">the operands, defined as above </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">extop</span> *<span style="color: #C594C5;">eops</span>;                    <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">extended operands </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">eops_float</span>;                <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">true if DD and floating </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">times</span>;                     <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">repeat count (TIMES prefix) </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">forw_ref</span>;                   <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">is there a forward reference? </span><span style="color: #4F5B66;">*/</span>
+} <span style="color: #C594C5;">insn</span>;
 </pre>
 </div>
 
@@ -393,10 +394,10 @@ preproc.c对外仅导出一个结构：
 该模块导出三个函数：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-type">void</span> <span class="org-function-name">parser_global_info</span> (<span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">output</span>, <span class="org-type">loc_t</span> *<span class="org-variable-name">locp</span>);
-<span class="org-type">insn</span> *<span class="org-function-name">parse_line</span> (<span class="org-type">int</span> <span class="org-variable-name">pass</span>, <span class="org-type">char</span> *<span class="org-variable-name">buffer</span>, <span class="org-type">insn</span> *<span class="org-variable-name">result</span>,
-               <span class="org-type">efunc</span> <span class="org-variable-name">error</span>, <span class="org-type">evalfunc</span> <span class="org-variable-name">evaluate</span>, <span class="org-type">ldfunc</span> <span class="org-variable-name">ldef</span>);
-<span class="org-type">void</span> <span class="org-function-name">cleanup_insn</span> (<span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>);
+<pre class="src src-C"><span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">parser_global_info</span> (<span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">ofmt</span> *<span style="color: #C594C5;">output</span>, <span style="color: #C594C5;">loc_t</span> *<span style="color: #C594C5;">locp</span>);
+<span style="color: #C594C5;">insn</span> *<span style="color: #D8DEE9;">parse_line</span> (<span style="color: #C594C5;">int</span> <span style="color: #C594C5;">pass</span>, <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">buffer</span>, <span style="color: #C594C5;">insn</span> *<span style="color: #C594C5;">result</span>,
+               <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>, <span style="color: #C594C5;">evalfunc</span> <span style="color: #C594C5;">evaluate</span>, <span style="color: #C594C5;">ldfunc</span> <span style="color: #C594C5;">ldef</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">cleanup_insn</span> (<span style="color: #C594C5;">insn</span> *<span style="color: #C594C5;">instruction</span>);
 </pre>
 </div>
 
@@ -425,11 +426,11 @@ preproc.c对外仅导出一个结构：
 它导出两个函数：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-type">long</span> <span class="org-function-name">insn_size</span> (<span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">int</span> <span class="org-variable-name">bits</span>, <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">cpu</span>,
-             <span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
-<span class="org-type">long</span> <span class="org-function-name">assemble</span> (<span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">int</span> <span class="org-variable-name">bits</span>, <span class="org-type">unsigned</span> <span class="org-type">long</span> <span class="org-variable-name">cpu</span>,
-            <span class="org-type">insn</span> *<span class="org-variable-name">instruction</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">output</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>,
-            <span class="org-type">ListGen</span> *<span class="org-variable-name">listgen</span>);
+<pre class="src src-C"><span style="color: #C594C5;">long</span> <span style="color: #D8DEE9;">insn_size</span> (<span style="color: #C594C5;">long</span> <span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">offset</span>, <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">bits</span>, <span style="color: #C594C5;">unsigned</span> <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">cpu</span>,
+             <span style="color: #C594C5;">insn</span> *<span style="color: #C594C5;">instruction</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
+<span style="color: #C594C5;">long</span> <span style="color: #D8DEE9;">assemble</span> (<span style="color: #C594C5;">long</span> <span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">offset</span>, <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">bits</span>, <span style="color: #C594C5;">unsigned</span> <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">cpu</span>,
+            <span style="color: #C594C5;">insn</span> *<span style="color: #C594C5;">instruction</span>, <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">ofmt</span> *<span style="color: #C594C5;">output</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>,
+            <span style="color: #C594C5;">ListGen</span> *<span style="color: #C594C5;">listgen</span>);
 </pre>
 </div>
 
@@ -455,22 +456,22 @@ eval.c利用标准的scan程序扫描表达式缓冲区，找出存在的运算�
 处理后的值存入expr结构中：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-comment-delimiter">/*</span>
-<span class="org-comment"> * Expression-evaluator datatype. Expressions, within the</span>
-<span class="org-comment"> * evaluator, are stored as an array of these beasts, terminated by</span>
-<span class="org-comment"> * a record with type==0. Mostly, it's a vector type: each type</span>
-<span class="org-comment"> * denotes some kind of a component, and the value denotes the</span>
-<span class="org-comment"> * multiple of that component present in the expression. The</span>
-<span class="org-comment"> * exception is the WRT type, whose `value' field denotes the</span>
-<span class="org-comment"> * segment to which the expression is relative. These segments will</span>
-<span class="org-comment"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
-<span class="org-comment"> * types. So it is still valid to assume that anything with a</span>
-<span class="org-comment"> * `value' field of zero is insignificant.</span>
-<span class="org-comment"> </span><span class="org-comment-delimiter">*/</span>
-<span class="org-keyword">typedef</span> <span class="org-keyword">struct</span> {
-    <span class="org-type">long</span> <span class="org-variable-name">type</span>;                             <span class="org-comment-delimiter">/* </span><span class="org-comment">a register, or EXPR_xxx </span><span class="org-comment-delimiter">*/</span>
-    <span class="org-type">long</span> <span class="org-variable-name">value</span>;                            <span class="org-comment-delimiter">/* </span><span class="org-comment">must be &gt;= 32 bits </span><span class="org-comment-delimiter">*/</span>
-} <span class="org-type">expr</span>;
+<pre class="src src-C"><span style="color: #4F5B66;">/*</span>
+<span style="color: #4F5B66;"> * Expression-evaluator datatype. Expressions, within the</span>
+<span style="color: #4F5B66;"> * evaluator, are stored as an array of these beasts, terminated by</span>
+<span style="color: #4F5B66;"> * a record with type==0. Mostly, it's a vector type: each type</span>
+<span style="color: #4F5B66;"> * denotes some kind of a component, and the value denotes the</span>
+<span style="color: #4F5B66;"> * multiple of that component present in the expression. The</span>
+<span style="color: #4F5B66;"> * exception is the WRT type, whose `value' field denotes the</span>
+<span style="color: #4F5B66;"> * segment to which the expression is relative. These segments will</span>
+<span style="color: #4F5B66;"> * be segment-base types, i.e. either odd segment values or SEG_ABS</span>
+<span style="color: #4F5B66;"> * types. So it is still valid to assume that anything with a</span>
+<span style="color: #4F5B66;"> * `value' field of zero is insignificant.</span>
+<span style="color: #4F5B66;"> </span><span style="color: #4F5B66;">*/</span>
+<span style="color: #5FB3B3;">typedef</span> <span style="color: #5FB3B3;">struct</span> {
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">type</span>;                             <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">a register, or EXPR_xxx </span><span style="color: #4F5B66;">*/</span>
+    <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">value</span>;                            <span style="color: #4F5B66;">/* </span><span style="color: #4F5B66;">must be &gt;= 32 bits </span><span style="color: #4F5B66;">*/</span>
+} <span style="color: #C594C5;">expr</span>;
 </pre>
 </div>
 
@@ -506,20 +507,20 @@ NASM的标号分局部标号和全局标号两种(外部标号可看作是在另
 这个模块导出以下数据和函数：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-keyword">extern</span> <span class="org-type">char</span> <span class="org-variable-name">lprefix</span>[PREFIX_MAX];
-<span class="org-keyword">extern</span> <span class="org-type">char</span> <span class="org-variable-name">lpostfix</span>[PREFIX_MAX];
+<pre class="src src-C"><span style="color: #5FB3B3;">extern</span> <span style="color: #C594C5;">char</span> <span style="color: #C594C5;">lprefix</span>[PREFIX_MAX];
+<span style="color: #5FB3B3;">extern</span> <span style="color: #C594C5;">char</span> <span style="color: #C594C5;">lpostfix</span>[PREFIX_MAX];
 
-<span class="org-type">int</span> <span class="org-function-name">lookup_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> *<span class="org-variable-name">segment</span>, <span class="org-type">long</span> *<span class="org-variable-name">offset</span>);
-<span class="org-type">int</span> <span class="org-function-name">is_extern</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>);
-<span class="org-type">void</span> <span class="org-function-name">define_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
-                   <span class="org-type">int</span> <span class="org-variable-name">is_norm</span>, <span class="org-type">int</span> <span class="org-variable-name">isextrn</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
-<span class="org-type">void</span> <span class="org-function-name">redefine_label</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">offset</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
-                   <span class="org-type">int</span> <span class="org-variable-name">is_norm</span>, <span class="org-type">int</span> <span class="org-variable-name">isextrn</span>, <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
-<span class="org-type">void</span> <span class="org-function-name">define_common</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">long</span> <span class="org-variable-name">segment</span>, <span class="org-type">long</span> <span class="org-variable-name">size</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>,
-                    <span class="org-keyword">struct</span> <span class="org-type">ofmt</span> *<span class="org-variable-name">ofmt</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
-<span class="org-type">void</span> <span class="org-function-name">declare_as_global</span> (<span class="org-type">char</span> *<span class="org-variable-name">label</span>, <span class="org-type">char</span> *<span class="org-variable-name">special</span>, <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
-<span class="org-type">int</span> <span class="org-function-name">init_labels</span> (<span class="org-type">void</span>);
-<span class="org-type">void</span> <span class="org-function-name">cleanup_labels</span> (<span class="org-type">void</span>);
+<span style="color: #C594C5;">int</span> <span style="color: #D8DEE9;">lookup_label</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>, <span style="color: #C594C5;">long</span> *<span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> *<span style="color: #C594C5;">offset</span>);
+<span style="color: #C594C5;">int</span> <span style="color: #D8DEE9;">is_extern</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">define_label</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">offset</span>, <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">special</span>,
+                   <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">is_norm</span>, <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">isextrn</span>, <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">ofmt</span> *<span style="color: #C594C5;">ofmt</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">redefine_label</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">offset</span>, <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">special</span>,
+                   <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">is_norm</span>, <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">isextrn</span>, <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">ofmt</span> *<span style="color: #C594C5;">ofmt</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">define_common</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">segment</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">size</span>, <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">special</span>,
+                    <span style="color: #5FB3B3;">struct</span> <span style="color: #C594C5;">ofmt</span> *<span style="color: #C594C5;">ofmt</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">declare_as_global</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">label</span>, <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">special</span>, <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
+<span style="color: #C594C5;">int</span> <span style="color: #D8DEE9;">init_labels</span> (<span style="color: #C594C5;">void</span>);
+<span style="color: #C594C5;">void</span> <span style="color: #D8DEE9;">cleanup_labels</span> (<span style="color: #C594C5;">void</span>);
 </pre>
 </div>
 
@@ -561,7 +562,7 @@ list.c用于生成列表文件。列表文件的格式如下：
 list.c对外导出如下结构：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-type">ListGen</span> <span class="org-variable-name">nasmlist</span> = {
+<pre class="src src-C"><span style="color: #C594C5;">ListGen</span> <span style="color: #C594C5;">nasmlist</span> = {
     list_init,
     list_cleanup,
     list_output,
@@ -599,8 +600,8 @@ list_upleve和list_downlevel被其它模块调用，以更新list.c中的列表�
 float.c模块导出一个函数float_const：
 </p>
 <div class="org-src-container">
-<pre class="src src-C"><span class="org-type">int</span> <span class="org-function-name">float_const</span> (<span class="org-type">char</span> *<span class="org-variable-name">number</span>, <span class="org-type">long</span> <span class="org-variable-name">sign</span>, <span class="org-type">unsigned</span> <span class="org-type">char</span> *<span class="org-variable-name">result</span>, <span class="org-type">int</span> <span class="org-variable-name">bytes</span>,
- <span class="org-type">efunc</span> <span class="org-variable-name">error</span>);
+<pre class="src src-C"><span style="color: #C594C5;">int</span> <span style="color: #D8DEE9;">float_const</span> (<span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">number</span>, <span style="color: #C594C5;">long</span> <span style="color: #C594C5;">sign</span>, <span style="color: #C594C5;">unsigned</span> <span style="color: #C594C5;">char</span> *<span style="color: #C594C5;">result</span>, <span style="color: #C594C5;">int</span> <span style="color: #C594C5;">bytes</span>,
+ <span style="color: #C594C5;">efunc</span> <span style="color: #C594C5;">error</span>);
 </pre>
 </div>
 
@@ -790,40 +791,40 @@ NASM像MASM一样支持ADDR关键字。同样的方法也可以实现对类似(e
 callapi宏如下：
 </p>
 <div class="org-src-container">
-<pre class="src src-asm"><span class="org-comment-delimiter">;</span><span class="org-comment">example: callapi BeginPaint,dword [hWnd], addr [ps]</span>
-<span class="org-function-name">%idefine</span> <span class="org-keyword">ADDR</span>               <span class="org-string">"ADDR"</span>,
-<span class="org-function-name">%imacro</span> <span class="org-keyword">callapi</span> 1-*
-<span class="org-function-name">%assign</span> <span class="org-keyword">i</span>   <span class="org-variable-name">%0</span>
-        <span class="org-keyword">%if</span> <span class="org-variable-name">%0</span> &gt; 1
-                <span class="org-keyword">%rep</span> <span class="org-variable-name">%0</span> - 1
-                        <span class="org-keyword">%rotate</span> -1
-                        <span class="org-keyword">%assign</span> i   i-1
+<pre class="src src-asm"><span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">example: callapi BeginPaint,dword [hWnd], addr [ps]</span>
+<span style="color: #D8DEE9;">%idefine</span> <span style="color: #5FB3B3;">ADDR</span>               <span style="color: #99C794;">"ADDR"</span>,
+<span style="color: #D8DEE9;">%imacro</span> <span style="color: #5FB3B3;">callapi</span> 1-*
+<span style="color: #D8DEE9;">%assign</span> <span style="color: #5FB3B3;">i</span>   <span style="color: #C594C5;">%0</span>
+        <span style="color: #5FB3B3;">%if</span> <span style="color: #C594C5;">%0</span> &gt; 1
+                <span style="color: #5FB3B3;">%rep</span> <span style="color: #C594C5;">%0</span> - 1
+                        <span style="color: #5FB3B3;">%rotate</span> -1
+                        <span style="color: #5FB3B3;">%assign</span> i   i-1
 
-                        <span class="org-comment-delimiter">;</span><span class="org-comment">查看前一个数是否为'ADDR'</span>
-                        <span class="org-keyword">%rotate</span> -1
-                        <span class="org-keyword">%ifidni</span> <span class="org-variable-name">%1</span>,<span class="org-string">"ADDR"</span>
-                                <span class="org-comment-delimiter">;</span><span class="org-comment">将参数列表移到当前并处理</span>
-                                <span class="org-keyword">%rotate</span> 1
-                                <span class="org-keyword">lea</span> eax,    <span class="org-variable-name">%1</span>
-                                <span class="org-keyword">push</span>        eax
-                                <span class="org-comment-delimiter">;</span><span class="org-comment">跳过ADDR参数</span>
-                                <span class="org-keyword">%rotate</span> -1
-                                <span class="org-keyword">%assign</span> i   i-1
-                        <span class="org-keyword">%else</span>
-                                <span class="org-keyword">%rotate</span> 1
-                                <span class="org-keyword">xpush</span> {<span class="org-variable-name">%1</span>}
-                        <span class="org-keyword">%endif</span>
+                        <span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">查看前一个数是否为'ADDR'</span>
+                        <span style="color: #5FB3B3;">%rotate</span> -1
+                        <span style="color: #5FB3B3;">%ifidni</span> <span style="color: #C594C5;">%1</span>,<span style="color: #99C794;">"ADDR"</span>
+                                <span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">将参数列表移到当前并处理</span>
+                                <span style="color: #5FB3B3;">%rotate</span> 1
+                                <span style="color: #5FB3B3;">lea</span> eax,    <span style="color: #C594C5;">%1</span>
+                                <span style="color: #5FB3B3;">push</span>        eax
+                                <span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">跳过ADDR参数</span>
+                                <span style="color: #5FB3B3;">%rotate</span> -1
+                                <span style="color: #5FB3B3;">%assign</span> i   i-1
+                        <span style="color: #5FB3B3;">%else</span>
+                                <span style="color: #5FB3B3;">%rotate</span> 1
+                                <span style="color: #5FB3B3;">xpush</span> {<span style="color: #C594C5;">%1</span>}
+                        <span style="color: #5FB3B3;">%endif</span>
 
 
-                        <span class="org-keyword">%if</span> i &lt;=1
-                                <span class="org-keyword">%exitrep</span>
-                        <span class="org-keyword">%endif</span>
-                <span class="org-keyword">%endrep</span>
-                <span class="org-keyword">%rotate</span> -1
-        <span class="org-keyword">%endif</span>
-        <span class="org-keyword">extern</span>      <span class="org-variable-name">%1</span>
-        <span class="org-keyword">call</span>        [<span class="org-variable-name">%1</span>]
-<span class="org-function-name">%endmacro</span>
+                        <span style="color: #5FB3B3;">%if</span> i &lt;=1
+                                <span style="color: #5FB3B3;">%exitrep</span>
+                        <span style="color: #5FB3B3;">%endif</span>
+                <span style="color: #5FB3B3;">%endrep</span>
+                <span style="color: #5FB3B3;">%rotate</span> -1
+        <span style="color: #5FB3B3;">%endif</span>
+        <span style="color: #5FB3B3;">extern</span>      <span style="color: #C594C5;">%1</span>
+        <span style="color: #5FB3B3;">call</span>        [<span style="color: #C594C5;">%1</span>]
+<span style="color: #D8DEE9;">%endmacro</span>
 </pre>
 </div>
 
@@ -836,6 +837,7 @@ callapi宏如下：
 <div id="postamble" class="status">
 
 
+ </p> </p> </p>
  <script src="https://utteranc.es/client.js"
          repo="jingtaozf/jingtaozf.github.io"
          issue-term="homepage"

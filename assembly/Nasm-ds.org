@@ -1,6 +1,7 @@
 #+title: NASM源码中的数据结构
-
-
+#+Index: Assembly!NASM源码中的数据结构
+#+Index: NASM!NASM源码中的数据结构
+#+Index: C!NASM源码中的数据结构
 * 概述
 
 NASM是一个模块化的，可重用的汇编器（有关这方面的内容请参照

@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-23 Thu 16:10 -->
+<!-- 2019-05-30 Thu 15:56 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>我是如何使用Emacs的</title>
@@ -252,6 +252,7 @@ for the JavaScript code in this tag.
  <li><a accesskey="a" href="/index.html">Articles</a></li>
  <li><a accesskey="c" href="https://github.com/jingtaozf">Code</a></li>
  <li><a accesskey="A" href="/about.html">About</a></li>
+ <li><a accesskey="i" href="/theindex.html">Index</a></li>
  </ul><div id="preamble" class="status">
 
     <script type="text/javascript">//<![CDATA[
@@ -413,17 +414,17 @@ This heading is used by keeping clocks is always opening.
 在Emacs启动时执行如下代码
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">*org-clock-idle-task*</span> nil)
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">*org-clock-idle-quit*</span> nil)
-(<span class="org-keyword">defun</span> <span class="org-function-name">xjt/org-clock-mark-idle-task</span> ()
-  <span class="org-doc">"Mark current task as idle task."</span>
+<pre class="src src-elisp">(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*org-clock-idle-task*</span> nil)
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*org-clock-idle-quit*</span> nil)
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">xjt/org-clock-mark-idle-task</span> ()
+  <span style="color: #99C794;">"Mark current task as idle task."</span>
   (interactive)
   (save-excursion
     (org-back-to-heading t)
     (setq *org-clock-idle-task* (make-marker))
     (move-marker *org-clock-idle-task* (point))))
 
-(<span class="org-keyword">defun</span> <span class="org-function-name">xjt/clock-to-idle-maybe</span> ()
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">xjt/clock-to-idle-maybe</span> ()
   (unless org-clock-clocking-in
     (when (and (not *org-clock-idle-quit*)
                *org-clock-idle-task*)
@@ -434,21 +435,21 @@ This heading is used by keeping clocks is always opening.
 (add-hook 'org-clock-out-hook 'xjt/clock-to-idle-maybe 'append)
 
 (org-copy-face 'modeline 'org-mode-line-clock-idle
-  <span class="org-string">"Face used for clock display for idle tasks in mode line."</span>
-  :background <span class="org-string">"IndianRed3"</span>)
-(<span class="org-keyword">defadvice</span> <span class="org-function-name">org-clock-update-mode-line</span> (around xjt/org-clock-update-mode-line)
-  (if (string= <span class="org-string">"*NO TASK*"</span> org-clock-heading)
+  <span style="color: #99C794;">"Face used for clock display for idle tasks in mode line."</span>
+  :background <span style="color: #99C794;">"IndianRed3"</span>)
+(<span style="color: #5FB3B3;">defadvice</span> <span style="color: #D8DEE9;">org-clock-update-mode-line</span> (around xjt/org-clock-update-mode-line)
+  (if (string= <span style="color: #99C794;">"*NO TASK*"</span> org-clock-heading)
     (progn
-      (setq org-mode-line-string (org-propertize <span class="org-string">"*NO TASK*"</span> 'face 'org-mode-line-clock-idle))
+      (setq org-mode-line-string (org-propertize <span style="color: #99C794;">"*NO TASK*"</span> 'face 'org-mode-line-clock-idle))
       (force-mode-line-update))
     ad-do-it))
 (ad-activate 'org-clock-update-mode-line)
 
-(<span class="org-keyword">defadvice</span> <span class="org-function-name">org-clock-save</span> (before xjt/org-clock-idle-save)
+(<span style="color: #5FB3B3;">defadvice</span> <span style="color: #D8DEE9;">org-clock-save</span> (before xjt/org-clock-idle-save)
   (setq *org-clock-idle-quit* t)
-  (when (string= <span class="org-string">"*NO TASK*"</span> org-clock-heading)
+  (when (string= <span style="color: #99C794;">"*NO TASK*"</span> org-clock-heading)
     (org-clock-out)
-    (with-current-buffer <span class="org-string">"idle.org"</span>
+    (with-current-buffer <span style="color: #99C794;">"idle.org"</span>
     (save-buffer))))
 (ad-activate 'org-clock-save)
 </pre>
@@ -459,8 +460,8 @@ This heading is used by keeping clocks is always opening.
 （"D"是我自定义的Daily agenda view）
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp">(let ((org-agenda-files (append org-agenda-files (list (concat org-directory <span class="org-string">"idle.org"</span>)))))
-  (org-agenda nil <span class="org-string">"D"</span>)
+<pre class="src src-elisp">(let ((org-agenda-files (append org-agenda-files (list (concat org-directory <span style="color: #99C794;">"idle.org"</span>)))))
+  (org-agenda nil <span style="color: #99C794;">"D"</span>)
   (xjt/clock-to-idle-maybe))
 </pre>
 </div></li>
@@ -496,14 +497,14 @@ This heading is used by keeping clocks is always opening.
 收多个邮箱的邮件，方法如下：
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;; </span><span class="org-g2-public-documentation">utils to retrieve all accounts mails.</span>
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-cases</span> '(<span class="org-string">"default"</span> <span class="org-string">"hotmail"</span> <span class="org-string">"ixiaozhushou.com"</span> <span class="org-string">"jingtao.net"</span>))
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-orig-case</span> <span class="org-string">"default"</span>)
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">my-mew-current-caselist</span> my-mew-cases)
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-mew-summary-set-case</span> (case)
-  <span class="org-doc">"Set the case."</span>
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;; </span><span style="color: #778899;">utils to retrieve all accounts mails.</span>
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">my-mew-cases</span> '(<span style="color: #99C794;">"default"</span> <span style="color: #99C794;">"hotmail"</span> <span style="color: #99C794;">"ixiaozhushou.com"</span> <span style="color: #99C794;">"jingtao.net"</span>))
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">my-mew-orig-case</span> <span style="color: #99C794;">"default"</span>)
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">my-mew-current-caselist</span> my-mew-cases)
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-mew-summary-set-case</span> (case)
+  <span style="color: #99C794;">"Set the case."</span>
   (setq mew-case case)
-  (let ((case mew-case)) <span class="org-comment-delimiter">;; </span><span class="org-comment">side effect</span>
+  (let ((case mew-case)) <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">side effect</span>
     (save-excursion
       (dolist (buf mew-buffers)
         (when (get-buffer buf)
@@ -518,13 +519,13 @@ This heading is used by keeping clocks is always opening.
                     case
                     (mew-proto-inbox-folder (mew-proto case) case))))
         (mew-summary-visit-folder inbox)))))
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-mew-summary-retrieve-all</span> ()
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-mew-summary-retrieve-all</span> ()
   (interactive)
   (setq my-mew-orig-case mew-case)
   (my-mew-summary-set-case (car my-mew-cases))
   (setq my-mew-current-caselist (cdr my-mew-cases))
   (mew-summary-retrieve))
-(<span class="org-keyword">defadvice</span> <span class="org-function-name">mew-net-disp-info-display</span> (after my-cache-save-postfix-action)
+(<span style="color: #5FB3B3;">defadvice</span> <span style="color: #D8DEE9;">mew-net-disp-info-display</span> (after my-cache-save-postfix-action)
   (sleep-for 2)
   (cond (my-mew-current-caselist
          (my-mew-summary-set-case (car my-mew-current-caselist))
@@ -532,11 +533,11 @@ This heading is used by keeping clocks is always opening.
          (mew-summary-retrieve))
         (my-mew-orig-case
          (sleep-for 2)
-         (message <span class="org-string">"retrieve all accounts done."</span>) 
+         (message <span style="color: #99C794;">"retrieve all accounts done."</span>) 
          (my-mew-summary-set-case my-mew-orig-case)
          (setq my-mew-orig-case nil))))
 (ad-activate 'mew-net-disp-info-display)
-(define-key mew-summary-mode-map <span class="org-string">"I"</span>    'my-mew-summary-retrieve-all)
+(define-key mew-summary-mode-map <span style="color: #99C794;">"I"</span>    'my-mew-summary-retrieve-all)
 </pre>
 </div>
 </div>
@@ -550,39 +551,39 @@ This heading is used by keeping clocks is always opening.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-elisp">(<span class="org-keyword">defvar</span> <span class="org-variable-name">*mew-header-encoding-method*</span> :rfc2047)
-(<span class="org-keyword">defun</span> <span class="org-function-name">mew-header-insert</span> (key value &amp;optional no-fold)
+<pre class="src src-elisp">(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*mew-header-encoding-method*</span> :rfc2047)
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">mew-header-insert</span> (key value &amp;optional no-fold)
   (if (and value (stringp key))
       (let ((beg (point)) params med parname parval)
         (when (listp value)
           (setq params (cdr value))
           (setq value (car value)))
         (insert key)
-        (insert <span class="org-string">" "</span>)
+        (insert <span style="color: #99C794;">" "</span>)
         (setq med (point))
-        (if (string-match <span class="org-string">"^[\t -~]*$"</span> value)
+        (if (string-match <span style="color: #99C794;">"^[\t -~]*$"</span> value)
             (insert value)
           (mew-header-encode-text value nil (length key)))
         (dolist (par params)
           (mew-set '(parname parval) par)
-          (insert <span class="org-string">";"</span>)
+          (insert <span style="color: #99C794;">";"</span>)
           (cond
-           ((string-match <span class="org-string">"^[-a-zA-Z0-9]+$"</span> parval)
-            ) <span class="org-comment-delimiter">;; </span><span class="org-comment">do nothing</span>
+           ((string-match <span style="color: #99C794;">"^[-a-zA-Z0-9]+$"</span> parval)
+            ) <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">do nothing</span>
            ((and (string= (mew-charset-guess-string parval) mew-us-ascii)
-                 (not (string-match <span class="org-string">"\""</span> parval)))
-            (setq parval (concat <span class="org-string">"\""</span> parval <span class="org-string">"\""</span>)))
+                 (not (string-match <span style="color: #99C794;">"\""</span> parval)))
+            (setq parval (concat <span style="color: #99C794;">"\""</span> parval <span style="color: #99C794;">"\""</span>)))
            (t
             (case *mew-header-encoding-method*
               (:rfc2047
                (when (loop for c across parval
                         thereis (&gt; c 255))
-                 (setq parval (concat <span class="org-string">"\""</span> (rfc2047-encode-string parval)
-                                      <span class="org-string">"\""</span>))))
+                 (setq parval (concat <span style="color: #99C794;">"\""</span> (rfc2047-encode-string parval)
+                                      <span style="color: #99C794;">"\""</span>))))
               (t (setq parval (mew-param-encode parval))
-                 (setq parname (concat parname <span class="org-string">"*"</span>))))))
-          (insert <span class="org-string">" "</span> parname <span class="org-string">"="</span> parval))
-        (insert <span class="org-string">"\n"</span>)
+                 (setq parname (concat parname <span style="color: #99C794;">"*"</span>))))))
+          (insert <span style="color: #99C794;">" "</span> parname <span style="color: #99C794;">"="</span> parval))
+        (insert <span style="color: #99C794;">"\n"</span>)
         (unless no-fold
           (mew-header-fold-region beg (point) med)))))
 </pre>
@@ -607,53 +608,53 @@ Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来�
 <div class="org-src-container">
 <pre class="src src-elisp">(require 'dired)
   (require 'dired-tar)
-  (GNULinux <span class="org-comment-delimiter">; </span><span class="org-comment">gnome-open</span>
-   (<span class="org-keyword">defvar</span> <span class="org-variable-name">*open-with-wine*</span> '(<span class="org-string">"wine"</span> <span class="org-string">"start"</span> <span class="org-string">"/Unix"</span>))
+  (GNULinux <span style="color: #4F5B66;">; </span><span style="color: #4F5B66;">gnome-open</span>
+   (<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*open-with-wine*</span> '(<span style="color: #99C794;">"wine"</span> <span style="color: #99C794;">"start"</span> <span style="color: #99C794;">"/Unix"</span>))
    (setq *dired-extention-open-list*
-         `((<span class="org-string">"pdf$"</span> <span class="org-string">"/opt/bin/acroread"</span>)
-           (<span class="org-string">"htm$"</span> <span class="org-string">"google-chrome"</span>)
-           (<span class="org-string">"html$"</span> <span class="org-string">"google-chrome"</span>)
-           (<span class="org-string">"doc$"</span> ,@*open-with-wine*)
-           (<span class="org-string">"docx$"</span> ,@*open-with-wine*)
-           (<span class="org-string">"exe$"</span> ,@*open-with-wine*)
-           (<span class="org-string">"ps$"</span> <span class="org-string">"gsview"</span>)))
+         `((<span style="color: #99C794;">"pdf$"</span> <span style="color: #99C794;">"/opt/bin/acroread"</span>)
+           (<span style="color: #99C794;">"htm$"</span> <span style="color: #99C794;">"google-chrome"</span>)
+           (<span style="color: #99C794;">"html$"</span> <span style="color: #99C794;">"google-chrome"</span>)
+           (<span style="color: #99C794;">"doc$"</span> ,@*open-with-wine*)
+           (<span style="color: #99C794;">"docx$"</span> ,@*open-with-wine*)
+           (<span style="color: #99C794;">"exe$"</span> ,@*open-with-wine*)
+           (<span style="color: #99C794;">"ps$"</span> <span style="color: #99C794;">"gsview"</span>)))
    (require 'dired-extension)
-   (eval-after-load <span class="org-string">"dired"</span>
+   (eval-after-load <span style="color: #99C794;">"dired"</span>
      '(progn
         (define-key dired-mode-map [C-return] 'my-dired-open-file)
         (define-key dired-mode-map [menu-bar immediate dired-run-associated-program]
-          '(<span class="org-string">"Open Associated Application"</span> . dired-gnome-open-file)))))
+          '(<span style="color: #99C794;">"Open Associated Application"</span> . dired-gnome-open-file)))))
 
-<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-dired-open-file</span> ()
-  <span class="org-doc">"Dired find file function. Open file use another tool"</span>
+<span style="color: #4F5B66;">;;;</span><span style="color: #4F5B66;">###</span><span style="color: #EC5f67;">autoload</span>
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-dired-open-file</span> ()
+  <span style="color: #99C794;">"Dired find file function. Open file use another tool"</span>
   (interactive)
   (dolist (file (dired-get-marked-files))
     (my-dired-open-file-internal file)))
 
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">*use-doc-view*</span> nil)
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">*dired-extention-open-list*</span> nil)
-<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-dired-open-file-internal</span> (file)
-  <span class="org-doc">"Open diversified format FILE."</span>
-  (interactive <span class="org-string">"fFile: "</span>)
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*use-doc-view*</span> nil)
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*dired-extention-open-list*</span> nil)
+<span style="color: #4F5B66;">;;;</span><span style="color: #4F5B66;">###</span><span style="color: #EC5f67;">autoload</span>
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-dired-open-file-internal</span> (file)
+  <span style="color: #99C794;">"Open diversified format FILE."</span>
+  (interactive <span style="color: #99C794;">"fFile: "</span>)
   (require 'emms)
   (let ((file-extension (file-name-extension file)))
     (if file-extension
-        (cond ((string-match <span class="org-string">"\\(s?html?\\)$"</span> file-extension)
+        (cond ((string-match <span style="color: #99C794;">"\\(s?html?\\)$"</span> file-extension)
                (require 'w3m)
                (w3m-copy-buffer)
-               (message <span class="org-string">"%s"</span> file)
+               (message <span style="color: #99C794;">"%s"</span> file)
                (w3m-find-file file))
-              ((string-match <span class="org-string">"\\(chm\\)$"</span> file-extension)
+              ((string-match <span style="color: #99C794;">"\\(chm\\)$"</span> file-extension)
                (require 'chm-view)
                (chm-view-file file))
-              ((string-match <span class="org-string">"\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$"</span> file-extension)
+              ((string-match <span style="color: #99C794;">"\\(bmp\\|ico\\|png\\|jpg\\|jpeg\\|tiff\\)$"</span> file-extension)
                (shell-command
-                (concat <span class="org-string">"wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"</span>
-                        <span class="org-string">" `winepath -w "</span> file <span class="org-string">"` &amp;"</span>)))
+                (concat <span style="color: #99C794;">"wine /home/jingtao/.wine/drive_c/Program\\ Files/IrfanView/i_view32.exe"</span>
+                        <span style="color: #99C794;">" `winepath -w "</span> file <span style="color: #99C794;">"` &amp;"</span>)))
               ((and *use-doc-view*
-                    (string-match <span class="org-string">"\\(pdf\\|ps\\|dvi\\)$"</span> file-extension))
+                    (string-match <span style="color: #99C794;">"\\(pdf\\|ps\\|dvi\\)$"</span> file-extension))
                (require 'doc-view)
                (dired-view-file)
                (doc-view-mode))
@@ -672,7 +673,7 @@ Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来�
                                      *dired-extention-open-list*)))
                  (if match
                      (my-open-external-progam-in-emacs
-                      <span class="org-string">"*dired open*"</span>
+                      <span style="color: #99C794;">"*dired open*"</span>
                       (if (&lt; 1 (length (cdr match)))
                           (append (cdr match) (list file))
                         (list (cadr match)
@@ -706,43 +707,43 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 *viper-basic-mode-z-based-maps*中
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">in viper mode &amp; some other modes,use z as my custom command prefix.</span>
-(<span class="org-keyword">defvar</span> <span class="org-variable-name">*viper-basic-mode-z-based-maps*</span> nil)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;</span><span style="color: #4F5B66;">in viper mode &amp; some other modes,use z as my custom command prefix.</span>
+(<span style="color: #5FB3B3;">defvar</span> <span style="color: #C594C5;">*viper-basic-mode-z-based-maps*</span> nil)
 (setq *viper-basic-mode-z-based-maps*
         `(
-          (<span class="org-string">"0"</span> delete-window)
-          (<span class="org-string">"1"</span> delete-other-windows)
-          (<span class="org-string">"2"</span> split-window-vertically)
-          (<span class="org-string">"b"</span> ido-switch-buffer)
-          (<span class="org-string">"c"</span> comment-region)
-          (<span class="org-string">"u"</span> uncomment-region)
+          (<span style="color: #99C794;">"0"</span> delete-window)
+          (<span style="color: #99C794;">"1"</span> delete-other-windows)
+          (<span style="color: #99C794;">"2"</span> split-window-vertically)
+          (<span style="color: #99C794;">"b"</span> ido-switch-buffer)
+          (<span style="color: #99C794;">"c"</span> comment-region)
+          (<span style="color: #99C794;">"u"</span> uncomment-region)
 
-          (<span class="org-string">"f"</span> ido-find-file)
-          (<span class="org-string">"i"</span> my-insert)
-          (<span class="org-string">"j"</span> idomenu)
-          (<span class="org-string">"k"</span> kill-current-buffer)
+          (<span style="color: #99C794;">"f"</span> ido-find-file)
+          (<span style="color: #99C794;">"i"</span> my-insert)
+          (<span style="color: #99C794;">"j"</span> idomenu)
+          (<span style="color: #99C794;">"k"</span> kill-current-buffer)
 
-          (<span class="org-string">"A"</span> org-agenda)
-          (<span class="org-string">"D"</span> kid-cl-speaker)
-          (<span class="org-string">"S"</span> my-save-buffers)
-          (<span class="org-string">"N"</span> tabbar-forward-group)
-          (<span class="org-string">"P"</span> tabbar-backward-group)
-          (<span class="org-string">"Q"</span> save-buffers-kill-terminal)
+          (<span style="color: #99C794;">"A"</span> org-agenda)
+          (<span style="color: #99C794;">"D"</span> kid-cl-speaker)
+          (<span style="color: #99C794;">"S"</span> my-save-buffers)
+          (<span style="color: #99C794;">"N"</span> tabbar-forward-group)
+          (<span style="color: #99C794;">"P"</span> tabbar-backward-group)
+          (<span style="color: #99C794;">"Q"</span> save-buffers-kill-terminal)
           ))
-(<span class="org-keyword">defmacro</span> <span class="org-function-name">apply-viper-z-map</span> (&amp;rest body)
+(<span style="color: #5FB3B3;">defmacro</span> <span style="color: #D8DEE9;">apply-viper-z-map</span> (&amp;rest body)
   `(loop for (char action) in *viper-basic-mode-z-based-maps*
       do ,@body))
-(<span class="org-keyword">defmacro</span> <span class="org-function-name">apply-viper-z-keymap</span> (map-name)
+(<span style="color: #5FB3B3;">defmacro</span> <span style="color: #D8DEE9;">apply-viper-z-keymap</span> (map-name)
   `(loop for (char action) in *viper-basic-mode-z-based-maps*
-      do (ignore-errors (define-key ,map-name (concat <span class="org-string">"z"</span> char) action))))
+      do (ignore-errors (define-key ,map-name (concat <span style="color: #99C794;">"z"</span> char) action))))
 
 (with-my-hook 'org-mode-hook
-  (org-defkey org-agenda-mode-map <span class="org-string">"z"</span> nil)
-  <span class="org-comment-delimiter">;; </span><span class="org-comment">map original key "z" to "zz" in org agenda mode.</span>
-  (org-defkey org-agenda-mode-map <span class="org-string">"zz"</span> 'org-agenda-add-note)
-  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat <span class="org-string">"z"</span> char) action)))
+  (org-defkey org-agenda-mode-map <span style="color: #99C794;">"z"</span> nil)
+  <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">map original key "z" to "zz" in org agenda mode.</span>
+  (org-defkey org-agenda-mode-map <span style="color: #99C794;">"zz"</span> 'org-agenda-add-note)
+  (apply-viper-z-map (org-defkey org-agenda-mode-map (concat <span style="color: #99C794;">"z"</span> char) action)))
 
-(define-key viper-vi-basic-map <span class="org-string">"z"</span> nil) <span class="org-comment-delimiter">; </span><span class="org-comment">delete `</span><span class="org-keyword">viper-nil</span><span class="org-comment">' binding</span>
+(define-key viper-vi-basic-map <span style="color: #99C794;">"z"</span> nil) <span style="color: #4F5B66;">; </span><span style="color: #4F5B66;">delete `</span><span style="color: #5FB3B3;">viper-nil</span><span style="color: #4F5B66;">' binding</span>
 (apply-viper-z-keymap viper-vi-basic-map)
 </pre>
 </div>
@@ -751,14 +752,14 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="org5d46c8b"></a>ze全局操作外部命令相关<br />
 <div class="outline-text-4" id="text-6-1-1">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use ze as external &amp; enlish invoke</span>
-(<span class="org-string">"ec"</span> my-external-program)
-(<span class="org-string">"eb"</span> my-bash-shell)
-(<span class="org-string">"ed"</span> kid-star-dict)
-(<span class="org-string">"eD"</span> kid-sdcv-to-buffer)
-(<span class="org-string">"em"</span> compile)
-(<span class="org-string">"ep"</span> my-plink)
-(<span class="org-string">"es"</span> dos-shell)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">use ze as external &amp; enlish invoke</span>
+(<span style="color: #99C794;">"ec"</span> my-external-program)
+(<span style="color: #99C794;">"eb"</span> my-bash-shell)
+(<span style="color: #99C794;">"ed"</span> kid-star-dict)
+(<span style="color: #99C794;">"eD"</span> kid-sdcv-to-buffer)
+(<span style="color: #99C794;">"em"</span> compile)
+(<span style="color: #99C794;">"ep"</span> my-plink)
+(<span style="color: #99C794;">"es"</span> dos-shell)
 
 
 </pre>
@@ -768,12 +769,12 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="orgedaf640"></a>zd全局操作目录相关<br />
 <div class="outline-text-4" id="text-6-1-2">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use zd as dired invoke.</span>
-(<span class="org-string">"db"</span> my-dired-buffers)
-(<span class="org-string">"dj"</span> dired-jump)
-(<span class="org-string">"df"</span> my-traverse-deep-rfind)
-(<span class="org-string">"dg"</span> my-dired-go)
-(<span class="org-string">"do"</span> dired-jump)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;</span><span style="color: #4F5B66;">use zd as dired invoke.</span>
+(<span style="color: #99C794;">"db"</span> my-dired-buffers)
+(<span style="color: #99C794;">"dj"</span> dired-jump)
+(<span style="color: #99C794;">"df"</span> my-traverse-deep-rfind)
+(<span style="color: #99C794;">"dg"</span> my-dired-go)
+(<span style="color: #99C794;">"do"</span> dired-jump)
 </pre>
 </div>
 </div>
@@ -781,11 +782,11 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="orgefabf6c"></a>zw全局操作w3m相关<br />
 <div class="outline-text-4" id="text-6-1-3">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use w as w3m prefix </span>
-(<span class="org-string">"wb"</span> my-w3m-buffers)
-(<span class="org-string">"ws"</span> w3m-browse-url-new-session)
-(<span class="org-string">"wq"</span> my-google-search)
-(<span class="org-string">"wg"</span> w3m-browse-url)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;</span><span style="color: #4F5B66;">use w as w3m prefix </span>
+(<span style="color: #99C794;">"wb"</span> my-w3m-buffers)
+(<span style="color: #99C794;">"ws"</span> w3m-browse-url-new-session)
+(<span style="color: #99C794;">"wq"</span> my-google-search)
+(<span style="color: #99C794;">"wg"</span> w3m-browse-url)
 </pre>
 </div>
 </div>
@@ -793,31 +794,31 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="orga68b1d9"></a>zg全局操作org mode<br />
 <div class="outline-text-4" id="text-6-1-4">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use zg as org-mode prefix</span>
-(<span class="org-string">"g "</span> org-table-edit-field)
-(<span class="org-string">"ga"</span> my-org-agenda-buffer)
-(<span class="org-string">"gA"</span> org-agenda)
-(<span class="org-string">"gb"</span> org-switchb)
-(<span class="org-string">"gcd"</span> org-clock-mark-default-task)
-(<span class="org-string">"gci"</span> my-org-clock-in)
-(<span class="org-string">"gco"</span> org-clock-out)
-(<span class="org-string">"gcj"</span> my-org-clock-goto)
-(<span class="org-string">"gcJ"</span> my-org-recent-clock)
-(<span class="org-string">"gC"</span> org-columns)
-(<span class="org-string">"ge"</span> org-set-effort)
-(<span class="org-string">"gE"</span> org-clock-modify-effort-estimate)
-(<span class="org-string">"gd"</span> org-decrypt-entry)
-(<span class="org-string">"gl"</span> org-store-link)
-(<span class="org-string">"gg"</span> org-ctrl-c-ctrl-c)
-(<span class="org-string">"gi"</span> org-insert-link)
-(<span class="org-string">"go"</span> org-open-at-point)
-(<span class="org-string">"gr"</span> org-remember)
-(<span class="org-string">"gs"</span> org-schedule)
-(<span class="org-string">"gS"</span> org-archive-to-archive-sibling)<span class="org-comment-delimiter">;</span><span class="org-comment">org-advertized-archive-subtree</span>
-(<span class="org-string">"gt"</span> org-todo)
-(<span class="org-string">"gT"</span> tea-time)
-(<span class="org-string">"gu"</span> org-update-statistics-cookies)
-(<span class="org-string">"gp"</span> links)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">use zg as org-mode prefix</span>
+(<span style="color: #99C794;">"g "</span> org-table-edit-field)
+(<span style="color: #99C794;">"ga"</span> my-org-agenda-buffer)
+(<span style="color: #99C794;">"gA"</span> org-agenda)
+(<span style="color: #99C794;">"gb"</span> org-switchb)
+(<span style="color: #99C794;">"gcd"</span> org-clock-mark-default-task)
+(<span style="color: #99C794;">"gci"</span> my-org-clock-in)
+(<span style="color: #99C794;">"gco"</span> org-clock-out)
+(<span style="color: #99C794;">"gcj"</span> my-org-clock-goto)
+(<span style="color: #99C794;">"gcJ"</span> my-org-recent-clock)
+(<span style="color: #99C794;">"gC"</span> org-columns)
+(<span style="color: #99C794;">"ge"</span> org-set-effort)
+(<span style="color: #99C794;">"gE"</span> org-clock-modify-effort-estimate)
+(<span style="color: #99C794;">"gd"</span> org-decrypt-entry)
+(<span style="color: #99C794;">"gl"</span> org-store-link)
+(<span style="color: #99C794;">"gg"</span> org-ctrl-c-ctrl-c)
+(<span style="color: #99C794;">"gi"</span> org-insert-link)
+(<span style="color: #99C794;">"go"</span> org-open-at-point)
+(<span style="color: #99C794;">"gr"</span> org-remember)
+(<span style="color: #99C794;">"gs"</span> org-schedule)
+(<span style="color: #99C794;">"gS"</span> org-archive-to-archive-sibling)<span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">org-advertized-archive-subtree</span>
+(<span style="color: #99C794;">"gt"</span> org-todo)
+(<span style="color: #99C794;">"gT"</span> tea-time)
+(<span style="color: #99C794;">"gu"</span> org-update-statistics-cookies)
+(<span style="color: #99C794;">"gp"</span> links)
 
 </pre>
 </div>
@@ -826,33 +827,33 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="orgf7f3746"></a>zm全局操作个人定制(my)<br />
 <div class="outline-text-4" id="text-6-1-5">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">use m as my prefix</span>
-(<span class="org-string">"mb"</span> bookmark-set)
-(<span class="org-string">"md"</span> my-sql-pool)
-(<span class="org-string">"mD"</span> diff-buffer-with-file)
-(<span class="org-string">"mc"</span> calendar)
-(<span class="org-string">"me"</span> emms)
-(<span class="org-string">"mf"</span> my-bookmark-jump-via-ido)
-(<span class="org-string">"mh"</span> highlight-regexp)
-(<span class="org-string">"mH"</span> hi-lock-unface-buffer)
-(<span class="org-string">"mj"</span> my-bookmark-jump-via-ido)
-(<span class="org-string">"ml"</span> w3m-external-view-this-url)
-(<span class="org-string">"mL"</span> my-browser-url)
-(<span class="org-string">"mk"</span> browse-kill-ring)
-(<span class="org-string">"mm"</span> my-favorite-menubar)
-(<span class="org-string">"mn"</span> my-rss)
-(<span class="org-string">"mo"</span> find-file-at-point)
-(<span class="org-string">"mp"</span> my-plink)
-(<span class="org-string">"mt"</span> xjt-create/switch-scratch)
-(<span class="org-string">"ms"</span> find-file-recursively)
-(<span class="org-string">"mv"</span> my-virsh)
-(<span class="org-string">"my"</span> my-eye-save)
-(<span class="org-string">"n"</span> tabbar-forward-tab)
-(<span class="org-string">"p"</span> tabbar-backward-tab)
-(<span class="org-string">"q"</span> my-w3m-google-search)
-(<span class="org-string">"o"</span> other-window)
-(<span class="org-string">"r"</span> ido-recentf-open)
-(<span class="org-string">"s"</span> save-buffer)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;</span><span style="color: #4F5B66;">use m as my prefix</span>
+(<span style="color: #99C794;">"mb"</span> bookmark-set)
+(<span style="color: #99C794;">"md"</span> my-sql-pool)
+(<span style="color: #99C794;">"mD"</span> diff-buffer-with-file)
+(<span style="color: #99C794;">"mc"</span> calendar)
+(<span style="color: #99C794;">"me"</span> emms)
+(<span style="color: #99C794;">"mf"</span> my-bookmark-jump-via-ido)
+(<span style="color: #99C794;">"mh"</span> highlight-regexp)
+(<span style="color: #99C794;">"mH"</span> hi-lock-unface-buffer)
+(<span style="color: #99C794;">"mj"</span> my-bookmark-jump-via-ido)
+(<span style="color: #99C794;">"ml"</span> w3m-external-view-this-url)
+(<span style="color: #99C794;">"mL"</span> my-browser-url)
+(<span style="color: #99C794;">"mk"</span> browse-kill-ring)
+(<span style="color: #99C794;">"mm"</span> my-favorite-menubar)
+(<span style="color: #99C794;">"mn"</span> my-rss)
+(<span style="color: #99C794;">"mo"</span> find-file-at-point)
+(<span style="color: #99C794;">"mp"</span> my-plink)
+(<span style="color: #99C794;">"mt"</span> xjt-create/switch-scratch)
+(<span style="color: #99C794;">"ms"</span> find-file-recursively)
+(<span style="color: #99C794;">"mv"</span> my-virsh)
+(<span style="color: #99C794;">"my"</span> my-eye-save)
+(<span style="color: #99C794;">"n"</span> tabbar-forward-tab)
+(<span style="color: #99C794;">"p"</span> tabbar-backward-tab)
+(<span style="color: #99C794;">"q"</span> my-w3m-google-search)
+(<span style="color: #99C794;">"o"</span> other-window)
+(<span style="color: #99C794;">"r"</span> ido-recentf-open)
+(<span style="color: #99C794;">"s"</span> save-buffer)
 
 </pre>
 </div>
@@ -861,9 +862,9 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="org91c2a1e"></a>zh全局操作帮助相关<br />
 <div class="outline-text-4" id="text-6-1-6">
 <div class="org-src-container">
-<pre class="src src-elisp">(<span class="org-string">"ha"</span> apropos)
-(<span class="org-string">"hf"</span> describe-function)
-(<span class="org-string">"hv"</span> describe-variable)
+<pre class="src src-elisp">(<span style="color: #99C794;">"ha"</span> apropos)
+(<span style="color: #99C794;">"hf"</span> describe-function)
+(<span style="color: #99C794;">"hv"</span> describe-variable)
 </pre>
 </div>
 </div>
@@ -871,11 +872,11 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <li><a id="org06144e3"></a>zv全局操作VC(version control)相关<br />
 <div class="outline-text-4" id="text-6-1-7">
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;; </span><span class="org-comment">use zv as version control prefix</span>
-(<span class="org-string">"vd"</span> my-ediff-revision)
-(<span class="org-string">"vD"</span> ediff-revision)
-(<span class="org-string">"vm"</span> magit-status)
-(<span class="org-string">"vv"</span> vc-next-action)
+<pre class="src src-elisp"><span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">use zv as version control prefix</span>
+(<span style="color: #99C794;">"vd"</span> my-ediff-revision)
+(<span style="color: #99C794;">"vD"</span> ediff-revision)
+(<span style="color: #99C794;">"vm"</span> magit-status)
+(<span style="color: #99C794;">"vv"</span> vc-next-action)
 </pre>
 </div>
 </div>
@@ -890,38 +891,38 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 <div class="org-src-container">
 <pre class="src src-elisp">(setq my-cc-modified-vi-map
       (let ((map (make-sparse-keymap)))
-        (viper-special-defkey map <span class="org-string">"b"</span> 'semantic-ia-fast-jump-back)
-        (viper-special-defkey map <span class="org-string">"df"</span> 'my-cc-function-header)
-        (viper-special-defkey map <span class="org-string">"dc"</span> 'my-cc-variable-header)
-        (viper-special-defkey map <span class="org-string">"dv"</span> 'my-cc-variable-header)
-        (viper-special-defkey map <span class="org-string">"f"</span> 'my-toggle-selective-display)
-        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fa" 'semantic-tag-folding-fold-all)</span>
-        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fi" 'semantic-tag-folding-fold-block)</span>
-        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fo" 'semantic-tag-folding-show-block)</span>
-        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "ft" 'global-semantic-tag-folding-mode)</span>
-        <span class="org-comment-delimiter">;; </span><span class="org-comment">(viper-special-defkey map "fu" 'semantic-tag-folding-show-all)</span>
-        (viper-special-defkey map <span class="org-string">"g"</span> 'proj-gtags)
-        (viper-special-defkey map <span class="org-string">"h"</span> 'sourcepair-load)<span class="org-comment-delimiter">;</span><span class="org-comment">c-open-relational-file</span>
-        (viper-special-defkey map <span class="org-string">"i"</span> 'semantic-analyze-proto-impl-toggle)
-        (viper-special-defkey map <span class="org-string">"j"</span> 'my-gtags-find-tag)
-        (viper-special-defkey map <span class="org-string">"eg"</span> 'next-error)
-        (viper-special-defkey map <span class="org-string">"mc"</span> 'viss-bookmark-clear-all-buffer)
-        (viper-special-defkey map <span class="org-string">"mi"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="org-string">"mt"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="org-string">"mo"</span> 'viss-bookmark-toggle)
-        (viper-special-defkey map <span class="org-string">"mp"</span> 'viss-bookmark-prev-buffer)
-        (viper-special-defkey map <span class="org-string">"mn"</span> 'viss-bookmark-next-buffer)
-        (viper-special-defkey map <span class="org-string">"sa"</span> 'cscope-set-initial-directory)
-        (viper-special-defkey map <span class="org-string">"sc"</span> 'cscope-find-functions-calling-this-function)
-        (viper-special-defkey map <span class="org-string">"sC"</span> 'cscope-find-called-functions)
-        (viper-special-defkey map <span class="org-string">"sf"</span> 'cscope-find-this-file)
-        (viper-special-defkey map <span class="org-string">"sg"</span> 'cscope-find-global-definition-no-prompting)
-        (viper-special-defkey map <span class="org-string">"sG"</span> 'cscope-find-global-definition)
-        (viper-special-defkey map <span class="org-string">"si"</span> 'cscope-find-files-including-file)
-        (viper-special-defkey map <span class="org-string">"sI"</span> 'cscope-index-files)
-        (viper-special-defkey map <span class="org-string">"ss"</span> 'cscope-find-this-symbol)
-        (viper-special-defkey map <span class="org-string">"su"</span> 'cscope-pop-mark)
-        (viper-special-defkey map <span class="org-string">";"</span> 'c-toggle-auto-newline)
+        (viper-special-defkey map <span style="color: #99C794;">"b"</span> 'semantic-ia-fast-jump-back)
+        (viper-special-defkey map <span style="color: #99C794;">"df"</span> 'my-cc-function-header)
+        (viper-special-defkey map <span style="color: #99C794;">"dc"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span style="color: #99C794;">"dv"</span> 'my-cc-variable-header)
+        (viper-special-defkey map <span style="color: #99C794;">"f"</span> 'my-toggle-selective-display)
+        <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">(viper-special-defkey map "fa" 'semantic-tag-folding-fold-all)</span>
+        <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">(viper-special-defkey map "fi" 'semantic-tag-folding-fold-block)</span>
+        <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">(viper-special-defkey map "fo" 'semantic-tag-folding-show-block)</span>
+        <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">(viper-special-defkey map "ft" 'global-semantic-tag-folding-mode)</span>
+        <span style="color: #4F5B66;">;; </span><span style="color: #4F5B66;">(viper-special-defkey map "fu" 'semantic-tag-folding-show-all)</span>
+        (viper-special-defkey map <span style="color: #99C794;">"g"</span> 'proj-gtags)
+        (viper-special-defkey map <span style="color: #99C794;">"h"</span> 'sourcepair-load)<span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">c-open-relational-file</span>
+        (viper-special-defkey map <span style="color: #99C794;">"i"</span> 'semantic-analyze-proto-impl-toggle)
+        (viper-special-defkey map <span style="color: #99C794;">"j"</span> 'my-gtags-find-tag)
+        (viper-special-defkey map <span style="color: #99C794;">"eg"</span> 'next-error)
+        (viper-special-defkey map <span style="color: #99C794;">"mc"</span> 'viss-bookmark-clear-all-buffer)
+        (viper-special-defkey map <span style="color: #99C794;">"mi"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span style="color: #99C794;">"mt"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span style="color: #99C794;">"mo"</span> 'viss-bookmark-toggle)
+        (viper-special-defkey map <span style="color: #99C794;">"mp"</span> 'viss-bookmark-prev-buffer)
+        (viper-special-defkey map <span style="color: #99C794;">"mn"</span> 'viss-bookmark-next-buffer)
+        (viper-special-defkey map <span style="color: #99C794;">"sa"</span> 'cscope-set-initial-directory)
+        (viper-special-defkey map <span style="color: #99C794;">"sc"</span> 'cscope-find-functions-calling-this-function)
+        (viper-special-defkey map <span style="color: #99C794;">"sC"</span> 'cscope-find-called-functions)
+        (viper-special-defkey map <span style="color: #99C794;">"sf"</span> 'cscope-find-this-file)
+        (viper-special-defkey map <span style="color: #99C794;">"sg"</span> 'cscope-find-global-definition-no-prompting)
+        (viper-special-defkey map <span style="color: #99C794;">"sG"</span> 'cscope-find-global-definition)
+        (viper-special-defkey map <span style="color: #99C794;">"si"</span> 'cscope-find-files-including-file)
+        (viper-special-defkey map <span style="color: #99C794;">"sI"</span> 'cscope-index-files)
+        (viper-special-defkey map <span style="color: #99C794;">"ss"</span> 'cscope-find-this-symbol)
+        (viper-special-defkey map <span style="color: #99C794;">"su"</span> 'cscope-pop-mark)
+        (viper-special-defkey map <span style="color: #99C794;">";"</span> 'c-toggle-auto-newline)
         map))
 (viper-modify-major-mode 'c-mode 'vi-state my-cc-modified-vi-map)
 (viper-modify-major-mode 'c++-mode 'vi-state my-cc-modified-vi-map)
@@ -958,46 +959,46 @@ my-select-windows，会自动根据列表中的字符串生成不同的快捷键
 按下一个键，而不需要按额外的回车键就可以选中它。函数实现为：
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp"><span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-select-window</span> (list &amp;optional prompt nodelay-select)
-  <span class="org-doc">"Select a cmd with its prefix key."</span>
+<pre class="src src-elisp"><span style="color: #4F5B66;">;;;</span><span style="color: #4F5B66;">###</span><span style="color: #EC5f67;">autoload</span>
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-select-window</span> (list &amp;optional prompt nodelay-select)
+  <span style="color: #99C794;">"Select a cmd with its prefix key."</span>
   (interactive)
   (when (null list)
-    (error <span class="org-string">"%s: list is empty"</span> (if prompt prompt <span class="org-string">"Error in my-select-window"</span>)))
+    (error <span style="color: #99C794;">"%s: list is empty"</span> (if prompt prompt <span style="color: #99C794;">"Error in my-select-window"</span>)))
   (if (= 1 (length list))
       (car list)
     (let ((list (my-string-shortcuts list)))
       (if (and
            (not nodelay-select)
-           (setq rpl (read-char-exclusive <span class="org-string">""</span> nil 1))
+           (setq rpl (read-char-exclusive <span style="color: #99C794;">""</span> nil 1))
            (assoc rpl list))
           (cdr (assoc rpl list))
         (save-window-excursion
           (org-switch-to-buffer-other-window
-           (get-buffer-create <span class="org-string">"*String to Select*"</span>))
+           (get-buffer-create <span style="color: #99C794;">"*String to Select*"</span>))
           (erase-buffer)
-          (insert (org-add-props (concat (or prompt <span class="org-string">"String to select"</span>) <span class="org-string">"\n"</span>)
+          (insert (org-add-props (concat (or prompt <span style="color: #99C794;">"String to select"</span>) <span style="color: #99C794;">"\n"</span>)
                       nil 'face 'bold))
           (loop for (k . s) in list
-                do (insert (format <span class="org-string">"[%c] %s\n"</span> k s)))
+                do (insert (format <span style="color: #99C794;">"[%c] %s\n"</span> k s)))
           (org-fit-window-to-buffer)
-          <span class="org-comment-delimiter">;;</span><span class="org-comment">FIXME: how to make window height suitable for display.</span>
+          <span style="color: #4F5B66;">;;</span><span style="color: #4F5B66;">FIXME: how to make window height suitable for display.</span>
           (enlarge-window (window-height))
-          (message (or prompt <span class="org-string">"Select one from list:"</span>))
+          (message (or prompt <span style="color: #99C794;">"Select one from list:"</span>))
           (setq rpl (read-char-exclusive))
-          (bury-buffer <span class="org-string">"*String to Select*"</span>)
+          (bury-buffer <span style="color: #99C794;">"*String to Select*"</span>)
           (cond
-           ((eq rpl 27) nil)<span class="org-comment-delimiter">; </span><span class="org-comment">27 &lt;==&gt; Escape</span>
+           ((eq rpl 27) nil)<span style="color: #4F5B66;">; </span><span style="color: #4F5B66;">27 &lt;==&gt; Escape</span>
            ((assoc rpl list) (cdr (assoc rpl list)))
-           (t (error <span class="org-string">"Invalid task choice %c"</span> rpl))))))))
-<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">test-my-select-window</span> ()
+           (t (error <span style="color: #99C794;">"Invalid task choice %c"</span> rpl))))))))
+<span style="color: #4F5B66;">;;;</span><span style="color: #4F5B66;">###</span><span style="color: #EC5f67;">autoload</span>
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">test-my-select-window</span> ()
   (interactive)
-  (let* ((cmds '(<span class="org-string">"aaaa"</span> <span class="org-string">"bbcd"</span> <span class="org-string">"ccdb"</span> <span class="org-string">"dbde"</span>))
+  (let* ((cmds '(<span style="color: #99C794;">"aaaa"</span> <span style="color: #99C794;">"bbcd"</span> <span style="color: #99C794;">"ccdb"</span> <span style="color: #99C794;">"dbde"</span>))
          (result (my-select-window cmds)))
     (message result)))
-<span class="org-comment-delimiter">;;;</span><span class="org-comment">###</span><span class="org-comment"><span class="org-warning">autoload</span></span>
-(<span class="org-keyword">defun</span> <span class="org-function-name">my-string-shortcuts</span> (list)
+<span style="color: #4F5B66;">;;;</span><span style="color: #4F5B66;">###</span><span style="color: #EC5f67;">autoload</span>
+(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-string-shortcuts</span> (list)
   (require 'tmm)
   (let ((tmm-short-cuts))
     (tmm-add-shortcuts (mapcar #'list list))
@@ -1068,19 +1069,19 @@ type to insert:
 Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/dummy/blob/master/etc/trayicon-appt.py">trayicon-appt.py</a>来完成的。
 </p>
 <div class="org-src-container">
-<pre class="src src-elisp">(<span class="org-keyword">defun</span> <span class="org-function-name">my-systray-notification</span> (text &amp;optional hour-low-limit hour-high-limit)
+<pre class="src src-elisp">(<span style="color: #5FB3B3;">defun</span> <span style="color: #D8DEE9;">my-systray-notification</span> (text &amp;optional hour-low-limit hour-high-limit)
   (when (not (eq :x61 my-place))
-    (let ((cur-week (parse-integer (format-time-string <span class="org-string">"%w"</span>))))
+    (let ((cur-week (parse-integer (format-time-string <span style="color: #99C794;">"%w"</span>))))
       (case cur-week
         ((or 1 2 3 4 5)
          (block my-systray-notification
            (when (and hour-high-limit hour-low-limit (&lt; hour-low-limit hour-high-limit))
-             (let ((cur-hour (parse-integer (format-time-string <span class="org-string">"%H"</span>))))
+             (let ((cur-hour (parse-integer (format-time-string <span style="color: #99C794;">"%H"</span>))))
                (if (or (&lt; cur-hour hour-low-limit)
                        (&gt; cur-hour hour-high-limit))
                  (return-from my-systray-notification))))
            (my-open-external-progam-in-emacs
-            <span class="org-string">"trayicon"</span> (list (my-etc <span class="org-string">"trayicon-appt.py"</span>) text))))))))
+            <span style="color: #99C794;">"trayicon"</span> (list (my-etc <span style="color: #99C794;">"trayicon-appt.py"</span>) text))))))))
 
 </pre>
 </div>
@@ -1090,13 +1091,13 @@ Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/d
 <li><a id="org886d2b2"></a>隐藏一些后台处理用的buffer<br />
 <div class="outline-text-3" id="text-8-2">
 <div class="org-src-container">
-<pre class="src src-elisp">(setq *tabbar-ignore-buffers* '(<span class="org-string">"idle.org"</span> <span class="org-string">".bbdb"</span> <span class="org-string">"diary"</span>))
+<pre class="src src-elisp">(setq *tabbar-ignore-buffers* '(<span style="color: #99C794;">"idle.org"</span> <span style="color: #99C794;">".bbdb"</span> <span style="color: #99C794;">"diary"</span>))
 (setq tabbar-buffer-list-function
              (lambda ()
                (remove-if
                 (lambda (buffer)
-                  (and (not (eq (current-buffer) buffer)) <span class="org-comment-delimiter">; </span><span class="org-comment">Always include the current buffer.</span>
-                       (loop for name in *tabbar-ignore-buffers* <span class="org-comment-delimiter">;</span><span class="org-comment">remove buffer name in this list.</span>
+                  (and (not (eq (current-buffer) buffer)) <span style="color: #4F5B66;">; </span><span style="color: #4F5B66;">Always include the current buffer.</span>
+                       (loop for name in *tabbar-ignore-buffers* <span style="color: #4F5B66;">;</span><span style="color: #4F5B66;">remove buffer name in this list.</span>
                           thereis (string-equal (buffer-name buffer) name))))
                 (buffer-list))))
 </pre>
@@ -1126,6 +1127,7 @@ Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/d
 <div id="postamble" class="status">
 
 
+ </p> </p> </p>
  <script src="https://utteranc.es/client.js"
          repo="jingtaozf/jingtaozf.github.io"
          issue-term="homepage"

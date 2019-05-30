@@ -1,4 +1,6 @@
 #+title: 我是如何使用Emacs的
+#+index: Emacs!我是如何使用Emacs的
+#+index: VIM!我是如何使用Emacs的
 
 #+BEGIN_QUOTE
  I would not give a fig for the simplicity on this side of complexity,

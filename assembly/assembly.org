@@ -1,4 +1,8 @@
 #+title: Some win32 assembly codes between 2002-2003
+#+Index: Assembly!Some win32 assembly codes between 2002-2003
+#+Index: Masm!Some win32 assembly codes between 2002-2003
+#+Index: win32!Some win32 assembly codes between 2002-2003
+
 
 这是02-03年间学习汇编程序的一些资料，希望能对一些人有用。
 汇编是一门低级语言，win32下的汇编则直面windows的操作机制。

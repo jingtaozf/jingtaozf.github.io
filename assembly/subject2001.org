@@ -1,4 +1,7 @@
 #+title: 《Windows 核心编程》部分改编的汇编代码
+#+Index: Assembly!《Windows 核心编程》部分改编的汇编代码
+#+Index: Masm!《Windows 核心编程》部分改编的汇编代码
+#+Index: win32!《Windows 核心编程》部分改编的汇编代码
 
 * 专题内容
 原书作者： Jeffrey Richter.
