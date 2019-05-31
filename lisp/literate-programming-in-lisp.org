@@ -10,7 +10,7 @@ For a long time, I pursue a convenient way to write my documents while developin
 And the most common way I found is writing specified format comments in my source file directly.
 It is not a nature way and is much weaker than most documentation software.
 
-So Are there a better way to write documents for my codes?
+So are there a better way to write documents for my codes?
 Do I have to write all documents in my source file with just plain text?
 
 Then I find Timothy Daly's talk about [[https://www.youtube.com/watch?v=Av0PQDVTP4A][literate programming in the large]] 
