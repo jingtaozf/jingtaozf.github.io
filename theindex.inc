@@ -16,6 +16,9 @@
 * L
   - Lisp
     - [[file:lisp/mixlang-in-lisp.org][Common lisp 与其它语言的集成]]
+    - [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]]
+  - Literate programming
+    - [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]]
 * M
   - Masm
     - [[file:assembly/assembly.org][Some win32 assembly codes between 2002-2003]]

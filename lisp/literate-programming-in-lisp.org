@@ -1,0 +1,50 @@
+#+title: Literate programming in lisp dialects
+#+Index: Lisp!Literate programming in lisp dialects
+#+Index: Literate programming!Literate programming in lisp dialects
+
+* Introduce
+
+For a long time, I pursue a convenient way to write my documents while developing my codes.
+And the most common way I found is writing specified format comments in my source file directly.
+It is not a nature way and is much weaker than most documentation software.
+
+So Are there a better way to write documents for my codes?
+Do I have to write all documents in my source file with just plain text?
+
+Then I find Timothy Daly's talk about [[https://www.youtube.com/watch?v=Av0PQDVTP4A][literate programming in the large]] 
+and [[https://en.wikipedia.org/wiki/Donald_Knuth][Donald Knuth]]'s article introducing [[http://www.literateprogramming.com/knuthweb.pdf][literate programming]], they told me not focus on writing codes,
+but focus on writing documents, I agreed with their opinion because [[https://en.wikipedia.org/wiki/Literate_programming][Literate programming]] will change
+the way of software development, to force us write codes to human instead of writing codes to just meet the
+demand of a computer.
+
+but I think they rushed too much against popular development, because if we write document file instead of source code
+file, then It is harder for us to benefit from most popular but more and more powerful development tools, and we have to
+tangle source file from document file time to time in a iterative development, any way, no one like to keep two copies of codes,
+one in the document, and the other in a tangled source file.
+
+But things may vary in lisp dialects, because lisp is the most flexible language from my view, and If a lisp dialect 
+and its development tools can read a document file just like a source file, then we don't have to keep multiple copies
+of source codes, and just enjoy the benefit from [[https://en.wikipedia.org/wiki/Literate_programming][Literate programming]].
+
+* How
+Then I tried to find out the possibility in lisp dialects, the good news is, we can do it easily.
+
+** Common Lisp
+The result of the attempt is my Github project: [[https://github.com/jingtaozf/literate-lisp][literate-lisp]].
+
+As the flexibility of common lisp, all I have to do is adding some new reader syntax so common lisp can read org files directly.
+
+Now I have developed some literal projects based on [[https://github.com/jingtaozf/literate-lisp][literate-lisp]], even [[https://github.com/jingtaozf/literate-lisp][literate-lisp]] itself.
+
+** Emacs Lisp
+The result of the attempt is my Github project: [[https://github.com/jingtaozf/literate-elisp][literate-elisp]].
+
+All I have to do is writing a new read function to read source codes in my document file, with a simple syntax.
+
+Now I have maintained my emacs configuration file with [[https://github.com/jingtaozf/literate-elisp][literate-elisp]], and even [[https://github.com/jingtaozf/literate-elisp][literate-elisp]] itself.
+
+** Clojure
+The result of the attempt is my Github project: [[https://github.com/jingtaozf/literate-clojure][literate-clojure]].
+
+This is just an exercise of Clojure development, 
+all I have to do is adding some new reader syntax so Clojure can read org files directly, just like it is done in Common Lisp.

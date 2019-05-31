@@ -3,10 +3,10 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-31 Fri 15:25 -->
+<!-- 2019-05-31 Fri 15:26 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Common lisp 与其它语言的集成</title>
+<title>Literate programming in lisp dialects</title>
 <meta name="generator" content="Org mode" />
 <meta name="author" content="Jingtao Xu" />
 <style type="text/css">
@@ -262,84 +262,108 @@ for the JavaScript code in this tag.
  //]]></script>
 </div>
 <div id="content">
-<h1 class="title">Common lisp 与其它语言的集成</h1>
+<h1 class="title">Literate programming in lisp dialects</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org63c11e6">1. ECL</a></li>
-<li><a href="#orge5f67de">2. Corman</a></li>
-<li><a href="#org7aa0fcf">3. cffi</a></li>
-<li><a href="#org27c5ecd">4. ltk</a></li>
-<li><a href="#org1184073">5. Common Lisp: Intro, Resources and FAQ</a></li>
+<li><a href="#orgae0d106">1. Introduce</a></li>
+<li><a href="#org559fc43">2. How</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org63c11e6" class="outline-2">
-<h2 id="org63c11e6"><span class="section-number-2">1</span> <a href="http://ecls.sourceforge.net/">ECL</a></h2>
+<div id="outline-container-orgae0d106" class="outline-2">
+<h2 id="orgae0d106"><span class="section-number-2">1</span> Introduce</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-ECL使用C/C++来编译lisp程序，可以同c/c++很好的集成在一起，互相调用。
-它同<a href="http://www.gnu.org/software/guile/">guile</a> 类似，不同的是guile不支持Common lisp。
+For a long time, I pursue a convenient way to write my documents while developing my codes.
+And the most common way I found is writing specified format comments in my source file directly.
+It is not a nature way and is much weaker than most documentation software.
+</p>
+
+<p>
+So Are there a better way to write documents for my codes?
+Do I have to write all documents in my source file with just plain text?
+</p>
+
+<p>
+Then I find Timothy Daly's talk about <a href="https://www.youtube.com/watch?v=Av0PQDVTP4A">literate programming in the large</a> 
+and <a href="https://en.wikipedia.org/wiki/Donald_Knuth">Donald Knuth</a>'s article introducing <a href="http://www.literateprogramming.com/knuthweb.pdf">literate programming</a>, they told me not focus on writing codes,
+but focus on writing documents, I agreed with their opinion because <a href="https://en.wikipedia.org/wiki/Literate_programming">Literate programming</a> will change
+the way of software development, to force us write codes to human instead of writing codes to just meet the
+demand of a computer.
+</p>
+
+<p>
+but I think they rushed too much against popular development, because if we write document file instead of source code
+file, then It is harder for us to benefit from most popular but more and more powerful development tools, and we have to
+tangle source file from document file time to time in a iterative development, any way, no one like to keep two copies of codes,
+one in the document, and the other in a tangled source file.
+</p>
+
+<p>
+But things may vary in lisp dialects, because lisp is the most flexible language from my view, and If a lisp dialect 
+and its development tools can read a document file just like a source file, then we don't have to keep multiple copies
+of source codes, and just enjoy the benefit from <a href="https://en.wikipedia.org/wiki/Literate_programming">Literate programming</a>.
 </p>
 </div>
 </div>
 
-<div id="outline-container-orge5f67de" class="outline-2">
-<h2 id="orge5f67de"><span class="section-number-2">2</span> <a href="http://www.cormanlisp.com/">Corman</a></h2>
+<div id="outline-container-org559fc43" class="outline-2">
+<h2 id="org559fc43"><span class="section-number-2">2</span> How</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-Corman是为windows量身打造的，开放源代码，其IDE不免费。可以很好的同c/c++集成，
-互相调用(in-process COM server),其提供的widnows api接口使用了CLOS，使用自然简洁。
+Then I tried to find out the possibility in lisp dialects, the good news is, we can do it easily.
 </p>
-<div class="org-src-container">
-<pre class="src src-lisp">(<span style="color: #5FB3B3;">defmethod</span> <span style="color: #D8DEE9;">handle-message</span> ((window &lt;hello-window&gt;) (message &lt;paint-message&gt;) wparam lparam)
-        (declare (ignore wparam lparam))
-    (begin-paint window)
-        (let ((rect (hello-text-rect window)))
-                (GetClientRect (window-hwnd window) rect)
-                (DrawText (window-hdc window) 
-                        (ct:create-c-string <span style="color: #99C794;">"Hello, World"</span>) 
-                        -1 
-                        rect
-                        (logior DT_SINGLELINE DT_CENTER DT_VCENTER)))
-    (end-paint window)
-        0)
-</pre>
-</div>
-</div>
 </div>
 
-<div id="outline-container-org7aa0fcf" class="outline-2">
-<h2 id="org7aa0fcf"><span class="section-number-2">3</span> <a href="http://common-lisp.net/project/cffi/">cffi</a></h2>
-<div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li><a id="orga053da0"></a>Common Lisp<br />
+<div class="outline-text-3" id="text-2-1">
 <p>
- cffi(Common Foreign Function Interface)为各种common lisp方言提供了统一的与c/c++语言通讯的接口。
- 可以调用windows api。同时由于<a href="http://www.swig.org/">swig</a>支持cffi，所以可以使用swig来自动生成lisp下的接口代码。
-<a href="http://code.google.com/p/lispbuilder/">lispbuilder</a>提供了一个lispbuilder-windows(windows.h wrapper)模块，提供了windows.h的接口代码。
-并有一个演示gui的例子。
+The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a>.
 </p>
-</div>
-</div>
 
-<div id="outline-container-org27c5ecd" class="outline-2">
-<h2 id="org27c5ecd"><span class="section-number-2">4</span> <a href="http://www.peter-herth.de/ltk/">ltk</a></h2>
-<div class="outline-text-2" id="text-4">
 <p>
-如果使用common lisp进行一些gui编程，可以考虑ltk，它使用tcl/tk做为gui前端，并将
-tk的代码转换成common lisp风格。扩展起来也比较容易。
+As the flexibility of common lisp, all I have to do is adding some new reader syntax so common lisp can read org files directly.
 </p>
-</div>
-</div>
 
-<div id="outline-container-org1184073" class="outline-2">
-<h2 id="org1184073"><span class="section-number-2">5</span> <a href="http://wiht.link/common-lisp">Common Lisp: Intro, Resources and FAQ</a></h2>
-<div class="outline-text-2" id="text-5">
 <p>
-这个网站上集成了各种lisp学习资源．
+Now I have developed some literal projects based on <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a>, even <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a> itself.
 </p>
 </div>
+</li>
+
+<li><a id="org4eed2c5"></a>Emacs Lisp<br />
+<div class="outline-text-3" id="text-2-2">
+<p>
+The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a>.
+</p>
+
+<p>
+All I have to do is writing a new read function to read source codes in my document file, with a simple syntax.
+</p>
+
+<p>
+Now I have maintained my emacs configuration file with <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a>, and even <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a> itself.
+</p>
+</div>
+</li>
+
+<li><a id="org6e65863"></a>Clojure<br />
+<div class="outline-text-3" id="text-2-3">
+<p>
+The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-clojure">literate-clojure</a>.
+</p>
+
+<p>
+This is just an exercise of Clojure development, 
+all I have to do is adding some new reader syntax so Clojure can read org files directly, just like it is done in Common Lisp.
+</p>
+</div>
+</li>
+</ol>
 </div>
 </div>
 <div id="postamble" class="status">

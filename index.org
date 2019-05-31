@@ -1,5 +1,6 @@
 #+TITLE: Articles
 
+- 2019-05-31 : [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]] (~lisp~)
 - 2014-02-12 : [[file:emacs/TheWayIUseEmacs.org][我是如何使用Emacs的]] (~emacs~)
 - 2013-10-26 : [[file:lisp/mixlang-in-lisp.org][Common lisp 与其它语言的集成]] (~lisp~)
 - 2003-12-09 : [[file:assembly/Nasm.org][NASM源码阅读笔记]] (~assembly~)
