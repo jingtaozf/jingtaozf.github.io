@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-31 Fri 15:25 -->
+<!-- 2019-05-31 Fri 15:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NASM源码阅读笔记</title>
@@ -267,7 +267,20 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org3a909c6">1. 各模块简介：</a></li>
+<li><a href="#org3a909c6">1. 各模块简介：</a>
+<ul>
+<li><a href="#org775afbd">1.1. 强大的预处理器preproc.c:</a></li>
+<li><a href="#org9b8481d">1.2. 功能单一的解析模块parser.c:</a></li>
+<li><a href="#org0ed935f">1.3. 代码生成器assemble.c:</a></li>
+<li><a href="#org5263512">1.4. 简单的表达式求值模块eval.c:</a></li>
+<li><a href="#org449faae">1.5. 标号处理器label.c:</a></li>
+<li><a href="#org563442a">1.6. 列表文件生成模块listing.c:</a></li>
+<li><a href="#orgc243255">1.7. 浮点数转换模块float.c:</a></li>
+<li><a href="#org7d602e2">1.8. 指令模板集模块insnsa.c:</a></li>
+<li><a href="#orgc6681a2">1.9. 为其它模块提供支持的nasmlib.c:</a></li>
+<li><a href="#orga9ef702">1.10. 目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：</a></li>
+</ul>
+</li>
 <li><a href="#org26dcb3f">2. 流程简介：</a></li>
 <li><a href="#org6e5c974">3. 阅读小结</a></li>
 </ul>
@@ -316,8 +329,8 @@ preproc.c,parser.c和*out.c；float.c是浮点数常量存储转换模块，用�
 </p>
 </div>
 
-<ol class="org-ol">
-<li><a id="org775afbd"></a>强大的预处理器preproc.c:<br />
+<div id="outline-container-org775afbd" class="outline-3">
+<h3 id="org775afbd"><span class="section-number-3">1.1</span> 强大的预处理器preproc.c:</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 预处理部分是NASM中最复杂，也是代码最多的模块，有四千多行代码。
@@ -364,9 +377,10 @@ preproc.c对外仅导出一个结构：
 <b><b>预处理部分相对于主程序后面调用的模块来说是透明的。</b></b>
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org9b8481d"></a>功能单一的解析模块parser.c:<br />
+<div id="outline-container-org9b8481d" class="outline-3">
+<h3 id="org9b8481d"><span class="section-number-3">1.2</span> 功能单一的解析模块parser.c:</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 按作者的说法，解析模块的作用就是解析由`标号',`指令',`操作数'和`注释'组成的
@@ -413,9 +427,10 @@ preproc.c对外仅导出一个结构：
 它还提供了对伪指令DB,DD,RESB,RESD,INCBIN等的支持。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org0ed935f"></a>代码生成器assemble.c:<br />
+<div id="outline-container-org0ed935f" class="outline-3">
+<h3 id="org0ed935f"><span class="section-number-3">1.3</span> 代码生成器assemble.c:</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 当parser.c填充好insn结构后，assemble.c就按照Intel机器码规则生成实际的
@@ -440,9 +455,10 @@ preproc.c对外仅导出一个结构：
 并输出到out*.c中以生成具体格式的目标文件。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org5263512"></a>简单的表达式求值模块eval.c:<br />
+<div id="outline-container-org5263512" class="outline-3">
+<h3 id="org5263512"><span class="section-number-3">1.4</span> 简单的表达式求值模块eval.c:</h3>
 <div class="outline-text-3" id="text-1-4">
 <p>
 eval.c用于计算并返回代码中表达式的值，其中运算符||,^^,&amp;&amp;等用于条件汇编%if类指令
@@ -480,9 +496,10 @@ eval.c利用标准的scan程序扫描表达式缓冲区，找出存在的运算�
 预处理表达式中才可能出现。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org449faae"></a>标号处理器label.c:<br />
+<div id="outline-container-org449faae" class="outline-3">
+<h3 id="org449faae"><span class="section-number-3">1.5</span> 标号处理器label.c:</h3>
 <div class="outline-text-3" id="text-1-5">
 <p>
 NASM的标号分局部标号和全局标号两种(外部标号可看作是在另一个源程序中的全局标号)。
@@ -541,9 +558,10 @@ NASM的标号分局部标号和全局标号两种(外部标号可看作是在另
 数的汇编器都存在这个功能，但在这里好像并不能起到什么作用)。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org563442a"></a>列表文件生成模块listing.c:<br />
+<div id="outline-container-org563442a" class="outline-3">
+<h3 id="org563442a"><span class="section-number-3">1.6</span> 列表文件生成模块listing.c:</h3>
 <div class="outline-text-3" id="text-1-6">
 <p>
 list.c用于生成列表文件。列表文件的格式如下：
@@ -592,9 +610,10 @@ list_upleve和list_downlevel被其它模块调用，以更新list.c中的列表�
 它们只是因为"差不多能够工作"，所以才被保留至今。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="orgc243255"></a>浮点数转换模块float.c:<br />
+<div id="outline-container-orgc243255" class="outline-3">
+<h3 id="orgc243255"><span class="section-number-3">1.7</span> 浮点数转换模块float.c:</h3>
 <div class="outline-text-3" id="text-1-7">
 <p>
 float.c模块导出一个函数float_const：
@@ -624,9 +643,10 @@ dt    3.141592653589793238462 ; pi
 存在ANSI C编译器的的系统都提供浮点数运算的库函数，而自己实现又有点得不偿失。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org7d602e2"></a>指令模板集模块insnsa.c:<br />
+<div id="outline-container-org7d602e2" class="outline-3">
+<h3 id="org7d602e2"><span class="section-number-3">1.8</span> 指令模板集模块insnsa.c:</h3>
 <div class="outline-text-3" id="text-1-8">
 <p>
 NASM的CVS库中有三个与该模块有关的文件：
@@ -644,9 +664,10 @@ assemble.c和ndisasm.c。insnsi.h是指令集名字的枚举表，insnsn.c是指
 这两个文件用在扫描(nasmlib.c)和反汇编(ndisasm.c)中。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="orgc6681a2"></a>为其它模块提供支持的nasmlib.c:<br />
+<div id="outline-container-orgc6681a2" class="outline-3">
+<h3 id="orgc6681a2"><span class="section-number-3">1.9</span> 为其它模块提供支持的nasmlib.c:</h3>
 <div class="outline-text-3" id="text-1-9">
 <p>
 nasmlib.c提供如下函数：
@@ -661,9 +682,10 @@ nasmlib.c提供如下函数：
 <li>对源码和目标文件提供支持的其它函数。</li>
 </ul>
 </div>
-</li>
+</div>
 
-<li><a id="orga9ef702"></a>目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：<br />
+<div id="outline-container-orga9ef702" class="outline-3">
+<h3 id="orga9ef702"><span class="section-number-3">1.10</span> 目标格式文件输出模块output\*out.c和对其进行管理的模块outform.c：</h3>
 <div class="outline-text-3" id="text-1-10">
 <p>
 output目录下的*out.c是NASM所能输出的目标格式文件的源代码实现。
@@ -685,8 +707,7 @@ import WSAStartup wsock32.dll
 outform.c提供了对上述模块进行查找，列举和注册的功能。
 </p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 
 <div id="outline-container-org26dcb3f" class="outline-2">

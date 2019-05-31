@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-31 Fri 15:27 -->
+<!-- 2019-05-31 Fri 15:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Literate programming in lisp dialects</title>
@@ -268,7 +268,13 @@ for the JavaScript code in this tag.
 <div id="text-table-of-contents">
 <ul>
 <li><a href="#orgae0d106">1. Introduce</a></li>
-<li><a href="#org559fc43">2. How</a></li>
+<li><a href="#org559fc43">2. How</a>
+<ul>
+<li><a href="#orga053da0">2.1. Common Lisp</a></li>
+<li><a href="#org4eed2c5">2.2. Emacs Lisp</a></li>
+<li><a href="#org6e65863">2.3. Clojure</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -318,8 +324,8 @@ Then I tried to find out the possibility in lisp dialects, the good news is, we 
 </p>
 </div>
 
-<ol class="org-ol">
-<li><a id="orga053da0"></a>Common Lisp<br />
+<div id="outline-container-orga053da0" class="outline-3">
+<h3 id="orga053da0"><span class="section-number-3">2.1</span> Common Lisp</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a>.
@@ -333,9 +339,10 @@ As the flexibility of common lisp, all I have to do is adding some new reader sy
 Now I have developed some literal projects based on <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a>, even <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a> itself.
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org4eed2c5"></a>Emacs Lisp<br />
+<div id="outline-container-org4eed2c5" class="outline-3">
+<h3 id="org4eed2c5"><span class="section-number-3">2.2</span> Emacs Lisp</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a>.
@@ -349,9 +356,10 @@ All I have to do is writing a new read function to read source codes in my docum
 Now I have maintained my emacs configuration file with <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a>, and even <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a> itself.
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org6e65863"></a>Clojure<br />
+<div id="outline-container-org6e65863" class="outline-3">
+<h3 id="org6e65863"><span class="section-number-3">2.3</span> Clojure</h3>
 <div class="outline-text-3" id="text-2-3">
 <p>
 The result of the attempt is my Github project: <a href="https://github.com/jingtaozf/literate-clojure">literate-clojure</a>.
@@ -362,8 +370,7 @@ This is just an exercise of Clojure development,
 all I have to do is adding some new reader syntax so Clojure can read org files directly, just like it is done in Common Lisp.
 </p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">

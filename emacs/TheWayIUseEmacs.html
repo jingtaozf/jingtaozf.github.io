@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2019-05-31 Fri 15:25 -->
+<!-- 2019-05-31 Fri 15:38 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>我是如何使用Emacs的</title>
@@ -269,13 +269,49 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#org2e2deed">1. 从VIM转向Emacs</a></li>
 <li><a href="#orgd882783">2. ELISP介绍</a></li>
-<li><a href="#org3d2c7b7">3. GTD时间管理</a></li>
-<li><a href="#org7ce0f17">4. 收发邮件</a></li>
-<li><a href="#org656032b">5. 目录浏览</a></li>
-<li><a href="#org259ddc4">6. 像使用VI一样使用Emacs</a></li>
-<li><a href="#org6429f80">7. 智能化</a></li>
-<li><a href="#org069f557">8. 优化工作流程</a></li>
-<li><a href="#orgc650fa0">9. Emacs的缺点</a></li>
+<li><a href="#org3d2c7b7">3. GTD时间管理</a>
+<ul>
+<li><a href="#org86092a2">3.1. GTD简介</a></li>
+<li><a href="#org0e1b8f2">3.2. 三分钟法则</a></li>
+<li><a href="#org106b342">3.3. 添加默认任务</a></li>
+<li><a href="#org8aedc98">3.4. 没有clock in任务时在状态栏提醒</a></li>
+<li><a href="#org8e1f076">3.5. 让其他人了解自己的工作进展</a></li>
+</ul>
+</li>
+<li><a href="#org7ce0f17">4. 收发邮件</a>
+<ul>
+<li><a href="#orgf688b73">4.1. 一次性收取多个邮箱的邮件</a></li>
+<li><a href="#orgf0ed5b3">4.2. 使mew能够发送中文名的附件</a></li>
+</ul>
+</li>
+<li><a href="#org656032b">5. 目录浏览</a>
+<ul>
+<li><a href="#org31e0340">5.1. 根据文件后缀名使用不同程序打开文件</a></li>
+</ul>
+</li>
+<li><a href="#org259ddc4">6. 像使用VI一样使用Emacs</a>
+<ul>
+<li><a href="#orgeb88e87">6.1. 全局快捷键以z开头</a></li>
+<li><a href="#org1a42333">6.2. 不同mode的快捷键以s开头</a></li>
+</ul>
+</li>
+<li><a href="#org6429f80">7. 智能化</a>
+<ul>
+<li><a href="#orgd722fb1">7.1. buffer切换</a></li>
+<li><a href="#orgecbc0be">7.2. 基于my-select-windows的便捷列表选择</a></li>
+</ul>
+</li>
+<li><a href="#org069f557">8. 优化工作流程</a>
+<ul>
+<li><a href="#org391d60d">8.1. 在任务栏显示提示信息</a></li>
+<li><a href="#org886d2b2">8.2. 隐藏一些后台处理用的buffer</a></li>
+</ul>
+</li>
+<li><a href="#orgc650fa0">9. Emacs的缺点</a>
+<ul>
+<li><a href="#org5590267">9.1. Emacs是单线程的</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -342,8 +378,8 @@ elisp语言的语法非常简单，如下：
 <h2 id="org3d2c7b7"><span class="section-number-2">3</span> GTD时间管理</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<ol class="org-ol">
-<li><a id="org86092a2"></a>GTD简介<br />
+<div id="outline-container-org86092a2" class="outline-3">
+<h3 id="org86092a2"><span class="section-number-3">3.1</span> GTD简介</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 GTD是英文Getting Things Done的缩写，是一种行为管理的方法，也是David Allen写的一本书的书名。
@@ -358,19 +394,21 @@ GTD的主要原则在于一个人需要通过记录的方式把头脑中的各�
 我使用Emacs <a href="http://orgmode.org/">org mode</a>来进行GTD管理。
 </p>
 </div>
-</li>
+</div>
 
 
-<li><a id="org0e1b8f2"></a>三分钟法则<br />
+<div id="outline-container-org0e1b8f2" class="outline-3">
+<h3 id="org0e1b8f2"><span class="section-number-3">3.2</span> 三分钟法则</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 三分钟法则是说，任何可以在三分钟（也可以稍大或稍小，意指比较短的时间
 段）内可以完成的事情，就迅速把它完成。生活中许多的小事都属于这一类。
 </p>
 </div>
-</li>
+</div>
 
-<li><a id="org106b342"></a>添加默认任务<br />
+<div id="outline-container-org106b342" class="outline-3">
+<h3 id="org106b342"><span class="section-number-3">3.3</span> 添加默认任务</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 在org文件的任务项下添加下列行，当执行函数org-agenda后，该任务就会成为
@@ -381,9 +419,10 @@ GTD的主要原则在于一个人需要通过记录的方式把头脑中的各�
 </pre>
 </div>
 </div>
-</li>
+</div>
 
-<li><a id="org8aedc98"></a>没有clock in任务时在状态栏提醒<br />
+<div id="outline-container-org8aedc98" class="outline-3">
+<h3 id="org8aedc98"><span class="section-number-3">3.4</span> 没有clock in任务时在状态栏提醒</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 emacs org mode支持对一个任务进行clock in/out的操作，并在状态栏显示
@@ -467,8 +506,9 @@ This heading is used by keeping clocks is always opening.
 </div></li>
 </ul>
 </div>
-</li>
-<li><a id="org8e1f076"></a>让其他人了解自己的工作进展<br />
+</div>
+<div id="outline-container-org8e1f076" class="outline-3">
+<h3 id="org8e1f076"><span class="section-number-3">3.5</span> 让其他人了解自己的工作进展</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 我会将自己制作的GTD列表导出到html中，这样别人就可以通过WEB网站了解我的工作安排与工作进展。
@@ -482,15 +522,14 @@ This heading is used by keeping clocks is always opening.
 ; *</b> 核查清单
 </p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div id="outline-container-org7ce0f17" class="outline-2">
 <h2 id="org7ce0f17"><span class="section-number-2">4</span> 收发邮件</h2>
 <div class="outline-text-2" id="text-4">
 </div>
-<ol class="org-ol">
-<li><a id="orgf688b73"></a>一次性收取多个邮箱的邮件<br />
+<div id="outline-container-orgf688b73" class="outline-3">
+<h3 id="orgf688b73"><span class="section-number-3">4.1</span> 一次性收取多个邮箱的邮件</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 我使用Emacs <a href="http://mew.org">mew</a>来收发邮件，由于有多个邮箱帐户，因此扩展了mew来一次性接
@@ -541,9 +580,10 @@ This heading is used by keeping clocks is always opening.
 </pre>
 </div>
 </div>
-</li>
+</div>
 
-<li><a id="orgf0ed5b3"></a>使mew能够发送中文名的附件<br />
+<div id="outline-container-orgf0ed5b3" class="outline-3">
+<h3 id="orgf0ed5b3"><span class="section-number-3">4.2</span> 使mew能够发送中文名的附件</h3>
 <div class="outline-text-3" id="text-4-2">
 <p>
 如果使用Outlook(gmail则没有个问题)来接收mew发出的邮件，会发现不能识别中文附件名。下面的补
@@ -589,16 +629,15 @@ This heading is used by keeping clocks is always opening.
 </pre>
 </div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 
 <div id="outline-container-org656032b" class="outline-2">
 <h2 id="org656032b"><span class="section-number-2">5</span> 目录浏览</h2>
 <div class="outline-text-2" id="text-5">
 </div>
-<ol class="org-ol">
-<li><a id="org31e0340"></a>根据文件后缀名使用不同程序打开文件<br />
+<div id="outline-container-org31e0340" class="outline-3">
+<h3 id="org31e0340"><span class="section-number-3">5.1</span> 根据文件后缀名使用不同程序打开文件</h3>
 <div class="outline-text-3" id="text-5-1">
 <p>
 Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来根据文件
@@ -682,8 +721,7 @@ Emacs的Dired模式支持文件管理。在Linux下通过绑定Ctrl-Enter键来�
 </pre>
 </div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 
 <div id="outline-container-org259ddc4" class="outline-2">
@@ -698,8 +736,8 @@ Emacs编辑器的默认按键需要大量使用组合键，特别是Ctrl键，�
 </p>
 </div>
 
-<ol class="org-ol">
-<li><a id="orgeb88e87"></a>全局快捷键以z开头<br />
+<div id="outline-container-orgeb88e87" class="outline-3">
+<h3 id="orgeb88e87"><span class="section-number-3">6.1</span> 全局快捷键以z开头</h3>
 <div class="outline-text-3" id="text-6-1">
 <p>
   一些在所有buffer都需要执行的快捷键我称之为全局快捷键，比如切换
@@ -882,8 +920,9 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 </div>
 </li>
 </ol>
-</li>
-<li><a id="org1a42333"></a>不同mode的快捷键以s开头<br />
+</div>
+<div id="outline-container-org1a42333" class="outline-3">
+<h3 id="org1a42333"><span class="section-number-3">6.2</span> 不同mode的快捷键以s开头</h3>
 <div class="outline-text-3" id="text-6-2">
 <p>
 以c/c++ mode为例：
@@ -929,15 +968,14 @@ buffer，文件保存等操作。全局快捷键的设置存储在变量
 </pre>
 </div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div id="outline-container-org6429f80" class="outline-2">
 <h2 id="org6429f80"><span class="section-number-2">7</span> 智能化</h2>
 <div class="outline-text-2" id="text-7">
 </div>
-<ol class="org-ol">
-<li><a id="orgd722fb1"></a>buffer切换<br />
+<div id="outline-container-orgd722fb1" class="outline-3">
+<h3 id="orgd722fb1"><span class="section-number-3">7.1</span> buffer切换</h3>
 <div class="outline-text-3" id="text-7-1">
 <p>
 Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用不同的快捷
@@ -950,8 +988,9 @@ Emacs中经常会打开太多的buffer，因此我在切换buffer时，会使用
 <li>"zwb" ==&gt; 打开w3m mode的buffer</li>
 </ul>
 </div>
-</li>
-<li><a id="orgecbc0be"></a>基于my-select-windows的便捷列表选择<br />
+</div>
+<div id="outline-container-orgecbc0be" class="outline-3">
+<h3 id="orgecbc0be"><span class="section-number-3">7.2</span> 基于my-select-windows的便捷列表选择</h3>
 <div class="outline-text-3" id="text-7-2">
 <p>
 使用Emacs命令时经常要从一组列表(命令)中选择一项进行操作。我创建了一个函数
@@ -1053,16 +1092,15 @@ type to insert:
 <a href="http://www.emacswiki.org/emacs/Anything">Anything</a> 插件在处理列表时功能更强大，而这里的my-select-window则更便捷。
 </p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 
 <div id="outline-container-org069f557" class="outline-2">
 <h2 id="org069f557"><span class="section-number-2">8</span> 优化工作流程</h2>
 <div class="outline-text-2" id="text-8">
 </div>
-<ol class="org-ol">
-<li><a id="org391d60d"></a>在任务栏显示提示信息<br />
+<div id="outline-container-org391d60d" class="outline-3">
+<h3 id="org391d60d"><span class="section-number-3">8.1</span> 在任务栏显示提示信息</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
   当Emacs中有需要提醒的消息时，我会在任务栏显示一个Emacs图标来提醒自己。
@@ -1086,9 +1124,10 @@ Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/d
 </pre>
 </div>
 </div>
-</li>
+</div>
 
-<li><a id="org886d2b2"></a>隐藏一些后台处理用的buffer<br />
+<div id="outline-container-org886d2b2" class="outline-3">
+<h3 id="org886d2b2"><span class="section-number-3">8.2</span> 隐藏一些后台处理用的buffer</h3>
 <div class="outline-text-3" id="text-8-2">
 <div class="org-src-container">
 <pre class="src src-elisp">(setq *tabbar-ignore-buffers* '(<span style="color: #99C794;">"idle.org"</span> <span style="color: #99C794;">".bbdb"</span> <span style="color: #99C794;">"diary"</span>))
@@ -1103,15 +1142,14 @@ Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/d
 </pre>
 </div>
 </div>
-</li>
-</ol>
+</div>
 </div>
 <div id="outline-container-orgc650fa0" class="outline-2">
 <h2 id="orgc650fa0"><span class="section-number-2">9</span> Emacs的缺点</h2>
 <div class="outline-text-2" id="text-9">
 </div>
-<ol class="org-ol">
-<li><a id="org5590267"></a>Emacs是单线程的<br />
+<div id="outline-container-org5590267" class="outline-3">
+<h3 id="org5590267"><span class="section-number-3">9.1</span> Emacs是单线程的</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
 虽然现在的大多数common lisp实现都支持多线程，但Emacs目前仍然只支持单线
@@ -1120,8 +1158,7 @@ Emacs图标的显示是通过python脚本<a href="https://github.com/jingtaozf/d
 问网络连通不好的远程机器时。
 </p>
 </div>
-</li>
-</ol>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
