@@ -8,10 +8,13 @@
   - C
     - [[file:assembly/Nasm-ds.org][NASM源码中的数据结构]]
     - [[file:assembly/Nasm.org][NASM源码阅读笔记]]
+  - Clojure
+    - [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]]
 * E
   - ECL
     - [[file:lisp/mixlang-in-lisp.org][Common lisp 与其它语言的集成]]
   - Emacs
+    - [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]]
     - [[file:emacs/TheWayIUseEmacs.org][我是如何使用Emacs的]]
 * L
   - Lisp

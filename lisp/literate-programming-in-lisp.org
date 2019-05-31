@@ -1,4 +1,6 @@
 #+title: Literate programming in lisp dialects
+#+Index: Emacs!Literate programming in lisp dialects
+#+Index: Clojure!Literate programming in lisp dialects
 #+Index: Lisp!Literate programming in lisp dialects
 #+Index: Literate programming!Literate programming in lisp dialects
 
