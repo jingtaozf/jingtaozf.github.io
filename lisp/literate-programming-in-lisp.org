@@ -4,7 +4,7 @@
 #+Index: Lisp!Literate programming in lisp dialects
 #+Index: Literate programming!Literate programming in lisp dialects
 
-* Introduce
+* Introduction
 
 For a long time, I pursue a convenient way to write my documents while developing my codes.
 And the most common way I found is writing specified format comments in my source file directly.
