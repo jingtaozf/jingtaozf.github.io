@@ -20,11 +20,11 @@ the way of software development, to force us write codes to human instead of wri
 demand of a computer.
 
 but I think they rushed too much against popular development, because if we write document file instead of source code
-file, then It is harder for us to benefit from most popular but more and more powerful development tools, and we have to
+file, then it is harder for us to benefit from most popular but more and more powerful development tools, and we have to
 tangle source file from document file time to time in a iterative development, any way, no one like to keep two copies of codes,
 one in the document, and the other in a tangled source file.
 
-But things may vary in lisp dialects, because lisp is the most flexible language from my view, and If a lisp dialect 
+But things may vary in lisp dialects, because lisp is the most flexible language from my view, and if a lisp dialect 
 and its development tools can read a document file just like a source file, then we don't have to keep multiple copies
 of source codes, and just enjoy the benefit from [[https://en.wikipedia.org/wiki/Literate_programming][Literate programming]].
 
@@ -36,7 +36,7 @@ The result of the attempt is my Github project: [[https://github.com/jingtaozf/l
 
 As the flexibility of common lisp, all I have to do is adding some new reader syntax so common lisp can read org files directly.
 
-Now I have developed some literal projects based on [[https://github.com/jingtaozf/literate-lisp][literate-lisp]], even [[https://github.com/jingtaozf/literate-lisp][literate-lisp]] itself.
+Now I have developed some internal projects based on [[https://github.com/jingtaozf/literate-lisp][literate-lisp]], even [[https://github.com/jingtaozf/literate-lisp][literate-lisp]] itself.
 
 ** Emacs Lisp
 The result of the attempt is my Github project: [[https://github.com/jingtaozf/literate-elisp][literate-elisp]].
