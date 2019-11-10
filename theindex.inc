@@ -1,13 +1,12 @@
 * A
-  - Assembly
+  - [[file:assembly/Nasm.org][Assembly]]
     - [[file:assembly/Nasm-ds.org][NASM源码中的数据结构]]
     - [[file:assembly/assembly.org][Some win32 assembly codes between 2002-2003]]
     - [[file:assembly/subject2001.org][《Windows 核心编程》部分改编的汇编代码]]
     - [[file:assembly/vim.org][使用GVIM阅读MASM代码]]
 * C
-  - C
+  - [[file:assembly/Nasm.org][C]]
     - [[file:assembly/Nasm-ds.org][NASM源码中的数据结构]]
-    - [[file:assembly/Nasm.org][NASM源码阅读笔记]]
   - Clojure
     - [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]]
 * E
@@ -28,9 +27,8 @@
     - [[file:assembly/subject2001.org][《Windows 核心编程》部分改编的汇编代码]]
     - [[file:assembly/vim.org][使用GVIM阅读MASM代码]]
 * N
-  - NASM
+  - [[file:assembly/Nasm.org][NASM]]
     - [[file:assembly/Nasm-ds.org][NASM源码中的数据结构]]
-    - [[file:assembly/Nasm.org][NASM源码阅读笔记]]
 * V
   - vim
     - [[file:assembly/vim.org][使用GVIM阅读MASM代码]]
