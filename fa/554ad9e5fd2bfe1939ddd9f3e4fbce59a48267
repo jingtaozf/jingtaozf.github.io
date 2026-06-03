@@ -1,0 +1,50 @@
+publish.el
+  s_4ba226b0505f6a::t_2d8501130b2469 40-43
+  s_4ba226b0505f6a::t_d3ae875a40645e 1-23,27-39,44-83
+  s_4ba226b0505f6a::t_d8f74f083687c1 24-26
+about/about.org
+  s_4ba226b0505f6a::t_84d41267f826ba 19-25
+  s_4ba226b0505f6a::t_42f36ea96769bb 26-27
+  s_4ba226b0505f6a::t_ea721d83513405 4-7,9-12,14,28,32,34-36,39
+  s_4ba226b0505f6a::t_2c3673a1d8cf0a 16-18
+  s_4ba226b0505f6a::t_8eb18116402ad5 1-2,29-30,37-38,40
+css/site.css
+  s_4ba226b0505f6a::t_c20e9e8eadc71c 1-90
+contact.org
+  s_4ba226b0505f6a::t_82550b08d7c555 2-3,6,8,12,14
+  s_4ba226b0505f6a::t_c955d7111ef3cb 1,4-5,7,9-11,13,15-18
+index.org
+  s_4ba226b0505f6a::t_fa42de36b59300 24,26,34-35,47-49,51,55-56
+  s_4ba226b0505f6a::t_8f47271d6d238b 63-64
+  s_4ba226b0505f6a::t_7e8f55971774ec 2,4-6,12,14-15,17-19,21-23,31-32,68-72,78-80,84,87-91
+  s_4ba226b0505f6a::t_13d89c0e794612 30,33,57-59,61,65-67
+  s_4ba226b0505f6a::t_dff4d32e107a71 1,3,7-11,13,16,20,25,27-29,36-46,50,52-54,60,62,73-77,81-83,85-86
+proof.org
+  s_4ba226b0505f6a::t_801c09ad7ad1d3 26-28
+  s_4ba226b0505f6a::t_267d9e98fe5170 1,5,7,9-11,17,20-23,25,30-37
+  s_4ba226b0505f6a::t_f60129c1286932 4,19,38-47,56
+  s_4ba226b0505f6a::t_3deb98f1325d08 24,29
+  s_4ba226b0505f6a::t_14cb09bf299fb2 2-3,6,8,12-16,18,48-55
+assembly/Nasm.org
+  s_4ba226b0505f6a::t_c7e467796192b0 356
+writing.org
+  s_4ba226b0505f6a::t_70a115aa02d7f7 2-3,6,19-22,24-26,29-36
+  s_4ba226b0505f6a::t_44f6a130318ab1 1,4-5,7-16,18,23,27-28
+  s_4ba226b0505f6a::t_7b820e205516f2 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "fa554ad9e5fd2bfe1939ddd9f3e4fbce59a48267",
+  "prompts": {},
+  "sessions": {
+    "s_4ba226b0505f6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d8b3e743-aae0-46fe-b052-202ecb82c287",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jingtao Xu <jingtaozf@gmail.com>"
+    }
+  }
+}
