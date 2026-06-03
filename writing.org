@@ -1,0 +1,36 @@
+#+TITLE: Writing & literate-programming projects
+#+OPTIONS: toc:nil num:nil
+
+Depth signal, not a blog. Below: my literate-programming projects (code that
+*is* its own documentation), a selected English article, and a dated archive.
+
+* Literate-programming projects
+
+I work in a literate style — prose and code together — and I authored the
+tooling that makes it work across several languages:
+
+- [[https://github.com/jingtaozf/literate-lisp][literate-lisp]] (★69) — load Common Lisp code blocks straight from Org files.
+- [[https://github.com/jingtaozf/literate-elisp][literate-elisp]] (★49) — the same for Emacs Lisp; the engine behind my agent docs.
+- [[https://github.com/jingtaozf/literate-clojure][literate-clojure]] (★15) — literate programming for Clojure / ClojureScript.
+- [[https://github.com/jingtaozf/literate-smalltalk][literate-smalltalk]] (★6) — literate programming for Smalltalk.
+- [[https://github.com/jingtaozf/s-graphviz][s-graphviz]] (★26) — an s-expression representation of GraphViz DOT in Common Lisp.
+- [[https://github.com/jingtaozf/emacs-agent][emacs-agent]] — a native Emacs SDK for code agents with org-mode as the interactive UI (literate Emacs Lisp); how I drive AI agents day to day.
+
+* Selected (English)
+
+- [[file:lisp/literate-programming-in-lisp.org][Literate programming in Lisp dialects]] (2019) —
+  how I write code and prose together across Common Lisp, Emacs Lisp and Clojure;
+  the approach behind the libraries above.
+
+* Archive (Chinese, 2002–2019)
+
+Kept for depth — these reinforce the systems / reverse-engineering / Emacs
+background behind the AI-agent and security work. Not translated.
+
+- [[file:lisp/mixlang-in-lisp.org][Common Lisp 与其它语言的集成]] (2013) — integrating Common Lisp with other languages.
+- [[file:emacs/TheWayIUseEmacs.org][我是如何使用 Emacs 的]] (2014) — my Emacs workflow (English version planned).
+- [[file:assembly/Nasm.org][NASM 源码阅读笔记]] (2019) — reading the NASM assembler source.
+- [[file:assembly/Nasm-ds.org][NASM 源码中的数据结构]] (2003) — data structures in the NASM source.
+- [[file:assembly/vim.org][使用 GVIM 阅读 MASM 代码]] (2003) — reading MASM code with GVIM.
+- [[file:assembly/subject2001.org][部分改编的汇编代码]] (2002) — assorted assembly.
+- [[file:assembly/assembly.org][Win32 assembly notes]] (2002–2003) — early Win32 assembly.

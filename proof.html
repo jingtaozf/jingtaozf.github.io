@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2026-06-03 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Proof — what I've actually built</title>
+<meta name="generator" content="Org Mode" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/css/site.css"/>
+</head>
+<body>
+<div id="preamble" class="status">
+<nav class="site-nav"><a class="brand" href="/">Jingtao&nbsp;Xu</a><span class="nav-links"><a href="/about/about.html">About</a><a href="/#services">Work</a><a href="/writing.html">Writing</a><a href="/proof.html">Proof</a><a class="nav-cta" href="/contact.html">Connect</a></span></nav>
+</div>
+<div id="content" class="content">
+<header>
+<h1 class="title">Proof — what I've actually built</h1>
+</header><p>
+Independently verifiable work. Authored libraries show their GitHub stars;
+in-progress and prior work is described honestly.
+</p>
+<div id="outline-container-org86b4b57" class="outline-2">
+<h2 id="org86b4b57">Meta-programming &amp; language engineering (the moat)</h2>
+<div class="outline-text-2" id="text-org86b4b57">
+<p>
+Originated and maintained by me; stars are independent signal. These are
+language-extension tools — macros, DSLs and literate tooling that make a
+language fit the problem.
+</p>
+
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Repo</th>
+<th scope="col" class="org-right">★</th>
+<th scope="col" class="org-left">What it proves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a></td>
+<td class="org-right">69</td>
+<td class="org-left">Load Common Lisp from Org files — literate-programming depth</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a></td>
+<td class="org-right">49</td>
+<td class="org-left">Load Emacs Lisp from Org files — the engine behind my agent docs</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/s-graphviz">s-graphviz</a></td>
+<td class="org-right">26</td>
+<td class="org-left">An s-expression DSL for GraphViz DOT in Common Lisp</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/literate-clojure">literate-clojure</a></td>
+<td class="org-right">15</td>
+<td class="org-left">Literate programming for Clojure/ClojureScript</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/literate-smalltalk">literate-smalltalk</a></td>
+<td class="org-right">6</td>
+<td class="org-left">Literate programming for Smalltalk</td>
+</tr>
+</tbody>
+</table>
+
+<ul class="org-ul">
+<li><b>In progress</b>: a Common Lisp implementation of the ECMAScript specification
+(early stage) — language-implementation work at spec level.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org358522b" class="outline-2">
+<h2 id="org358522b">AI-augmented development</h2>
+<div class="outline-text-2" id="text-org358522b">
+<ul class="org-ul">
+<li>I develop with AI coding agents daily through a literate org-mode workflow —
+every step documented, reproducible and reviewable.</li>
+<li>Authored <a href="https://github.com/jingtaozf/emacs-agent">emacs-agent</a> — a native Emacs SDK for code agents with org-mode as
+the interactive UI.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org863c2d4" class="outline-2">
+<h2 id="org863c2d4">Expert systems &amp; symbolic AI</h2>
+<div class="outline-text-2" id="text-org863c2d4">
+<ul class="org-ul">
+<li><b>Gensym G2</b> — a commercial real-time expert-system platform: found root causes
+of issues and shipped new features, in ANSI Common Lisp / LispWorks.</li>
+<li><b>NLP / BNF parsing</b> — built an English + Chinese question parser on a
+context-free BNF parser in Common Lisp; see also
+<a href="https://github.com/jingtaozf/lkb">lkb</a> (★5, Linguistic Knowledge Builder).</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orge4b9e84" class="outline-2">
+<h2 id="orge4b9e84">Security &amp; reverse engineering</h2>
+<div class="outline-text-2" id="text-orge4b9e84">
+<table>
+
+
+<colgroup>
+<col  class="org-left">
+
+<col  class="org-right">
+
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Repo</th>
+<th scope="col" class="org-right">★</th>
+<th scope="col" class="org-left">What it proves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/capstone">capstone</a></td>
+<td class="org-right">6</td>
+<td class="org-left">Common Lisp interface to the Capstone disassembler</td>
+</tr>
+
+<tr>
+<td class="org-left"><a href="https://github.com/jingtaozf/cdb-mi">cdb-mi</a></td>
+<td class="org-right">3</td>
+<td class="org-left">WinDbg debugging inside Emacs — Windows RE/security</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Background: years of antivirus-engine and Windows kernel-driver reverse
+engineering at Kingsoft.
+</p>
+</div>
+</div>
+<div id="outline-container-org13c6174" class="outline-2">
+<h2 id="org13c6174">Production &amp; third-party validation</h2>
+<div class="outline-text-2" id="text-org13c6174">
+<ul class="org-ul">
+<li>A commercial product written in ANSI Common Lisp,
+<a href="http://www.lispworks.com/success-stories/ixiaozhushou.html">featured as a LispWorks success story</a>.</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org01dd85c" class="outline-2">
+<h2 id="org01dd85c">Writing</h2>
+<div class="outline-text-2" id="text-org01dd85c">
+<p>
+Selected technical writing and literate-programming projects — see <a href="writing.html">Writing</a>.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<footer class="site-footer"><p>Remote · UTC+8 · fluent English / 中文</p><p><a href="mailto:dev@jingtao.net">dev@jingtao.net</a> · <a href="https://cal.com/jingtaoxu">Book a call</a> · <a href="https://github.com/jingtao-net">github.com/jingtao-net</a></p><p class="fineprint">© Jingtao Xu</p></footer>
+</div>
+</body>
+</html>

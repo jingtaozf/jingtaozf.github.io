@@ -1,10 +1,91 @@
-#+TITLE: Articles
+#+TITLE: Jingtao Xu — meta-programming, AI-augmented development, expert systems & reverse engineering
+#+OPTIONS: title:nil toc:nil num:nil
+#+HTML_HEAD_EXTRA: <meta name="description" content="Jingtao Xu — a senior engineer who thinks in Common Lisp, Clojure and Emacs: meta-programming and literate tooling, AI-augmented development, expert systems (Gensym G2), and reverse engineering. A place to understand how I work — and connect."/>
 
-- 2019-11-10 : [[file:assembly/Nasm.org][NASM源码阅读笔记]] (~assembly~)
-- 2019-06-02 : [[file:lisp/literate-programming-in-lisp.org][Literate programming in lisp dialects]] (~lisp~)
-- 2014-02-12 : [[file:emacs/TheWayIUseEmacs.org][我是如何使用Emacs的]] (~emacs~)
-- 2013-10-26 : [[file:lisp/mixlang-in-lisp.org][Common lisp 与其它语言的集成]] (~lisp~)
-- 2003-11-26 : [[file:assembly/vim.org][使用GVIM阅读MASM代码]] (~assembly~)
-- 2003-10-27 : [[file:assembly/Nasm-ds.org][NASM源码中的数据结构]] (~assembly~)
-- 2002-02-06 : [[file:assembly/subject2001.org][部分改编的汇编代码]] (~assembly~)
-- 2002-01-12 : [[file:assembly/assembly.org][Some win32 assembly codes between 2002-2003]] (~assembly~)
+#+begin_export html
+<header class="hero">
+  <h1>I bend programming languages to fit the problem — and I build in the open.</h1>
+  <p class="lede">I'm Jingtao — a senior engineer (24 years) who thinks in Common Lisp, Clojure and Emacs.
+  I write meta-programming and literate tooling, I develop with AI coding agents, and I got my start
+  reverse-engineering systems at the instruction level. This page is a way to understand how I work and
+  what I care about — and to reach out.</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="/contact.html">Connect</a>
+    <a class="btn btn-ghost" href="mailto:dev@jingtao.net">dev@jingtao.net</a>
+  </div>
+  <p class="meta">Hangzhou · UTC+8 · fluent written English / 中文 · I work in the open</p>
+</header>
+
+<section id="services">
+  <h2 style="max-width:980px;margin-left:auto;margin-right:auto;padding:0 20px">What I build &amp; think about</h2>
+  <div class="content">
+  <div class="lanes">
+
+    <article class="lane" id="meta">
+      <span class="tag">the thing I'm deepest in</span>
+      <h3>Meta-programming &amp; language engineering</h3>
+      <p class="who">Bending the language to fit the problem, not the other way around.</p>
+      <p>Macros, DSLs and literate tooling. 20+ years of Common Lisp, Clojure and Emacs Lisp; I write the
+      kind of libraries other developers use.</p>
+      <p class="proof">Authored OSS:
+      <a href="https://github.com/jingtaozf/literate-lisp">literate-lisp</a> (★69),
+      <a href="https://github.com/jingtaozf/literate-elisp">literate-elisp</a> (★49),
+      <a href="https://github.com/jingtaozf/literate-clojure">literate-clojure</a>,
+      <a href="https://github.com/jingtaozf/s-graphviz">s-graphviz</a> (★26).
+      Currently writing a Common Lisp implementation of the ECMAScript spec (early stage).</p>
+    </article>
+
+    <article class="lane" id="ai">
+      <span class="tag">how I work today</span>
+      <h3>AI-augmented development</h3>
+      <p class="who">How I actually build, day to day.</p>
+      <p>I develop with AI coding agents daily, driven through a literate org-mode workflow — every step
+      documented, reproducible and reviewable. Meta-programming, applied to my own toolchain.</p>
+      <p class="proof">Authored:
+      <a href="https://github.com/jingtaozf/emacs-agent">emacs-agent</a> — a native Emacs SDK for
+      code agents with org-mode as the interactive UI.</p>
+    </article>
+
+    <article class="lane" id="expert">
+      <span class="tag">the symbolic-AI side of me</span>
+      <h3>Expert systems &amp; symbolic AI</h3>
+      <p class="who">Rule engines and knowledge-based systems — the symbolic side of AI.</p>
+      <p>I found root causes and shipped new features in Gensym G2, and I've built English/Chinese BNF
+      question parsers.</p>
+      <p class="proof">Gensym G2 (a commercial real-time expert-system platform) in ANSI Common Lisp /
+      LispWorks; NLP work incl. <a href="https://github.com/jingtaozf/lkb">lkb</a> (Linguistic Knowledge Builder).</p>
+    </article>
+
+    <article class="lane" id="security">
+      <span class="tag">where my roots show</span>
+      <h3>Security &amp; reverse engineering</h3>
+      <p class="who">Reading binaries and trust boundaries, not just prompts.</p>
+      <p>Years of antivirus-engine and Windows kernel-driver reverse engineering — an adversarial-systems
+      mindset that applies directly to LLM-app and agent security.</p>
+      <p class="proof">Authored RE tooling:
+      <a href="https://github.com/jingtaozf/capstone">capstone</a> (Common Lisp disassembler interface),
+      <a href="https://github.com/jingtaozf/cdb-mi">cdb-mi</a> (WinDbg inside Emacs).</p>
+    </article>
+
+  </div>
+
+  <div class="proof-strip">
+    <strong>What I've made:</strong> public open source you can read — authored meta-programming libraries
+    with real stars (<a href="https://github.com/jingtaozf">github.com/jingtaozf</a>), Clojure and
+    spec-level work under (<a href="https://github.com/jingtao-net">github.com/jingtao-net</a>), and a
+    production Common Lisp product <a href="http://www.lispworks.com/success-stories/ixiaozhushou.html">featured by LispWorks</a>.
+    More in the <a href="/proof.html">proof index →</a>
+  </div>
+
+  <div class="cta-band">
+    <h2>Let's connect.</h2>
+    <p>I like meeting people who think about languages, agents and systems — to swap ideas, collaborate,
+    or just say hello. And yes, I'm open to the right long-term collaboration or role.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn btn-primary" href="mailto:dev@jingtao.net">dev@jingtao.net</a>
+      <a class="btn btn-ghost" href="https://github.com/jingtao-net">github.com/jingtao-net</a>
+    </div>
+  </div>
+  </div>
+</section>
+#+end_export

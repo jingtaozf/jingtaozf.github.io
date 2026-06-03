@@ -1,0 +1,90 @@
+/* site.css — jingtao.net freelance/demo site (2026 refresh)
+   Modern, responsive, system-font, no framework. Root-absolute referenced
+   (/css/site.css) so it resolves from any page depth on GitHub Pages. */
+
+:root{
+  --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --muted:#9aa7b4;
+  --line:#243040; --accent:#3fb6ff; --accent-2:#7ee787; --max:980px;
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#ffffff; --panel:#f6f8fa; --ink:#1f2328; --muted:#57606a;
+         --line:#d0d7de; --accent:#0969da; --accent-2:#1a7f37; }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,
+    "PingFang SC","Microsoft YaHei",sans-serif;
+  line-height:1.6; font-size:17px;
+}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+.content,#content{max-width:var(--max); margin:0 auto; padding:0 20px 64px}
+h1,h2,h3{line-height:1.25; font-weight:700}
+h2{margin-top:2.2em; border-bottom:1px solid var(--line); padding-bottom:.3em}
+code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--panel); border:1px solid var(--line); border-radius:8px;
+    padding:14px; overflow:auto}
+
+/* nav */
+.site-nav{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  flex-wrap:wrap; max-width:var(--max); margin:0 auto; padding:14px 20px;
+}
+.site-nav .brand{font-weight:800; color:var(--ink); font-size:1.05rem}
+.nav-links{display:flex; gap:18px; flex-wrap:wrap; align-items:center}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--ink); text-decoration:none}
+.nav-cta{
+  background:var(--accent); color:#001018 !important; padding:7px 14px;
+  border-radius:7px; font-weight:700;
+}
+.nav-cta:hover{filter:brightness(1.08); text-decoration:none}
+
+/* hero */
+.hero{max-width:var(--max); margin:0 auto; padding:48px 20px 8px}
+.hero h1{font-size:2.1rem; margin:.1em 0 .35em}
+.hero .lede{font-size:1.18rem; color:var(--muted); max-width:46rem}
+.hero .cta-row{display:flex; gap:12px; flex-wrap:wrap; margin:26px 0 8px}
+.btn{display:inline-block; padding:11px 18px; border-radius:8px; font-weight:700}
+.btn-primary{background:var(--accent); color:#001018}
+.btn-ghost{border:1px solid var(--line); color:var(--ink)}
+.btn:hover{text-decoration:none; filter:brightness(1.06)}
+.hero .meta{color:var(--muted); font-size:.95rem; margin-top:6px}
+
+/* lane cards */
+.lanes{display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin:18px 0}
+@media (max-width:720px){ .lanes{grid-template-columns:1fr} body{font-size:16px} }
+.lane{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:20px;
+}
+.lane h3{margin:.1em 0 .4em; font-size:1.18rem}
+.lane .who{color:var(--muted); font-size:.92rem; margin:0 0 .5em}
+.lane p{margin:.45em 0}
+.lane .proof{font-size:.9rem; color:var(--muted)}
+.lane .tag{display:inline-block; background:rgba(63,182,255,.12); color:var(--accent);
+  border:1px solid var(--line); border-radius:999px; padding:1px 10px; font-size:.78rem}
+
+/* proof strip + table */
+.proof-strip{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:16px 20px; margin:20px 0}
+table{border-collapse:collapse; width:100%; margin:1em 0; font-size:.95rem}
+th,td{border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top}
+th{background:var(--panel)}
+
+/* contact */
+.cta-band{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  padding:24px; margin:28px 0; text-align:center}
+.cta-band h2{border:0; margin-top:0}
+
+/* footer */
+.site-footer{max-width:var(--max); margin:40px auto 0; padding:22px 20px;
+  border-top:1px solid var(--line); color:var(--muted); font-size:.92rem; text-align:center}
+.site-footer a{color:var(--muted)}
+.site-footer .fineprint{opacity:.7; font-size:.85rem}
+
+/* org preamble/postamble wrappers Org emits */
+#preamble,#postamble{}
+.title{font-size:2rem; text-align:left}

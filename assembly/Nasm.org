@@ -353,7 +353,7 @@ outform.c提供了对上述模块进行查找，列举和注册的功能。
 ---------------------------------------------------------------------
 仓促之间，错漏难免，敬请指正。
     Homepage: [[http://www.jingtao.net][www.jingtao.net]]   
-    Email   : [[mailto:jingtaozf@gmail.com][jingtaozf@gmail.com]]
+    Email   : [[mailto:dev@jingtao.net][dev@jingtao.net]]
 
 Footnotes:
  [1] 虽然NASM不能处理浮点数的的运算，但不意味着它不能利用自己强大的宏功能来

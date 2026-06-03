@@ -1,0 +1,18 @@
+#+TITLE: Connect
+#+OPTIONS: toc:nil num:nil
+
+I'd genuinely like to hear from you — to swap ideas, explore a collaboration, or
+just say hello. I reply within ~1 business day (UTC+8).
+
+* Ways to reach me
+
+- *Email*: [[mailto:dev@jingtao.net][dev@jingtao.net]] — the best way to start.
+- *Code*: [[https://github.com/jingtao-net][github.com/jingtao-net]] and [[https://github.com/jingtaozf][github.com/jingtaozf]] (my authored projects).
+- *Book a call*: [[https://cal.com/jingtaoxu][cal.com/jingtaoxu]] — if a conversation is easier.
+
+* What I'm open to
+
+No pressure, and no transaction needed to reach out. That said: I'm open to the
+right long-term collaboration or full-time remote role where deep-systems
+judgement and meta-programming matter. Remote, UTC+8 — overlaps US mornings and
+EU afternoons. English or Chinese.

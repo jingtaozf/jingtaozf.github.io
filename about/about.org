@@ -1,19 +1,40 @@
-* 关于我
-  现居住在杭州。
+#+TITLE: About — Jingtao Xu
+#+OPTIONS: toc:nil num:nil
 
-  我喜欢[[http://baike.baidu.com/view/114944.htm][陈升]]的音乐。我们都像农夫一样在不停地耕耘，一个耕耘音乐，一个耕耘程序。
+I'm Jingtao, a software engineer in Hangzhou, China (UTC+8), with ~24 years
+behind me. I think in Common Lisp, Clojure and Emacs; I like bending a language
+until it fits the problem instead of the other way around; and I work in the
+open. I write in fluent English and native Chinese.
 
-* 商业化的产品
-** 我们现在有两个上线的商业化产品，都是面向淘宝卖家的。
-- [[http://www.xiaozhushou.com.cn][小助手宝贝描述编辑器]]
-  - [[https://fuwu.taobao.com/ser/detail.htm?service_code=ts-705][淘宝服务页面的链接]]
-  - [[http://www.lispworks.com/success-stories/ixiaozhushou.html][lispworks介绍页面的链接]]
-- [[http://www.xiaozhushou.com.cn/top/default][小助手批量编辑器]]
-  - [[http://fuwu.taobao.com/serv/detail.htm?service_id=5695][淘宝服务页面的链接]]
+If there's a through-line, it's *meta-programming*: from reverse-engineering
+binaries at the instruction level, to expert systems, to the literate tooling I
+author today, to developing with AI coding agents — I keep building the layer
+that makes the real problem easier to express.
 
-* 与我联系
+* The path so far
 
-email: [[mailto:jingtaozf@gmail.com][jingtaozf@gmail.com]]
+- *AI-augmented development (now)* — I develop with AI coding agents daily through
+  a literate org-mode workflow; authored emacs-agent (a native Emacs SDK for code
+  agents with org-mode as the interactive UI).
+- *Meta-programming & language engineering* — 20+ years of Common Lisp, Clojure
+  and Emacs Lisp; authored literate-lisp, literate-elisp, literate-clojure,
+  s-graphviz. Currently writing a Common Lisp implementation of the ECMAScript
+  specification (early stage).
+- *Expert systems & symbolic AI* — Gensym G2, a commercial real-time
+  expert-system platform (ANSI Common Lisp, LispWorks): root-cause fixes and new
+  features. NLP / BNF question parsing (English + Chinese).
+- *Security & reverse engineering (Kingsoft)* — antivirus-engine work and Windows
+  kernel-driver development; disassembling hostile binaries. Authored capstone
+  and cdb-mi.
+- *Production Common Lisp* — shipped a commercial product written in ANSI CL,
+  [[http://www.lispworks.com/success-stories/ixiaozhushou.html][featured as a LispWorks success story]].
 
-This document was last modified on: {{{modification-time(%Y-%m-%d %a %H:%M)}}}.
+* Connect
 
+I like meeting people who care about languages, agents and systems. Reach out to
+share ideas or collaborate — and yes, I'm open to the right long-term
+collaboration or full-time remote role, though no pretext is needed to say hello.
+
+- Email: [[mailto:dev@jingtao.net][dev@jingtao.net]]
+- Code: [[https://github.com/jingtao-net][github.com/jingtao-net]] · [[https://github.com/jingtaozf][github.com/jingtaozf]]
+- Book a call: [[https://cal.com/jingtaoxu][cal.com/jingtaoxu]]
