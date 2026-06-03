@@ -1,0 +1,19 @@
+css/site.css
+  s_4ba226b0505f6a::t_a8b0f05366e441 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "2570000ca400450f2152715cd68684d660ae70f5",
+  "prompts": {},
+  "sessions": {
+    "s_4ba226b0505f6a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d8b3e743-aae0-46fe-b052-202ecb82c287",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jingtao Xu <jingtaozf@gmail.com>"
+    }
+  }
+}
