@@ -13,7 +13,7 @@
     <a class="btn btn-primary" href="/contact.html">Connect</a>
     <a class="btn btn-ghost" href="mailto:dev@jingtao.net">dev@jingtao.net</a>
   </div>
-  <p class="meta">Hangzhou · UTC+8 · fluent written English / 中文 · I work in the open</p>
+  <p class="meta">Hangzhou · UTC+8 · fluent written English / 中文</p>
 </header>
 
 <section id="services">
